@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"/>
+  <title>無限翻轉人生 · 每季UFO進度</title>
+  <link rel="manifest" href="manifest.json?v=1.0">
+  <meta name="theme-color" content="#0a2540">
+  <style>
+    :root{
+      --bg:#071a2c; --card:#0b2744; --muted:#98b2c6; --text:#e9f4ff; --line:rgba(255,255,255,.12);
+      --accent:#42b6ff; --accent2:#8ad4ff; --ok:#20d88a; --warn:#ffd166; --danger:#ff6b6b;
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{margin:0;background:
+      radial-gradient(900px 700px at 90% -10%, rgba(66,182,255,.18), transparent 60%),
+      radial-gradient(700px 500px at -10% 110%, rgba(138,212,255,.12), transparent 55%),
+      var(--bg);
+      color:var(--text);
+      font-family: Inter, ui-sans-serif, -apple-system, "Noto Sans TC", "Microsoft JhengHei", "PingFang TC", Segoe UI, Roboto, Helvetica, Arial, sans-serif;
+    }
+    header{position:sticky;top:0;z-index:10;padding:14px 16px;background:linear-gradient(180deg, rgba(10,37,64,.9), rgba(10,37,64,.55));backdrop-filter: blur(8px); border-bottom:1px solid var(--line)}
+    .bar{max-width:1100px;margin:auto;display:flex;gap:12px;align-items:center}
+    .logo{width:36px;height:36px;border-radius:10px;background:linear-gradient(135deg,var(--accent),var(--accent2));display:grid;place-items:center;color:#002037;font-weight:900}
+    .ttl{font-weight:900;letter-spacing:.5px}
+    .toolbar{margin-left:auto;display:flex;gap:8px;flex-wrap:wrap}
+    .btn{background:linear-gradient(180deg,rgba(255,255,255,.06),rgba(255,255,255,.02));border:1px solid var(--line);color:var(--text);padding:8px 12px;border-radius:10px;cursor:pointer;font-weight:800}
+    .btn:hover{border-color:rgba(255,255,255,.25)}
+    main{max-width:1100px;margin:18px auto;padding:0 16px;display:grid;gap:14px}
+    .card{background:linear-gradient(180deg, rgba(255,255,255,.03), rgba(255,255,255,.01)); border:1px solid var(--line); border-radius:16px; padding:16px; box-shadow:0 10px 30px rgba(0,0,0,.25)}
+    h2{margin:0 0 10px; color:#cfe9ff; letter-spacing:.3px}
+    .note{color:var(--muted); font-size:12px}
+    .grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+    @media (max-width:900px){ .grid{grid-template-columns:1fr 1fr} }
+    @media (max-width:640px){ .grid{grid-template-columns:1fr} }
+    input,select{background:#0e3154;border:1px solid var(--line);color:var(--text);border-radius:10px;padding:10px 12px;width:100%}
+    .row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+    .kpis{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin-top:10px}
+    @media (max-width:900px){ .kpis{grid-template-columns:1fr 1fr} }
+    .kpi{background:#0b2b4b;border:1px solid var(--line);border-radius:12px;padding:12px}
+    .kpi h3{margin:0 0 6px; font-size:12px; color:#a5c6db}
+    .kpi .v{font-size:22px; font-weight:900}
+    .progress{height:14px;border-radius:999px;background:#0c2f52;border:1px solid var(--line);overflow:hidden}
+    .progress>i{display:block;height:100%;background:linear-gradient(90deg,var(--accent),var(--accent2));width:0%}
+    .flex{display:flex; gap:10px; align-items:center; flex-wrap:wrap}
+    .right{margin-left:auto}
+    table{width:100%;border-collapse:collapse;margin-top:10px}
+    th,td{border-bottom:1px solid rgba(255,255,255,.08);padding:10px 8px;text-align:center}
+    th{color:#aac7db}
+    .del{cursor:pointer;border:1px solid rgba(255,255,255,.18);border-radius:8px;padding:4px 10px;background:rgba(255,255,255,.06)}
+    .del:hover{background:rgba(255,0,0,.18)}
+    .pill{display:inline-block;border:1px solid var(--line);padding:6px 10px;border-radius:999px}
+    .ok{color:var(--ok)} .loss{color:var(--danger)} .warn{color:var(--warn)}
+    .footer{opacity:.7;text-align:center;padding:20px 0;font-size:12px}
+  </style>
+</head>
+<body>
+<header>
+  <div class="bar">
+    <div class="logo">∞</div>
+    <div class="ttl">無限翻轉人生 · 每季 UFO 三項</div>
+    <div class="toolbar">
+      <button class="btn" id="btnExportJSON">匯出 JSON</button>
+      <label class="btn">匯入 JSON<input type="file" id="impJSON" accept="application/json,.json" hidden></label>
+      <button class="btn" id="btnClear">清空全部</button>
+      <button class="btn" id="btnInstall">加入主畫面</button>
+      <button class="btn" id="btnSettings">設定</button>
+    </div>
+  </div>
+</header>
+
+<main>
+  <!-- Dashboard -->
+  <section class="card">
+    <h2>季度總覽（Dashboard）</h2>
+    <div class="kpis">
+      <div class="kpi"><h3>親自招募（目標：1人）</h3><div class="v" id="k1">0 / 1 人</div><div class="progress"><i id="b1"></i></div></div>
+      <div class="kpi"><h3>零售＋自購（目標：1500 BV）</h3><div class="v" id="k2">0 / 1500 BV（差 1500）</div><div class="progress"><i id="b2"></i></div></div>
+      <div class="kpi"><h3>家庭轉移消費（目標：300 IBV）</h3><div class="v" id="k3">0 / 300 IBV（差 300）</div><div class="progress"><i id="b3"></i></div></div>
+      <div class="kpi"><h3>季度設定</h3><div class="v" id="qLabel">—</div><div class="note">在右上「設定」可更改季度起迄日與目標值</div></div>
+    </div>
+  </section>
+
+  <!-- 模組一：招募 -->
+  <section class="card">
+    <h2>① 親自招募 1 人</h2>
+    <div class="grid">
+      <input id="rDate" type="date">
+      <input id="rName" type="text" placeholder="招募姓名（必填）">
+      <button class="btn" id="rAdd">新增招募</button>
+    </div>
+    <div class="flex" style="margin-top:10px">
+      <span class="pill">累計人數：<span id="rCount">0</span>／目標 1</span>
+      <span class="pill" id="rStatus">未達標</span>
+      <div class="right"></div>
+      <button class="btn" id="rExpCSV">匯出CSV</button>
+    </div>
+    <table>
+      <thead><tr><th>#</th><th>日期</th><th>姓名</th><th>操作</th></tr></thead>
+      <tbody id="rBody"></tbody>
+    </table>
+  </section>
+
+  <!-- 模組二：零售＋自購 1500 BV -->
+  <section class="card">
+    <h2>② 零售＋自購 1500 BV</h2>
+    <div class="grid">
+      <input id="bDate" type="date">
+      <input id="bName" type="text" placeholder="顧客姓名（必填）">
+      <input id="bItem" type="text" placeholder="零售品項（自行輸入）">
+      <input id="bAmt" type="number" placeholder="零售 BV（必填）">
+      <button class="btn" id="bAdd">新增 BV</button>
+    </div>
+    <div class="kpis" style="margin-top:10px">
+      <div class="kpi"><h3>累計 BV</h3><div class="v" id="bSumV">0</div><div class="progress"><i id="bBar"></i></div></div>
+      <div class="kpi"><h3>距離目標</h3><div class="v" id="bRemainV">1500</div></div>
+      <div class="kpi"><h3>目標</h3><div class="v" id="bGoalV">1500</div></div>
+      <div class="kpi"><h3>狀態</h3><div class="v" id="bStatus">未達標</div></div>
+    </div>
+    <div class="row right" style="margin-top:6px">
+      <button class="btn" id="bExpCSV">匯出CSV</button>
+    </div>
+    <table>
+      <thead><tr><th>#</th><th>日期</th><th>顧客姓名</th><th>品項</th><th>BV</th><th>操作</th></tr></thead>
+      <tbody id="bBody"></tbody>
+    </table>
+  </section>
+
+  <!-- 模組三：家庭轉移消費 300 IBV -->
+  <section class="card">
+    <h2>③ 家庭轉移消費 300 IBV</h2>
+    <div class="grid">
+      <input id="iDate" type="date">
+      <input id="iName" type="text" placeholder="顧客姓名或自己（必填）">
+      <input id="iItem" type="text" placeholder="消費品項（自行輸入）">
+      <input id="iAmt" type="number" placeholder="IBV（必填）">
+      <button class="btn" id="iAdd">新增 IBV</button>
+    </div>
+    <div class="kpis" style="margin-top:10px">
+      <div class="kpi"><h3>累計 IBV</h3><div class="v" id="iSumV">0</div><div class="progress"><i id="iBar"></i></div></div>
+      <div class="kpi"><h3>距離目標</h3><div class="v" id="iRemainV">300</div></div>
+      <div class="kpi"><h3>目標</h3><div class="v" id="iGoalV">300</div></div>
+      <div class="kpi"><h3>狀態</h3><div class="v" id="iStatus">未達標</div></div>
+    </div>
+    <div class="row right" style="margin-top:6px">
+      <button class="btn" id="iExpCSV">匯出CSV</button>
+    </div>
+    <table>
+      <thead><tr><th>#</th><th>日期</th><th>姓名</th><th>品項</th><th>IBV</th><th>操作</th></tr></thead>
+      <tbody id="iBody"></tbody>
+    </table>
+  </section>
+
+  <!-- 設定 -->
+  <section class="card" id="settings" hidden>
+    <h2>設定</h2>
+    <div class="grid">
+      <div><div class="note">季度開始</div><input id="qStart" type="date"></div>
+      <div><div class="note">季度結束</div><input id="qEnd" type="date"></div>
+      <div><div class="note">零售＋自購 目標 BV</div><input id="goalBV" type="number" placeholder="預設 1500"></div>
+      <div><div class="note">家庭轉移 目標 IBV</div><input id="goalIBV" type="number" placeholder="預設 300"></div>
+    </div>
+    <div class="row right" style="margin-top:8px">
+      <button class="btn" id="apply">儲存並套用</button>
+      <button class="btn" id="collapse">收起</button>
+    </div>
+    <div class="note" style="margin-top:6px">所有資料僅儲存在此裝置（localStorage）。</div>
+  </section>
+
+  <div class="footer">© 無限翻轉人生 · PWA · 離線可用</div>
+</main>
+
+<script>
+const $ = s=>document.querySelector(s);
+const nf = new Intl.NumberFormat('zh-Hant', {maximumFractionDigits:0});
+const todayStr = () => new Date().toISOString().slice(0,10);
+function get(k,d){ try{const v=localStorage.getItem(k); return v? JSON.parse(v): d;}catch(e){return d;} }
+function set(k,v){ try{localStorage.setItem(k, JSON.stringify(v));}catch(e){} }
+
+// ---- State ----
+const st = {
+  qStart: get('qStart', ''),
+  qEnd: get('qEnd', ''),
+  goalBV: get('goalBV', 1500),
+  goalIBV: get('goalIBV', 300),
+  recruits: get('recruits', []),  // {date,name}
+  bvs: get('bvs', []),            // {date,name,item,bv}
+  ibvs: get('ibvs', [])           // {date,name,item,ibv}
+};
+
+// ---- Init dates ----
+['rDate','bDate','iDate'].forEach(id=>{ const el=$( '#'+id ); el.value = todayStr(); });
+
+// ---- Settings panel ----
+function openSettings(){ $('#settings').hidden=false; }
+function closeSettings(){ $('#settings').hidden=true; }
+$('#btnSettings').addEventListener('click', openSettings);
+$('#collapse').addEventListener('click', closeSettings);
+$('#apply').addEventListener('click', ()=>{
+  st.qStart = $('#qStart').value || st.qStart;
+  st.qEnd = $('#qEnd').value || st.qEnd;
+  st.goalBV = Number($('#goalBV').value || st.goalBV || 1500);
+  st.goalIBV = Number($('#goalIBV').value || st.goalIBV || 300);
+  set('qStart', st.qStart); set('qEnd', st.qEnd);
+  set('goalBV', st.goalBV); set('goalIBV', st.goalIBV);
+  renderAll();
+  alert('設定已儲存');
+});
+
+// ---- Data ops ----
+function addRecruit(){
+  const d=$('#rDate').value, n=($('#rName').value||'').trim();
+  if(!n){ alert('請輸入招募姓名'); return; }
+  st.recruits.push({date:d,name:n}); set('recruits', st.recruits);
+  $('#rName').value=''; renderRecruits(); renderDashboard();
+}
+function delRecruit(i){ st.recruits.splice(i,1); set('recruits', st.recruits); renderRecruits(); renderDashboard(); }
+
+function addBV(){
+  const d=$('#bDate').value, n=($('#bName').value||'').trim(), it=($('#bItem').value||'').trim(), v=Number($('#bAmt').value||0);
+  if(!n || !v){ alert('請輸入顧客姓名與 BV'); return; }
+  st.bvs.push({date:d,name:n,item:it,bv:v}); set('bvs', st.bvs);
+  $('#bName').value=''; $('#bItem').value=''; $('#bAmt').value=''; renderBV(); renderDashboard();
+}
+function delBV(i){ st.bvs.splice(i,1); set('bvs', st.bvs); renderBV(); renderDashboard(); }
+
+function addIBV(){
+  const d=$('#iDate').value, n=($('#iName').value||'').trim(), it=($('#iItem').value||'').trim(), v=Number($('#iAmt').value||0);
+  if(!n || !v){ alert('請輸入姓名與 IBV'); return; }
+  st.ibvs.push({date:d,name:n,item:it,ibv:v}); set('ibvs', st.ibvs);
+  $('#iName').value=''; $('#iItem').value=''; $('#iAmt').value=''; renderIBV(); renderDashboard();
+}
+function delIBV(i){ st.ibvs.splice(i,1); set('ibvs', st.ibvs); renderIBV(); renderDashboard(); }
+
+$('#rAdd').addEventListener('click', addRecruit);
+$('#bAdd').addEventListener('click', addBV);
+$('#iAdd').addEventListener('click', addIBV);
+
+// ---- CSV Export ----
+function csvEscape(s){ s=String(s); return s.includes(',')? `"${s.replace(/"/g,'""')}"`: s; }
+function exportCSV(arr, headers, name){
+  const lines=[headers.join(',')];
+  arr.forEach((row,i)=>{
+    const vals = headers.map(h=>{
+      const key = ({'#':'#','日期':'date','姓名':'name','顧客姓名':'name','品項':'item','BV':'bv','IBV':'ibv'})[h] || h;
+      if(h==='#') return i+1;
+      return csvEscape(row[key] ?? '');
+    });
+    lines.push(vals.join(','));
+  });
+  const blob = new Blob([lines.join('\n')],{type:'text/csv;charset=utf-8'});
+  const a = document.createElement('a'); a.href=URL.createObjectURL(blob); a.download=name; a.click();
+}
+$('#rExpCSV').addEventListener('click', ()=> exportCSV(st.recruits, ['#','日期','姓名'], 'recruits.csv'));
+$('#bExpCSV').addEventListener('click', ()=> exportCSV(st.bvs, ['#','日期','顧客姓名','品項','BV'], 'bv.csv'));
+$('#iExpCSV').addEventListener('click', ()=> exportCSV(st.ibvs, ['#','日期','姓名','品項','IBV'], 'ibv.csv'));
+
+// ---- JSON import/export ----
+$('#btnExportJSON').addEventListener('click', ()=>{
+  const blob = new Blob([JSON.stringify(st,null,2)],{type:'application/json'});
+  const a = document.createElement('a'); a.href=URL.createObjectURL(blob); a.download='ufo_backup.json'; a.click();
+});
+$('#impJSON').addEventListener('change', async e=>{
+  const file = e.target.files[0]; if(!file) return;
+  const text = await file.text();
+  try{
+    const data = JSON.parse(text);
+    if(data.recruits && data.bvs && data.ibvs){
+      Object.assign(st, data);
+      // persist
+      set('qStart', st.qStart); set('qEnd', st.qEnd);
+      set('goalBV', st.goalBV); set('goalIBV', st.goalIBV);
+      set('recruits', st.recruits); set('bvs', st.bvs); set('ibvs', st.ibvs);
+      renderAll();
+    }else{
+      alert('JSON 格式不正確');
+    }
+  }catch{ alert('JSON 解析失敗'); }
+  e.target.value='';
+});
+
+// ---- Clear all ----
+$('#btnClear').addEventListener('click', ()=>{
+  if(!confirm('確定要清空全部資料？此動作無法還原')) return;
+  st.recruits=[]; st.bvs=[]; st.ibvs=[];
+  set('recruits', st.recruits); set('bvs', st.bvs); set('ibvs', st.ibvs);
+  renderAll();
+});
+
+// ---- Install (PWA) ----
+let deferredPrompt=null;
+window.addEventListener('beforeinstallprompt', (e)=>{ e.preventDefault(); deferredPrompt=e; });
+$('#btnInstall').addEventListener('click', async ()=>{
+  if(deferredPrompt){ deferredPrompt.prompt(); deferredPrompt=null; }
+  else alert('若要加入主畫面：請用瀏覽器「分享」→「加入主畫面」。');
+});
+
+// ---- Renderers ----
+function withinQuarter(dateStr){
+  if(!st.qStart || !st.qEnd) return true;
+  return dateStr >= st.qStart && dateStr <= st.qEnd;
+}
+function renderDashboard(){
+  // 招募
+  const rCnt = st.recruits.filter(x=>withinQuarter(x.date)).length;
+  $('#k1').textContent = `${rCnt} / 1 人`;
+  $('#b1').style.width = Math.min(100, Math.round(rCnt/1*100))+'%';
+  $('#rCount').textContent = rCnt;
+  $('#rStatus').textContent = rCnt>=1? '已達標':'未達標';
+  $('#rStatus').className = rCnt>=1? 'pill ok':'pill warn';
+
+  // BV
+  const bvSum = st.bvs.filter(x=>withinQuarter(x.date)).reduce((s,x)=>s+(Number(x.bv)||0),0);
+  const bGoal = Number(st.goalBV)||1500;
+  const bRemain = Math.max(0, bGoal - bvSum);
+  $('#k2').textContent = `${nf.format(bvSum)} / ${bGoal} BV（差 ${nf.format(bRemain)}）`;
+  $('#b2').style.width = Math.min(100, Math.round(bvSum/bGoal*100))+'%';
+  $('#bSumV').textContent = nf.format(bvSum);
+  $('#bRemainV').textContent = nf.format(bRemain);
+  $('#bGoalV').textContent = nf.format(bGoal);
+  $('#bBar').style.width = Math.min(100, Math.round(bvSum/bGoal*100))+'%';
+  $('#bStatus').textContent = bvSum>=bGoal? '已達標':'未達標';
+  $('#bStatus').className = bvSum>=bGoal? 'v ok':'v warn';
+
+  // IBV
+  const ibvSum = st.ibvs.filter(x=>withinQuarter(x.date)).reduce((s,x)=>s+(Number(x.ibv)||0),0);
+  const iGoal = Number(st.goalIBV)||300;
+  const iRemain = Math.max(0, iGoal - ibvSum);
+  $('#k3').textContent = `${nf.format(ibvSum)} / ${iGoal} IBV（差 ${nf.format(iRemain)}）`;
+  $('#b3').style.width = Math.min(100, Math.round(ibvSum/iGoal*100))+'%';
+  $('#iSumV').textContent = nf.format(ibvSum);
+  $('#iRemainV').textContent = nf.format(iRemain);
+  $('#iGoalV').textContent = nf.format(iGoal);
+  $('#iBar').style.width = Math.min(100, Math.round(ibvSum/iGoal*100))+'%';
+  $('#iStatus').textContent = ibvSum>=iGoal? '已達標':'未達標';
+  $('#iStatus').className = ibvSum>=iGoal? 'v ok':'v warn';
+
+  // Quarter label
+  $('#qLabel').textContent = (st.qStart && st.qEnd)? `${st.qStart} ～ ${st.qEnd}` : '（未設定）';
+}
+function renderRecruits(){
+  const body = $('#rBody'); body.innerHTML='';
+  st.recruits
+    .map((x,i)=>({...x,_i:i}))
+    .filter(x=>withinQuarter(x.date))
+    .sort((a,b)=>a.date.localeCompare(b.date))
+    .forEach((x,idx)=>{
+      const tr=document.createElement('tr');
+      tr.innerHTML = `<td>${idx+1}</td><td>${x.date}</td><td>${x.name}</td>
+        <td><button class="del" onclick="delRecruit(${x._i})">🗑 刪除</button></td>`;
+      body.appendChild(tr);
+    });
+}
+function renderBV(){
+  const body = $('#bBody'); body.innerHTML='';
+  st.bvs
+    .map((x,i)=>({...x,_i:i}))
+    .filter(x=>withinQuarter(x.date))
+    .sort((a,b)=>a.date.localeCompare(b.date))
+    .forEach((x,idx)=>{
+      const tr=document.createElement('tr');
+      tr.innerHTML = `<td>${idx+1}</td><td>${x.date}</td><td>${x.name}</td><td>${x.item||''}</td><td>${nf.format(x.bv)}</td>
+        <td><button class="del" onclick="delBV(${x._i})">🗑 刪除</button></td>`;
+      body.appendChild(tr);
+    });
+}
+function renderIBV(){
+  const body = $('#iBody'); body.innerHTML='';
+  st.ibvs
+    .map((x,i)=>({...x,_i:i}))
+    .filter(x=>withinQuarter(x.date))
+    .sort((a,b)=>a.date.localeCompare(b.date))
+    .forEach((x,idx)=>{
+      const tr=document.createElement('tr');
+      tr.innerHTML = `<td>${idx+1}</td><td>${x.date}</td><td>${x.name}</td><td>${x.item||''}</td><td>${nf.format(x.ibv)}</td>
+        <td><button class="del" onclick="delIBV(${x._i})">🗑 刪除</button></td>`;
+      body.appendChild(tr);
+    });
+}
+
+function renderAll(){ 
+  // fill settings inputs
+  $('#qStart').value = st.qStart || '';
+  $('#qEnd').value = st.qEnd || '';
+  $('#goalBV').value = st.goalBV || 1500;
+  $('#goalIBV').value = st.goalIBV || 300;
+  renderRecruits(); renderBV(); renderIBV(); renderDashboard(); 
+}
+renderAll();
+
+// Expose delete handlers
+window.delRecruit = delRecruit;
+window.delBV = delBV;
+window.delIBV = delIBV;
+
+// Service Worker
+if('serviceWorker' in navigator){
+  navigator.serviceWorker.register('./service-worker.js');
+}
+</script>
+</body>
+</html>
