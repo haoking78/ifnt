@@ -1,10 +1,10 @@
 {
-  "name": "無限翻轉人生 · UFO 進度",
+  "name": "無限翻轉人生",
   "short_name": "IFNT",
   "start_url": "./index.html",
   "display": "standalone",
-  "background_color": "#0a2640",
-  "theme_color": "#1a73e8",
+  "background_color": "#0A0A0A",
+  "theme_color": "#1E88E5",
   "icons": [
     {
       "src": "app_icon_192.png",
