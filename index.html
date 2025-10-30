@@ -1,618 +1,199 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="zh-Hant">
 <head>
-<meta charset="utf-8"/>
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"/>
-<title>IFNT · 無限翻轉人生｜每季 UFO 三項（城市下拉＋姓名/族群記憶整合版）</title>
-<!-- 不快取：每次重新整理都抓新檔 -->
-<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
-<meta http-equiv="Pragma" content="no-cache" />
-<meta http-equiv="Expires" content="0" />
-<link rel="manifest" href="manifest.json">
-<meta name="theme-color" content="#0a2540">
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>無限翻轉人生 · IFNT</title>
+<link rel="manifest" href="manifest.json" />
+<meta name="theme-color" content="#0a2640" />
 <style>
-:root{
-  --bg:#071a2c; --card:#0b2744; --muted:#98b2c6; --text:#e9f4ff; --line:rgba(255,255,255,.12);
-  --accent:#42b6ff; --accent2:#8ad4ff; --ok:#20d88a; --warn:#ffd166; --danger:#ff6b6b;
-  --radius:14px; --gap:14px;
-}
-*{box-sizing:border-box}
-html,body{height:100%}
-body{
-  margin:0;
-  background:
-    radial-gradient(800px 500px at 90% -10%, rgba(66,182,255,.18), transparent 60%),
-    radial-gradient(600px 400px at -10% 110%, rgba(138,212,255,.12), transparent 55%),
-    var(--bg);
-  color:var(--text);
-  font-family: Inter, ui-sans-serif, -apple-system, "Noto Sans TC", "Microsoft JhengHei", "PingFang TC", Segoe UI, Roboto, Helvetica, Arial, sans-serif;
-}
-header{position:sticky;top:0;z-index:20;padding:10px 12px;background:linear-gradient(180deg, rgba(10,37,64,.96), rgba(10,37,64,.7));backdrop-filter: blur(8px); border-bottom:1px solid var(--line)}
-.hbar{max-width:1100px;margin:auto;display:flex;gap:10px;align-items:center}
-.logo{width:34px;height:34px;border-radius:10px;background:linear-gradient(135deg,var(--accent),var(--accent2));display:grid;place-items:center;color:#002037;font-weight:900;font-size:12px;letter-spacing:1px}
-.ttl{font-weight:800;letter-spacing:.3px;font-size:16px}
-.toolbar{margin-left:auto;display:none;gap:8px;flex-wrap:wrap}
-.btn{background:linear-gradient(180deg,rgba(255,255,255,.06),rgba(255,255,255,.02));border:1px solid var(--line);color:var(--text);padding:8px 12px;border-radius:10px;cursor:pointer;font-weight:700}
-.btn:hover{border-color:rgba(255,255,255,.25)}
-.m-actions{margin-left:auto}
-.iconbtn{width:36px;height:36px;border-radius:10px;border:1px solid var(--line);background:linear-gradient(180deg,rgba(255,255,255,.06),rgba(255,255,255,.02));color:var(--text);display:grid;place-items:center;font-size:20px}
-.sheet{position:fixed;inset:auto 0 0 0;background:rgba(7,26,44,.7);backdrop-filter:blur(4px);display:none}
-.sheet.open{display:block}
-.sheet .box{background:linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.02));border-top:1px solid var(--line);padding:12px;display:grid;gap:10px}
-.sheet .box .row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-main{max-width:900px;margin:12px auto;padding:0 12px;display:grid;gap:var(--gap)}
-.card{background:linear-gradient(180deg, rgba(255,255,255,.03), rgba(255,255,255,.01)); border:1px solid var(--line); border-radius:var(--radius); padding:14px; box-shadow:0 10px 30px rgba(0,0,0,.25)}
-h2{margin:0 0 8px; color:#cfe9ff; letter-spacing:.2px; font-size:16px}
-.note{color:var(--muted); font-size:12px}
-.grid{display:grid;grid-template-columns:1fr;gap:10px}
-.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
-input,select,textarea{background:#0e3154;border:1px solid var(--line);color:var(--text);border-radius:10px;padding:10px 12px;width:100%;font-size:15px}
-textarea.textarea-big{min-height:120px; resize:vertical}
-.pill{display:inline-block;border:1px solid var(--line);padding:6px 10px;border-radius:999px;font-size:13px}
-.ok{color:var(--ok)} .loss{color:var(--danger)} .warn{color:var(--warn)}
-.kpis{display:grid;grid-template-columns:1fr;gap:10px}
-.kpi{background:#0b2b4b;border:1px solid var(--line);border-radius:12px;padding:12px}
-.kpi h3{margin:0 0 6px; font-size:12px; color:#a5c6db}
-.kpi .v{font-size:20px; font-weight:800}
-.progress{height:12px;border-radius:999px;background:#0c2f52;border:1px solid var(--line);overflow:hidden}
-.progress>i{display:block;height:100%;background:linear-gradient(90deg,var(--accent),var(--accent2));width:0%}
-table{width:100%;border-collapse:collapse;margin-top:8px;font-size:14px}
-th,td{border-bottom:1px solid rgba(255,255,255,.08);padding:10px 6px;text-align:center}
-th{color:#aac7db}
-.del{cursor:pointer;border:1px solid rgba(255,255,255,.18);border-radius:8px;padding:4px 10px;background:rgba(255,255,255,.06)}
-.del:hover{background:rgba(255,0,0,.18)}
-.footer{opacity:.7;text-align:center;padding:18px 0 24px;font-size:12px}
-.badge{display:inline-block;padding:2px 8px;border:1px solid var(--line);border-radius:999px;font-size:12px;color:#cfe9ff}
-.subtle{color:var(--muted);font-size:12px}
-.accordion{background:#0b2b4b;border:1px solid var(--line);border-radius:12px;padding:12px;margin-top:10px}
-.timeline{list-style:none;margin:8px 0 0;padding:0}
-.timeline li{border-left:2px solid rgba(255,255,255,.15);padding:6px 10px;margin-left:6px;margin-bottom:6px}
-.timeline .date{color:#aac7db;font-size:12px;margin-right:8px}
-@media (min-width:768px){
-  .toolbar{display:flex}
-  .m-actions{display:none}
-  .grid.grid-3{grid-template-columns:repeat(3,1fr)}
-  .kpis{grid-template-columns:repeat(4,1fr)}
-}
+:root{--bg:#0a2640;--text:#eaf6ff;--ring:rgba(255,255,255,.12);--muted:#9fc5ff;--accent:#3B82F6;--good:#12c48b;--bad:#ef4444}
+*{box-sizing:border-box}html,body{height:100%}body{margin:0;font-family:system-ui,-apple-system,'Segoe UI','PingFang TC','Noto Sans TC',Roboto,'Microsoft JhengHei',sans-serif;color:var(--text);background:linear-gradient(180deg,#0f2a4a,#071a2c)}
+.wrap{max-width:980px;margin:0 auto;padding:18px 14px 56px}
+header{display:flex;align-items:center;gap:10px;margin-bottom:12px}
+header img{width:32px;height:32px;border-radius:8px;object-fit:contain;background:#fff}
+h1{margin:0;font-size:20px}.muted{color:var(--muted);font-size:12px}
+.card{background:rgba(255,255,255,.05);border:1px solid var(--ring);border-radius:12px;padding:12px;margin:12px 0}
+summary{cursor:pointer;list-style:none}summary::-webkit-details-marker{display:none}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:8px}@media(max-width:720px){.row{grid-template-columns:1fr}}
+.row-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px}@media(max-width:720px){.row-3{grid-template-columns:1fr}}
+.input,select,textarea{width:100%;padding:10px;border-radius:10px;border:1px solid var(--ring);background:rgba(255,255,255,.06);color:var(--text);outline:none}
+textarea{min-height:100px;resize:vertical}
+.actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}
+.btn{appearance:none;border:none;border-radius:10px;padding:10px 12px;font-weight:700;color:#fff;cursor:pointer;background:linear-gradient(180deg,var(--accent),#2a6de7)}
+.btn-ghost{appearance:none;border:1px solid var(--ring);border-radius:10px;padding:10px 12px;background:rgba(255,255,255,.06);color:#fff;cursor:pointer}
+table{width:100%;border-collapse:collapse;margin-top:8px;background:rgba(255,255,255,.03);border:1px solid var(--ring);border-radius:12px;overflow:hidden}
+th,td{padding:10px 8px;border-bottom:1px solid rgba(255,255,255,.06);font-size:14px}th{color:#cfe7ff;text-align:left;background:rgba(255,255,255,.05)}tr:last-child td{border-bottom:none}
+.progress{height:12px;background:rgba(255,255,255,.08);border-radius:999px;overflow:hidden;border:1px solid var(--ring)}.progress>div{height:100%;background:linear-gradient(90deg,#3B82F6,#69c7ff);width:0%}
+.kpi{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;margin-top:8px}@media(max-width:720px){.kpi{grid-template-columns:repeat(2,1fr)}}
+.kpi .box{background:rgba(255,255,255,.06);border:1px solid var(--ring);border-radius:10px;padding:10px}.kpi .t{font-size:12px;color:#bcdcff}.kpi .v{font-size:20px;font-weight:800}
 </style>
 </head>
 <body>
-<header>
-  <div class="hbar">
-    <div class="logo">IFNT</div>
-    <div class="ttl">IFNT · 無限翻轉人生｜每季 UFO 三項</div>
-    <div class="toolbar">
-      <button class="btn" id="btnExportJSON">匯出 JSON</button>
-      <label class="btn">匯入 JSON<input type="file" id="impJSON" accept="application/json,.json" hidden></label>
-      <button class="btn" id="btnClear">清空全部</button>
-      <button class="btn" id="btnInstall">加入主畫面</button>
-      <button class="btn" id="btnSettings">設定</button>
-    </div>
-    <div class="m-actions">
-      <button class="iconbtn" id="openSheet">⋮</button>
-    </div>
+<div class="wrap">
+  <header>
+    <img src="app_icon_192.png" alt="IFNT">
+    <div><h1>無限翻轉人生 · IFNT</h1><div class="muted">CSV 版 v2</div></div>
+  </header>
+
+  <!-- 工具列：一次匯出四檔 -->
+  <div class="actions">
+    <button class="btn" id="backupAll">匯出全部 CSV（4 檔）</button>
   </div>
-</header>
-<div class="sheet" id="sheet">
-  <div class="box">
+
+  <!-- ① 親自招募 1 人 -->
+  <details class="card" open>
+    <summary><b>① 親自招募 1 人</b></summary>
     <div class="row">
-      <button class="btn" id="mExp">匯出 JSON</button>
-      <label class="btn">匯入 JSON<input type="file" id="mImp" accept="application/json,.json" hidden></label>
-      <button class="btn" id="mClear">清空全部</button>
-      <button class="btn" id="mInstall">加入主畫面</button>
-      <button class="btn" id="mSettings">設定</button>
+      <input id="r_date" type="date" class="input">
+      <input id="r_name" type="text" class="input" placeholder="招募姓名（必填）">
     </div>
-    <button class="btn" id="closeSheet">關閉</button>
-  </div>
-</div>
-<main>
-  <section class="card">
-    <h2>季度總覽（Dashboard）</h2>
-    <div class="kpis">
-      <div class="kpi"><h3>親自招募（目標：1人）</h3><div class="v" id="k1">0 / 1 人</div><div class="progress"><i id="b1"></i></div></div>
-      <div class="kpi"><h3>零售＋自購（目標：1500 BV）</h3><div class="v" id="k2">0 / 1500 BV（差 1500）</div><div class="progress"><i id="b2"></i></div></div>
-      <div class="kpi"><h3>家庭轉移消費（目標：300 IBV）</h3><div class="v" id="k3">0 / 300 IBV（差 300）</div><div class="progress"><i id="b3"></i></div></div>
-      <div class="kpi"><h3>季度設定</h3><div class="v" id="qLabel">（未設定）</div></div>
+    <div class="actions">
+      <button class="btn" id="r_add">新增</button>
+      <button class="btn-ghost" id="r_exp">匯出 CSV</button>
+      <label class="btn-ghost">匯入 CSV<input id="r_imp" type="file" accept=".csv" hidden></label>
+      <button class="btn-ghost" id="r_del">刪除勾選</button>
     </div>
-  </section>
-  <section class="card">
-    <h2>① 親自招募 1 人</h2>
-    <div class="grid">
-      <input id="rDate" type="date">
-      <input id="rName" type="text" placeholder="招募姓名（必填）">
-      <button class="btn" id="rAdd">新增招募</button>
+    <div class="kpi">
+      <div class="box"><div class="t">累計人數</div><div class="v" id="r_cnt">0</div></div>
+      <div class="box"><div class="t">目標</div><div class="v">1</div></div>
+      <div class="box"><div class="t">狀態</div><div class="v" id="r_state">未達標</div></div>
+      <div class="box"><div class="t">進度</div><div class="progress"><div id="r_bar"></div></div></div>
     </div>
-    <div class="row" style="margin-top:6px">
-      <span class="pill">累計人數：<span id="rCount">0</span>／目標 1</span>
-      <span class="pill" id="rStatus">未達標</span>
-      <div style="margin-left:auto"></div>
-      <button class="btn" id="rExpCSV">匯出CSV</button>
-    </div>
-    <table>
-      <thead><tr><th>#</th><th>日期</th><th>姓名</th><th>操作</th></tr></thead>
-      <tbody id="rBody"></tbody>
-    </table>
-  </section>
-  <section class="card">
-    <h2>② 零售＋自購 1500 BV</h2>
-    <div class="grid">
-      <input id="bDate" type="date">
-      <input id="bName" type="text" placeholder="顧客姓名（必填）">
-      <input id="bItem" type="text" placeholder="零售品項（自行輸入）">
-      <input id="bAmt" type="number" placeholder="零售 BV（必填）">
-      <button class="btn" id="bAdd">新增 BV</button>
-    </div>
-    <div class="kpis" style="margin-top:8px">
-      <div class="kpi"><h3>累計 BV</h3><div class="v" id="bSumV">0</div><div class="progress"><i id="bBar"></i></div></div>
-      <div class="kpi"><h3>距離目標</h3><div class="v" id="bRemainV">1500</div></div>
-      <div class="kpi"><h3>目標</h3><div class="v" id="bGoalV">1500</div></div>
-      <div class="kpi"><h3>狀態</h3><div class="v" id="bStatus">未達標</div></div>
-    </div>
-    <div class="row" style="margin-top:6px;justify-content:end">
-      <button class="btn" id="bExpCSV">匯出CSV</button>
-    </div>
-    <table>
-      <thead><tr><th>#</th><th>日期</th><th>顧客姓名</th><th>品項</th><th>BV</th><th>操作</th></tr></thead>
-      <tbody id="bBody"></tbody>
-    </table>
-  </section>
-  <section class="card">
-    <h2>③ 家庭轉移消費 300 IBV</h2>
-    <div class="grid">
-      <input id="iDate" type="date">
-      <input id="iName" type="text" placeholder="顧客姓名或自己（必填）">
-      <input id="iItem" type="text" placeholder="消費品項（自行輸入）">
-      <input id="iAmt" type="number" placeholder="IBV（必填）">
-      <button class="btn" id="iAdd">新增 IBV</button>
-    </div>
-    <div class="kpis" style="margin-top:8px">
-      <div class="kpi"><h3>累計 IBV</h3><div class="v" id="iSumV">0</div><div class="progress"><i id="iBar"></i></div></div>
-      <div class="kpi"><h3>距離目標</h3><div class="v" id="iRemainV">300</div></div>
-      <div class="kpi"><h3>目標</h3><div class="v" id="iGoalV">300</div></div>
-      <div class="kpi"><h3>狀態</h3><div class="v" id="iStatus">未達標</div></div>
-    </div>
-    <div class="row" style="margin-top:6px;justify-content:end">
-      <button class="btn" id="iExpCSV">匯出CSV</button>
-    </div>
-    <table>
-      <thead><tr><th>#</th><th>日期</th><th>姓名</th><th>品項</th><th>IBV</th><th>操作</th></tr></thead>
-      <tbody id="iBody"></tbody>
-    </table>
-  </section>
+    <table id="r_tbl"><thead><tr><th><input type="checkbox" id="r_all"></th><th>#</th><th>日期</th><th>姓名</th></tr></thead><tbody></tbody></table>
+  </details>
 
-  <section class="card" id="mod-312">
-    <h2>④ 312 互動名單</h2>
-    <div class="grid">
-      <select id="cCity">
-        <option value="" selected>選擇居住縣市（必選）</option>
-        <option>台北市</option><option>新北市</option><option>桃園市</option><option>台中市</option><option>台南市</option><option>高雄市</option>
-        <option>基隆市</option><option>新竹市</option><option>嘉義市</option>
-        <option>新竹縣</option><option>苗栗縣</option><option>彰化縣</option><option>南投縣</option><option>雲林縣</option><option>嘉義縣</option>
-        <option>屏東縣</option><option>宜蘭縣</option><option>花蓮縣</option><option>台東縣</option>
-        <option>澎湖縣</option><option>金門縣</option><option>連江縣</option>
+  <!-- ② 零售+自購 1500BV -->
+  <details class="card">
+    <summary><b>② 零售＋自購 1500 BV</b></summary>
+    <div class="row-3">
+      <input id="b_date" type="date" class="input">
+      <input id="b_cust" class="input" placeholder="顧客姓名（必填）">
+      <input id="b_item" class="input" placeholder="零售品項（自行輸入）">
+      <input id="b_bv" type="number" inputmode="decimal" class="input" placeholder="BV（必填）">
+    </div>
+    <div class="actions">
+      <button class="btn" id="b_add">新增</button>
+      <button class="btn-ghost" id="b_exp">匯出 CSV</button>
+      <label class="btn-ghost">匯入 CSV<input id="b_imp" type="file" accept=".csv" hidden></label>
+      <button class="btn-ghost" id="b_del">刪除勾選</button>
+    </div>
+    <div class="kpi">
+      <div class="box"><div class="t">累計 BV</div><div class="v" id="b_sum">0</div></div>
+      <div class="box"><div class="t">目標</div><div class="v">1500</div></div>
+      <div class="box"><div class="t">尚差</div><div class="v" id="b_left">1500</div></div>
+      <div class="box"><div class="t">進度</div><div class="progress"><div id="b_bar"></div></div></div>
+    </div>
+    <table id="b_tbl"><thead><tr><th><input type="checkbox" id="b_all"></th><th>#</th><th>日期</th><th>顧客</th><th>品項</th><th>BV</th></tr></thead><tbody></tbody></table>
+  </details>
+
+  <!-- ③ 家庭轉移消費 300IBV -->
+  <details class="card">
+    <summary><b>③ 家庭轉移消費 300 IBV</b></summary>
+    <div class="row-3">
+      <input id="i_date" type="date" class="input">
+      <input id="i_name" class="input" placeholder="顧客或自己（必填）">
+      <input id="i_item" class="input" placeholder="消費品項（自行輸入）">
+      <input id="i_ibv" type="number" inputmode="decimal" class="input" placeholder="IBV（必填）">
+    </div>
+    <div class="actions">
+      <button class="btn" id="i_add">新增</button>
+      <button class="btn-ghost" id="i_exp">匯出 CSV</button>
+      <label class="btn-ghost">匯入 CSV<input id="i_imp" type="file" accept=".csv" hidden></label>
+      <button class="btn-ghost" id="i_del">刪除勾選</button>
+    </div>
+    <div class="kpi">
+      <div class="box"><div class="t">累計 IBV</div><div class="v" id="i_sum">0</div></div>
+      <div class="box"><div class="t">目標</div><div class="v">300</div></div>
+      <div class="box"><div class="t">尚差</div><div class="v" id="i_left">300</div></div>
+      <div class="box"><div class="t">進度</div><div class="progress"><div id="i_bar"></div></div></div>
+    </div>
+    <table id="i_tbl"><thead><tr><th><input type="checkbox" id="i_all"></th><th>#</th><th>日期</th><th>姓名</th><th>品項</th><th>IBV</th></tr></thead><tbody></tbody></table>
+  </details>
+
+  <!-- ④ 312 互動名單 -->
+  <details class="card">
+    <summary><b>④ 312 互動名單</b></summary>
+    <div class="row-3">
+      <select id="c_city" class="input">
+        <option value="">居住縣市</option>
+        <option>臺北市</option><option>新北市</option><option>基隆市</option><option>桃園市</option>
+        <option>新竹市</option><option>新竹縣</option><option>苗栗縣</option><option>臺中市</option>
+        <option>彰化縣</option><option>南投縣</option><option>雲林縣</option><option>嘉義市</option>
+        <option>嘉義縣</option><option>臺南市</option><option>高雄市</option><option>屏東縣</option>
+        <option>宜蘭縣</option><option>花蓮縣</option><option>臺東縣</option><option>澎湖縣</option>
+        <option>金門縣</option><option>連江縣</option>
       </select>
+      <input id="c_name" class="input" placeholder="姓名">
+      <input id="c_group" class="input" placeholder="族群">
+      <input id="c_date" type="date" class="input">
+    </div>
+    <div class="row" style="margin-top:8px"><textarea id="c_note" placeholder="互動情況 / 備註"></textarea></div>
+    <div class="actions">
+      <button class="btn" id="c_add">新增</button>
+      <button class="btn-ghost" id="c_exp">匯出 CSV</button>
+      <label class="btn-ghost">匯入 CSV<input id="c_imp" type="file" accept=".csv" hidden></label>
+      <button class="btn-ghost" id="c_del">刪除勾選</button>
+    </div>
+    <table id="c_tbl"><thead><tr><th><input type="checkbox" id="c_all"></th><th>#</th><th>日期</th><th>縣市</th><th>姓名</th><th>族群</th><th>備註</th></tr></thead><tbody></tbody></table>
+  </details>
 
-      <input id="cName" type="text" list="nameList" placeholder="姓名（可選清單或自行輸入，必填）">
-      <datalist id="nameList"></datalist>
+  <p class="muted">資料保存在本機（localStorage）。可用「匯出 CSV」備份與跨裝置轉移。</p>
+</div>
 
-      <input id="cGroup" type="text" list="groupList" placeholder="族群（可選清單或自行輸入，必填）">
-      <datalist id="groupList"></datalist>
-
-      <input id="cDate" type="date">
-      <textarea id="cNote" class="textarea-big" placeholder="互動情況 / 備註（可輸入很多內容）"></textarea>
-      <button class="btn" id="cAdd">新增 / 累加互動</button>
-    </div>
-    <div class="kpis" style="margin-top:8px">
-      <div class="kpi"><h3>人員數</h3><div class="v" id="cPeople">0</div></div>
-      <div class="kpi"><h3>互動總次數</h3><div class="v" id="cLogs">0</div></div>
-      <div class="kpi"><h3>最近互動日</h3><div class="v" id="cLast">—</div></div>
-      <div class="kpi"><h3>工具</h3><div class="v">
-        <button class="btn" id="cExpPeople">匯出人員CSV</button>
-        <button class="btn" id="cExpLogs">匯出互動CSV</button>
-      </div></div>
-    </div>
-    <table>
-      <thead>
-        <tr>
-          <th>#</th><th>縣市</th><th>姓名</th><th>族群</th><th>最近互動日</th><th>次數</th><th>操作</th>
-        </tr>
-      </thead>
-      <tbody id="cBody"></tbody>
-    </table>
-    <div id="cDetail" class="accordion" hidden>
-      <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
-        <span class="badge" id="dCity"></span>
-        <span class="badge" id="dName"></span>
-        <span class="badge" id="dGroup"></span>
-        <span class="subtle" id="dCount"></span>
-        <div style="margin-left:auto"></div>
-        <button class="btn" id="dClose">收起詳情</button>
-      </div>
-      <div class="grid" style="margin-top:10px">
-        <input id="dDate" type="date">
-        <textarea id="dNote" class="textarea-big" placeholder="新增這位的互動紀錄…"></textarea>
-        <button class="btn" id="dAdd">新增這位的互動紀錄</button>
-      </div>
-      <ul class="timeline" id="dTimeline"></ul>
-    </div>
-  </section>
-
-  <section class="card" id="settings" hidden>
-    <h2>設定</h2>
-    <div class="grid">
-      <div><div class="note">季度開始</div><input id="qStart" type="date"></div>
-      <div><div class="note">季度結束</div><input id="qEnd" type="date"></div>
-      <div><div class="note">零售＋自購 目標 BV</div><input id="goalBV" type="number" placeholder="預設 1500"></div>
-      <div><div class="note">家庭轉移 目標 IBV</div><input id="goalIBV" type="number" placeholder="預設 300"></div>
-    </div>
-    <div class="row" style="margin-top:8px;justify-content:end">
-      <button class="btn" id="apply">儲存並套用</button>
-      <button class="btn" id="collapse">收起</button>
-    </div>
-    <div class="note" style="margin-top:6px">所有資料僅儲存在此裝置（localStorage）。</div>
-  </section>
-  <div class="footer">© IFNT · 無限翻轉人生 · PWA · 行動版最佳化</div>
-</main>
 <script>
-const $ = s=>document.querySelector(s);
-const nf = new Intl.NumberFormat('zh-Hant',{maximumFractionDigits:0});
-const todayStr = () => new Date().toISOString().slice(0,10);
-function get(k,d){ try{const v=localStorage.getItem(k); return v? JSON.parse(v): d;}catch(e){return d;} }
-function set(k,v){ try{localStorage.setItem(k, JSON.stringify(v));}catch(e){} }
+// ===== CSV helpers =====
+function toCSV(rows, headers){const esc=v=>'"'+String(v??'').replace(/"/g,'""')+'"';const head=headers.map(esc).join(',');const body=rows.map(r=>headers.map(h=>esc(r[h])).join(',')).join('\n');return head+'\n'+body;}
+function downloadCSV(filename,csv){const blob=new Blob([csv],{type:'text/csv;charset=utf-8;'});const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download=filename;a.click();URL.revokeObjectURL(url);}
+function parseCSV(file,headers,onRows){const fr=new FileReader();fr.onload=e=>{const lines=e.target.result.replace(/\r/g,'').split('\n').filter(Boolean);if(!lines.length)return alert('CSV 為空');const head=lines[0].split(',').map(s=>s.replace(/^"|"$/g,'').trim());if(head.join(',')!==headers.join(','))return alert('欄位不符：\n期待：'+headers.join(','));const rows=lines.slice(1).map(line=>{const cols=line.match(/(".*?"|[^,]+)(?=,|$)/g).map(s=>s.replace(/^"|"$/g,'').replace(/""/g,'"'));const obj={};headers.forEach((h,i)=>obj[h]=cols[i]??'');return obj;});onRows(rows);};fr.readAsText(file,'utf-8');}
 
-const st = {
-  qStart: get('qStart',''),
-  qEnd: get('qEnd',''),
-  goalBV: get('goalBV',1500),
-  goalIBV: get('goalIBV',300),
-  recruits: get('recruits',[]),
-  bvs: get('bvs',[]),
-  ibvs: get('ibvs',[]),
-  contacts: get('contacts', []),
-  nameOpts: get('nameOpts', []),
-  groupOpts: get('groupOpts', [])
+// ===== storage =====
+const K={r:'ifnt_ufo1',b:'ifnt_ufo2',i:'ifnt_ufo3',c:'ifnt_312'};
+const get=k=>JSON.parse(localStorage.getItem(k)||'[]');const set=(k,v)=>localStorage.setItem(k,JSON.stringify(v));
+const fmt=n=>(Number(n)||0).toLocaleString();
+
+// ===== renderers =====
+function renderRecruit(){const arr=get(K.r).sort((a,b)=>(b.date||'').localeCompare(a.date||''));const tb=document.querySelector('#r_tbl tbody');tb.innerHTML='';arr.forEach((r,i)=>{const tr=document.createElement('tr');tr.innerHTML=`<td><input type="checkbox" data-i="${i}"></td><td>${i+1}</td><td>${r.date||''}</td><td>${r.recruit_name||''}</td>`;tb.appendChild(tr);});document.getElementById('r_cnt').textContent=arr.length;document.getElementById('r_state').textContent=arr.length>=1?'已達標':'未達標';document.getElementById('r_bar').style.width=Math.min(100,arr.length*100)+'%';}
+function renderBV(){const arr=get(K.b).sort((a,b)=>(b.date||'').localeCompare(a.date||''));const tb=document.querySelector('#b_tbl tbody');tb.innerHTML='';arr.forEach((r,i)=>{const tr=document.createElement('tr');tr.innerHTML=`<td><input type="checkbox" data-i="${i}"></td><td>${i+1}</td><td>${r.date||''}</td><td>${r.customer_name||''}</td><td>${r.item_name||''}</td><td>${fmt(r.bv)}</td>`;tb.appendChild(tr);});const s=arr.reduce((t,x)=>t+(+x.bv||0),0);document.getElementById('b_sum').textContent=fmt(s);document.getElementById('b_left').textContent=fmt(Math.max(0,1500-s));document.getElementById('b_bar').style.width=Math.min(100,(s/1500)*100)+'%';document.getElementById('b_bar').title=s+'/1500';}
+function renderIBV(){const arr=get(K.i).sort((a,b)=>(b.date||'').localeCompare(a.date||''));const tb=document.querySelector('#i_tbl tbody');tb.innerHTML='';arr.forEach((r,i)=>{const tr=document.createElement('tr');tr.innerHTML=`<td><input type="checkbox" data-i="${i}"></td><td>${i+1}</td><td>${r.date||''}</td><td>${r.person_or_self||''}</td><td>${r.item_name||''}</td><td>${fmt(r.ibv)}</td>`;tb.appendChild(tr);});const s=arr.reduce((t,x)=>t+(+x.ibv||0),0);document.getElementById('i_sum').textContent=fmt(s);document.getElementById('i_left').textContent=fmt(Math.max(0,300-s));document.getElementById('i_bar').style.width=Math.min(100,(s/300)*100)+'%';document.getElementById('i_bar').title=s+'/300';}
+function renderCRM(){const arr=get(K.c).sort((a,b)=>(b.date||'').localeCompare(a.date||''));const tb=document.querySelector('#c_tbl tbody');tb.innerHTML='';arr.forEach((r,i)=>{const tr=document.createElement('tr');tr.innerHTML=`<td><input type="checkbox" data-i="${i}"></td><td>${i+1}</td><td>${r.date||''}</td><td>${r.city||''}</td><td>${r.name||''}</td><td>${r.group||''}</td><td>${(r.note||'').replace(/\n/g,'<br>')}</td>`;tb.appendChild(tr);});}
+
+// ===== add handlers =====
+document.getElementById('r_add').onclick=()=>{const date=document.getElementById('r_date').value||new Date().toISOString().slice(0,10);const name=document.getElementById('r_name').value.trim();if(!name)return alert('請輸入招募姓名');const arr=get(K.r);arr.push({date,recruit_name:name});set(K.r,arr);document.getElementById('r_name').value='';renderRecruit();};
+document.getElementById('b_add').onclick=()=>{const date=document.getElementById('b_date').value||new Date().toISOString().slice(0,10);const customer=document.getElementById('b_cust').value.trim();const item=document.getElementById('b_item').value.trim();const bv=Number(document.getElementById('b_bv').value);if(!customer||!bv)return alert('請輸入顧客姓名與 BV');const arr=get(K.b);arr.push({date,customer_name:customer,item_name:item,bv});set(K.b,arr);document.getElementById('b_cust').value='';document.getElementById('b_item').value='';document.getElementById('b_bv').value='';renderBV();};
+document.getElementById('i_add').onclick=()=>{const date=document.getElementById('i_date').value||new Date().toISOString().slice(0,10);const name=document.getElementById('i_name').value.trim();const item=document.getElementById('i_item').value.trim();const ibv=Number(document.getElementById('i_ibv').value);if(!name||!ibv)return alert('請輸入姓名與 IBV');const arr=get(K.i);arr.push({date,person_or_self:name,item_name:item,ibv});set(K.i,arr);document.getElementById('i_name').value='';document.getElementById('i_item').value='';document.getElementById('i_ibv').value='';renderIBV();};
+document.getElementById('c_add').onclick=()=>{const date=document.getElementById('c_date').value||new Date().toISOString().slice(0,10);const city=document.getElementById('c_city').value;const name=document.getElementById('c_name').value.trim();const group=document.getElementById('c_group').value.trim();const note=document.getElementById('c_note').value.trim();if(!name)return alert('請輸入姓名');const arr=get(K.c);arr.push({date,city,name,group,note});set(K.c,arr);document.getElementById('c_note').value='';renderCRM();};
+
+// ===== export/import per section =====
+const H1=['date','recruit_name'];document.getElementById('r_exp').onclick=()=>downloadCSV('ufo1_recruits.csv',toCSV(get(K.r),H1));document.getElementById('r_imp').onchange=e=>{const f=e.target.files[0];if(!f)return;parseCSV(f,H1,rows=>{set(K.r,rows);renderRecruit();alert('UFO1 匯入完成')});e.target.value='';};
+const H2=['date','customer_name','item_name','bv'];document.getElementById('b_exp').onclick=()=>downloadCSV('ufo2_bv.csv',toCSV(get(K.b),H2));document.getElementById('b_imp').onchange=e=>{const f=e.target.files[0];if(!f)return;parseCSV(f,H2,rows=>{set(K.b,rows);renderBV();alert('UFO2 匯入完成')});e.target.value='';};
+const H3=['date','person_or_self','item_name','ibv'];document.getElementById('i_exp').onclick=()=>downloadCSV('ufo3_ibv.csv',toCSV(get(K.i),H3));document.getElementById('i_imp').onchange=e=>{const f=e.target.files[0];if(!f)return;parseCSV(f,H3,rows=>{set(K.i,rows);renderIBV();alert('UFO3 匯入完成')});e.target.value='';};
+const HC=['date','city','name','group','note'];document.getElementById('c_exp').onclick=()=>downloadCSV('crm312.csv',toCSV(get(K.c),HC));document.getElementById('c_imp').onchange=e=>{const f=e.target.files[0];if(!f)return;parseCSV(f,HC,rows=>{set(K.c,rows);renderCRM();alert('312 互動名單匯入完成')});e.target.value='';};
+
+// ===== bulk delete =====
+function delChecked(key, sel){const arr=get(key);const idx=[...document.querySelectorAll(sel+' tbody input[type=checkbox]:checked')].map(el=>+el.dataset.i);if(!idx.length)return alert('請先勾選要刪除的項目');const kept=arr.filter((_,i)=>!idx.includes(i));set(key,kept);(sel.includes('#r_')?renderRecruit:sel.includes('#b_')?renderBV:sel.includes('#i_')?renderIBV:renderCRM)();}
+document.getElementById('r_del').onclick=()=>delChecked(K.r,'#r_tbl');
+document.getElementById('b_del').onclick=()=>delChecked(K.b,'#b_tbl');
+document.getElementById('i_del').onclick=()=>delChecked(K.i,'#i_tbl');
+document.getElementById('c_del').onclick=()=>delChecked(K.c,'#c_tbl');
+
+// ===== select all =====
+document.getElementById('r_all').onchange=e=>document.querySelectorAll('#r_tbl tbody input[type=checkbox]').forEach(c=>c.checked=e.target.checked);
+document.getElementById('b_all').onchange=e=>document.querySelectorAll('#b_tbl tbody input[type=checkbox]').forEach(c=>c.checked=e.target.checked);
+document.getElementById('i_all').onchange=e=>document.querySelectorAll('#i_tbl tbody input[type=checkbox]').forEach(c=>c.checked=e.target.checked);
+document.getElementById('c_all').onchange=e=>document.querySelectorAll('#c_tbl tbody input[type=checkbox]').forEach(c=>c.checked=e.target.checked);
+
+// ===== export all (download 4 CSVs) =====
+document.getElementById('backupAll').onclick=()=>{
+  document.getElementById('r_exp').click();
+  document.getElementById('b_exp').click();
+  document.getElementById('i_exp').click();
+  document.getElementById('c_exp').click();
+  alert('已下載 4 份 CSV（ufo1_recruits, ufo2_bv, ufo3_ibv, crm312）');
 };
 
-['rDate','bDate','iDate','cDate','dDate'].forEach(id=>{ const el=$('#'+id); if(el) el.value=todayStr(); });
-
-function refreshDatalists(){
-  const nameList = $('#nameList'); const groupList = $('#groupList');
-  if(nameList) nameList.innerHTML = st.nameOpts.map(n=> `<option value="${n}"></option>`).join('');
-  if(groupList) groupList.innerHTML = st.groupOpts.map(g=> `<option value="${g}"></option>`).join('');
-}
-function maybeAddToOptions(name, group){
-  if(name){
-    if(!st.nameOpts.includes(name)){ st.nameOpts.unshift(name); }
-    if(st.nameOpts.length>200) st.nameOpts.pop();
-    set('nameOpts', st.nameOpts);
-  }
-  if(group){
-    if(!st.groupOpts.includes(group)){ st.groupOpts.unshift(group); }
-    if(st.groupOpts.length>200) st.groupOpts.pop();
-    set('groupOpts', st.groupOpts);
-  }
-  refreshDatalists();
-}
-
-function openSettings(){ $('#settings').hidden=false; }
-function closeSettings(){ $('#settings').hidden=true; }
-$('#btnSettings').addEventListener('click', openSettings);
-const mSettings = $('#mSettings'); if(mSettings){ mSettings.addEventListener('click', ()=>{closeSheet(); openSettings();}); }
-$('#collapse').addEventListener('click', closeSettings);
-$('#apply').addEventListener('click', ()=>{
-  st.qStart = $('#qStart').value || st.qStart;
-  st.qEnd = $('#qEnd').value || st.qEnd;
-  st.goalBV = Number($('#goalBV').value || st.goalBV || 1500);
-  st.goalIBV = Number($('#goalIBV').value || st.goalIBV || 300);
-  set('qStart', st.qStart); set('qEnd', st.qEnd);
-  set('goalBV', st.goalBV); set('goalIBV', st.goalIBV);
-  renderAll(); alert('設定已儲存');
-});
-
-function addRecruit(){
-  const d=$('#rDate').value, n=($('#rName').value||'').trim();
-  if(!n){ alert('請輸入招募姓名'); return; }
-  st.recruits.push({date:d,name:n}); set('recruits', st.recruits);
-  $('#rName').value=''; renderRecruits(); renderDashboard();
-}
-function delRecruit(i){ st.recruits.splice(i,1); set('recruits', st.recruits); renderRecruits(); renderDashboard(); }
-
-function addBV(){
-  const d=$('#bDate').value, n=($('#bName').value||'').trim(), it=($('#bItem').value||'').trim(), v=Number($('#bAmt').value||0);
-  if(!n || !v){ alert('請輸入顧客姓名與 BV'); return; }
-  st.bvs.push({date:d,name:n,item:it,bv:v}); set('bvs', st.bvs);
-  $('#bName').value=''; $('#bItem').value=''; $('#bAmt').value=''; renderBV(); renderDashboard();
-}
-function delBV(i){ st.bvs.splice(i,1); set('bvs', st.bvs); renderBV(); renderDashboard(); }
-
-function addIBV(){
-  const d=$('#iDate').value, n=($('#iName').value||'').trim(), it=($('#iItem').value||'').trim(), v=Number($('#iAmt').value||0);
-  if(!n || !v){ alert('請輸入姓名與 IBV'); return; }
-  st.ibvs.push({date:d,name:n,item:it,ibv:v}); set('ibvs', st.ibvs);
-  $('#iName').value=''; $('#iItem').value=''; $('#iAmt').value=''; renderIBV(); renderDashboard();
-}
-function delIBV(i){ st.ibvs.splice(i,1); set('ibvs', st.ibvs); renderIBV(); renderDashboard(); }
-
-$('#rAdd').addEventListener('click', addRecruit);
-$('#bAdd').addEventListener('click', addBV);
-$('#iAdd').addEventListener('click', addIBV);
-
-function csvEscape(s){ s=String(s); return s.includes(',')? `"${s.replace(/"/g,'""')}"`: s; }
-function exportCSV(arr, headers, name){
-  const lines=[headers.join(',')];
-  arr.forEach((row,i)=>{
-    const map={ '#':'#','日期':'date','姓名':'name','顧客姓名':'name','品項':'item','BV':'bv','IBV':'ibv' };
-    const vals=headers.map(h=> h==='#' ? i+1 : csvEscape(row[map[h]||h] ?? ''));
-    lines.push(vals.join(','));
-  });
-  const blob=new Blob([lines.join('\n')],{type:'text/csv;charset=utf-8'});
-  const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download=name; a.click();
-}
-$('#rExpCSV').addEventListener('click', ()=> exportCSV(st.recruits, ['#','日期','姓名'], 'recruits.csv'));
-$('#bExpCSV').addEventListener('click', ()=> exportCSV(st.bvs, ['#','日期','顧客姓名','品項','BV'], 'bv.csv'));
-$('#iExpCSV').addEventListener('click', ()=> exportCSV(st.ibvs, ['#','日期','姓名','品項','IBV'], 'ibv.csv'));
-
-function exportJSON(){ const blob=new Blob([JSON.stringify(st,null,2)],{type:'application/json'}); const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download='ufo_backup.json'; a.click(); }
-$('#btnExportJSON').addEventListener('click', exportJSON);
-const mExp = $('#mExp'); if(mExp){ mExp.addEventListener('click', ()=>{ exportJSON(); closeSheet(); }); }
-
-async function importJSON(file){
-  const text=await file.text();
-  try{
-    const data=JSON.parse(text);
-    if(typeof data==='object'){
-      Object.assign(st,data);
-      set('qStart', st.qStart); set('qEnd', st.qEnd); set('goalBV', st.goalBV); set('goalIBV', st.goalIBV);
-      set('recruits', st.recruits); set('bvs', st.bvs); set('ibvs', st.ibvs); set('contacts', st.contacts||[]);
-      set('nameOpts', st.nameOpts||[]); set('groupOpts', st.groupOpts||[]);
-      refreshDatalists();
-      renderAll();
-    }else alert('JSON 格式不正確');
-  }catch{ alert('JSON 解析失敗'); }
-}
-$('#impJSON').addEventListener('change', e=>{ if(e.target.files[0]) importJSON(e.target.files[0]); e.target.value=''; });
-const mImp = $('#mImp'); if(mImp){ mImp.addEventListener('change', e=>{ if(e.target.files[0]) importJSON(e.target.files[0]); e.target.value=''; closeSheet(); }); }
-
-function clearAll(){
-  if(!confirm('確定要清空全部資料？此動作無法還原')) return;
-  st.recruits=[]; st.bvs=[]; st.ibvs=[]; st.contacts=[]; st.nameOpts=[]; st.groupOpts=[];
-  set('recruits', st.recruits); set('bvs', st.bvs); set('ibvs', st.ibvs); set('contacts', st.contacts);
-  set('nameOpts', st.nameOpts); set('groupOpts', st.groupOpts);
-  refreshDatalists();
-  renderAll();
-}
-$('#btnClear').addEventListener('click', clearAll);
-const mClear = $('#mClear'); if(mClear){ mClear.addEventListener('click', ()=>{ clearAll(); closeSheet(); }); }
-
-let deferredPrompt=null;
-window.addEventListener('beforeinstallprompt', e=>{ e.preventDefault(); deferredPrompt=e; });
-function doInstall(){
-  if(deferredPrompt){ deferredPrompt.prompt(); deferredPrompt=null; }
-  else alert('若要加入主畫面：請用瀏覽器「分享」→「加入主畫面」。');
-}
-$('#btnInstall').addEventListener('click', doInstall);
-const mInstall = $('#mInstall'); if(mInstall){ mInstall.addEventListener('click', ()=>{ doInstall(); closeSheet(); }); }
-
-const sheet=$('#sheet');
-function openSheet(){ sheet.classList.add('open'); }
-function closeSheet(){ sheet.classList.remove('open'); }
-$('#openSheet').addEventListener('click', openSheet);
-$('#closeSheet').addEventListener('click', closeSheet);
-sheet.addEventListener('click', e=>{ if(e.target===sheet) closeSheet(); });
-
-function withinQuarter(dateStr){
-  if(!st.qStart || !st.qEnd) return true;
-  return dateStr >= st.qStart && dateStr <= st.qEnd;
-}
-function renderDashboard(){
-  const rCnt=st.recruits.filter(x=>withinQuarter(x.date)).length;
-  $('#k1').textContent=`${rCnt} / 1 人`; $('#b1').style.width=Math.min(100,Math.round(rCnt*100))+'%';
-  $('#rCount').textContent=rCnt; $('#rStatus').textContent=rCnt>=1?'已達標':'未達標';
-  $('#rStatus').className='pill '+(rCnt>=1?'ok':'warn');
-
-  const bvSum=st.bvs.filter(x=>withinQuarter(x.date)).reduce((s,x)=>s+(+x.bv||0),0);
-  const bGoal=+st.goalBV||1500, bRemain=Math.max(0,bGoal-bvSum);
-  $('#k2').textContent=`${nf.format(bvSum)} / ${bGoal} BV（差 ${nf.format(bRemain)}）`; $('#b2').style.width=Math.min(100,Math.round(bvSum/bGoal*100))+'%';
-  $('#bSumV').textContent=nf.format(bvSum); $('#bRemainV').textContent=nf.format(bRemain); $('#bGoalV').textContent=nf.format(bGoal);
-  $('#bBar').style.width=Math.min(100,Math.round(bvSum/bGoal*100))+'%'; $('#bStatus').textContent=bvSum>=bGoal?'已達標':'未達標'; $('#bStatus').className='v '+(bvSum>=bGoal?'ok':'warn');
-
-  const ibvSum=st.ibvs.filter(x=>withinQuarter(x.date)).reduce((s,x)=>s+(+x.ibv||0),0);
-  const iGoal=+st.goalIBV||300, iRemain=Math.max(0,iGoal-ibvSum);
-  $('#k3').textContent=`${nf.format(ibvSum)} / ${iGoal} IBV（差 ${nf.format(iRemain)}）`; $('#b3').style.width=Math.min(100,Math.round(ibvSum/iGoal*100))+'%';
-  $('#iSumV').textContent=nf.format(ibvSum); $('#iRemainV').textContent=nf.format(iRemain); $('#iGoalV').textContent=nf.format(iGoal);
-  $('#iBar').style.width=Math.min(100,Math.round(ibvSum/iGoal*100))+'%'; $('#iStatus').textContent=iGoal<=ibvSum?'已達標':'未達標'; $('#iStatus').className='v '+(ibvSum>=iGoal?'ok':'warn');
-
-  $('#qLabel').textContent=(st.qStart&&st.qEnd)? `${st.qStart} ～ ${st.qEnd}` : '（未設定）';
-}
-function renderRecruits(){
-  const body=$('#rBody'); body.innerHTML='';
-  st.recruits.map((x,i)=>({...x,_i:i})).filter(x=>withinQuarter(x.date)).sort((a,b)=>a.date.localeCompare(b.date)).forEach((x,idx)=>{
-    const tr=document.createElement('tr');
-    tr.innerHTML=`<td>${idx+1}</td><td>${x.date}</td><td>${x.name}</td><td><button class="del" onclick="delRecruit(${x._i})">🗑 刪除</button></td>`;
-    body.appendChild(tr);
-  });
-}
-function renderBV(){
-  const body=$('#bBody'); body.innerHTML='';
-  st.bvs.map((x,i)=>({...x,_i:i})).filter(x=>withinQuarter(x.date)).sort((a,b)=>a.date.localeCompare(b.date)).forEach((x,idx)=>{
-    const tr=document.createElement('tr');
-    tr.innerHTML=`<td>${idx+1}</td><td>${x.date}</td><td>${x.name}</td><td>${x.item||''}</td><td>${nf.format(x.bv)}</td><td><button class="del" onclick="delBV(${x._i})">🗑 刪除</button></td>`;
-    body.appendChild(tr);
-  });
-}
-function renderIBV(){
-  const body=$('#iBody'); body.innerHTML='';
-  st.ibvs.map((x,i)=>({...x,_i:i})).filter(x=>withinQuarter(x.date)).sort((a,b)=>a.date.localeCompare(b.date)).forEach((x,idx)=>{
-    const tr=document.createElement('tr');
-    tr.innerHTML=`<td>${idx+1}</td><td>${x.date}</td><td>${x.name}</td><td>${x.item||''}</td><td>${nf.format(x.ibv)}</td><td><button class="del" onclick="delIBV(${x._i})">🗑 刪除</button></td>`;
-    body.appendChild(tr);
-  });
-}
-
-function openContact(id){
-  const c = st.contacts.find(x=> x.id===id);
-  if(!c) return;
-  $('#cDetail').hidden = false;
-  $('#cDetail').dataset.id = id;
-  $('#dCity').textContent = c.city;
-  $('#dName').textContent = c.name;
-  $('#dGroup').textContent = c.group;
-  $('#dCount').textContent = `共 ${c.logs.length} 次互動`;
-  $('#dDate').value = todayStr();
-  $('#dNote').value = '';
-  renderTimeline(c);
-  document.getElementById('cDetail').scrollIntoView({behavior:'smooth', block:'start'});
-}
-function closeDetail(){ $('#cDetail').hidden = true; $('#cDetail').dataset.id=''; }
-const dClose = $('#dClose'); if(dClose){ dClose.addEventListener('click', closeDetail); }
-
-function delContact(id){
-  if(!confirm('確定刪除此人及其所有互動紀錄？')) return;
-  st.contacts = st.contacts.filter(x=> x.id!==id);
-  set('contacts', st.contacts);
-  renderContacts();
-}
-
-function delLog(id, idx){
-  const c = st.contacts.find(x=> x.id===id);
-  if(!c) return;
-  c.logs.splice(idx,1);
-  set('contacts', st.contacts);
-  if($('#cDetail').dataset.id===id){ renderTimeline(c); }
-  renderContacts();
-}
-
-function renderTimeline(c){
-  const ul = $('#dTimeline'); ul.innerHTML='';
-  const items = [...c.logs].sort((a,b)=> (a.date||'').localeCompare(b.date||''));
-  items.forEach((log, i)=>{
-    const li = document.createElement('li');
-    li.innerHTML = `
-      <span class="date">${log.date||''}</span>
-      <span>${(log.note||'').replace(/</g,'&lt;')}</span>
-      <div style="margin-top:6px">
-        <button class="del" onclick="delLog('${c.id.replace(/'/g,"\\'")}', ${i})">刪除此則</button>
-      </div>
-    `;
-    ul.appendChild(li);
-  });
-}
-
-function addLogToCurrent(){
-  const id = $('#cDetail').dataset.id;
-  const c = st.contacts.find(x=> x.id===id);
-  if(!c) return;
-  const date = $('#dDate').value || todayStr();
-  const note = ($('#dNote').value||'').trim();
-  if(!note){ alert('請輸入互動情況'); return; }
-  c.logs.push({date, note});
-  set('contacts', st.contacts);
-  $('#dNote').value='';
-  renderTimeline(c);
-  renderContacts();
-}
-const dAdd = $('#dAdd'); if(dAdd){ dAdd.addEventListener('click', addLogToCurrent); }
-
-function addOrAppendContact(){
-  const city = $('#cCity').value;
-  const name = ($('#cName').value||'').trim();
-  const group = ($('#cGroup').value||'').trim();
-  const date = $('#cDate').value || todayStr();
-  const note = ($('#cNote').value||'').trim();
-  if(!city){ alert('請選擇縣市'); return; }
-  if(!name || !group){ alert('請填寫姓名與族群'); return; }
-  if(!note){ alert('請輸入互動情況'); return; }
-  const key = `${city}__${name}__${group}`;
-  let c = st.contacts.find(x=> x.id === key);
-  if(!c){ c = { id:key, city, name, group, logs:[] }; st.contacts.push(c); }
-  c.logs.push({date, note});
-  set('contacts', st.contacts);
-
-  // 記住姓名/族群選項
-  maybeAddToOptions(name, group);
-
-  $('#cNote').value='';
-  renderContacts();
-}
-const cAdd = $('#cAdd'); if(cAdd){ cAdd.addEventListener('click', addOrAppendContact); }
-
-function exportPeopleCSV(){
-  const lines = ['縣市,姓名,族群,互動次數,最近互動日'];
-  st.contacts.forEach(c=>{
-    const last = c.logs.length? [...c.logs].sort((a,b)=> (a.date||'').localeCompare(b.date||'')) .slice(-1)[0].date : '';
-    lines.push([c.city,c.name,c.group,c.logs.length,last].map(v=>{
-      v=String(v??''); return v.includes(',')? `"${v.replace(/"/g,'""')}"`: v;
-    }).join(','));
-  });
-  const blob = new Blob([lines.join('\n')],{type:'text/csv;charset=utf-8'});
-  const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download='contacts.csv'; a.click();
-}
-function exportLogsCSV(){
-  const lines = ['縣市,姓名,族群,日期,互動內容'];
-  st.contacts.forEach(c=>{
-    c.logs.forEach(log=>{
-      const row = [c.city,c.name,c.group,log.date||'',log.note||''].map(v=>{
-        v=String(v??''); return v.includes(',')? `"${v.replace(/"/g,'""')}"`: v;
-      }).join(',');
-      lines.push(row);
-    });
-  });
-  const blob = new Blob([lines.join('\n')],{type:'text/csv;charset=utf-8'});
-  const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download='contact_logs.csv'; a.click();
-}
-const cExpPeople = $('#cExpPeople'); if(cExpPeople){ cExpPeople.addEventListener('click', exportPeopleCSV); }
-const cExpLogs = $('#cExpLogs'); if(cExpLogs){ cExpLogs.addEventListener('click', exportLogsCSV); }
-
-function renderContacts(){
-  const body = $('#cBody'); body.innerHTML='';
-  const list = st.contacts.map(c=>{
-    const sorted = [...c.logs].sort((a,b)=> (a.date||'').localeCompare(b.date||''));
-    const last = sorted.length? sorted[sorted.length-1].date : '';
-    return { ...c, count:c.logs.length, last };
-  }).sort((a,b)=> (b.last||'').localeCompare(a.last||''));
-  const totalLogs = st.contacts.reduce((s,c)=> s + c.logs.length, 0);
-  const latest = list.length? (list[0].last || '—') : '—';
-  $('#cPeople').textContent = list.length;
-  $('#cLogs').textContent = totalLogs;
-  $('#cLast').textContent = latest;
-  list.forEach((c, idx)=>{
-    const tr = document.createElement('tr');
-    tr.innerHTML = `
-      <td>${idx+1}</td>
-      <td>${c.city}</td>
-      <td>${c.name}</td>
-      <td>${c.group}</td>
-      <td>${c.last || '—'}</td>
-      <td>${c.count}</td>
-      <td>
-        <button class="btn" onclick="openContact('${c.id.replace(/'/g,"\\'")}')">查看</button>
-        <button class="del" onclick="delContact('${c.id.replace(/'/g,"\\'")}')">刪除</button>
-      </td>
-    `;
-    body.appendChild(tr);
-  });
-  const cur = $('#cDetail').dataset.id;
-  if(cur && !st.contacts.find(x=>x.id===cur)){ closeDetail(); }
-}
-
-function renderAll(){
-  $('#qStart').value=st.qStart||''; $('#qEnd').value=st.qEnd||''; $('#goalBV').value=st.goalBV||1500; $('#goalIBV').value=st.goalIBV||300;
-  refreshDatalists();
-  renderRecruits(); renderBV(); renderIBV(); renderDashboard(); renderContacts();
-}
-renderAll();
-
-// 註冊 SW：固定網址也自動更新
-if('serviceWorker' in navigator){ navigator.serviceWorker.register('./service-worker.js'); }
-
-// Sheet 行動面板
-window.delRecruit=delRecruit; window.delBV=delBV; window.delIBV=delIBV;
-window.openContact=openContact; window.delContact=delContact; window.delLog=delLog;
-const sheetEl=document.getElementById('sheet');
-function openSheet(){ sheetEl.classList.add('open'); }
-function closeSheet(){ sheetEl.classList.remove('open'); }
-document.getElementById('openSheet').addEventListener('click', openSheet);
-document.getElementById('closeSheet').addEventListener('click', closeSheet);
+// initial
+renderRecruit();renderBV();renderIBV();renderCRM();
 </script>
 </body>
 </html>
