@@ -2,65 +2,119 @@
 <html lang="zh-Hant">
 <head>
 <meta charset="utf-8"/>
-<meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>IFNT · 無限翻轉人生（穩定版）</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"/>
+<title>IFNT · 無限翻轉人生｜每季 UFO 三項（城市下拉＋姓名/族群記憶整合版）</title>
+<!-- 不快取：每次重新整理都抓新檔 -->
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+<meta http-equiv="Pragma" content="no-cache" />
+<meta http-equiv="Expires" content="0" />
+<link rel="manifest" href="manifest.json">
 <meta name="theme-color" content="#0a2540">
 <style>
-:root{ --bg:#071a2c; --card:#0b2744; --text:#e9f4ff; --line:rgba(255,255,255,.12); --accent:#42b6ff; --ok:#20d88a; --warn:#ffd166; }
-*{box-sizing:border-box} body{margin:0;background:var(--bg);color:var(--text);font-family:ui-sans-serif,system-ui,"Noto Sans TC",sans-serif}
-header{position:sticky;top:0;z-index:10;padding:10px 12px;border-bottom:1px solid var(--line);background:linear-gradient(180deg,rgba(10,37,64,.96),rgba(10,37,64,.7))}
-.hbar{max-width:900px;margin:auto;display:flex;gap:10px;align-items:center}
-.logo{width:34px;height:34px;border-radius:10px;background:linear-gradient(135deg,#42b6ff,#8ad4ff);display:grid;place-items:center;color:#002037;font-weight:900;font-size:12px}
-.ttl{font-weight:800}
-main{max-width:900px;margin:12px auto;padding:0 12px;display:grid;gap:12px}
-.card{background:linear-gradient(180deg,rgba(255,255,255,.03),rgba(255,255,255,.01));border:1px solid var(--line);border-radius:12px;padding:12px}
-h2{margin:0 0 8px}
-.grid{display:grid;grid-template-columns:1fr;gap:8px}
-.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
-input,textarea{width:100%;padding:10px;border-radius:10px;border:1px solid var(--line);background:#0e3154;color:var(--text)}
-.btn{padding:10px 12px;border-radius:10px;border:1px solid var(--line);background:linear-gradient(180deg,rgba(255,255,255,.06),rgba(255,255,255,.02));color:var(--text);cursor:pointer}
-table{width:100%;border-collapse:collapse;margin-top:6px} th,td{padding:8px 6px;border-bottom:1px solid rgba(255,255,255,.1);text-align:center}
-.pill{display:inline-block;border:1px solid var(--line);border-radius:999px;padding:4px 10px}
-.ok{color:var(--ok)} .warn{color:var(--warn)}
-.progress{height:10px;background:#0c2f52;border:1px solid var(--line);border-radius:999px;overflow:hidden}
-.progress>i{display:block;height:100%;background:linear-gradient(90deg,#42b6ff,#8ad4ff);width:0%}
-.badge{display:inline-block;padding:2px 8px;border:1px solid var(--line);border-radius:999px}
-.accordion{background:#0b2b4b;border:1px solid var(--line);border-radius:12px;padding:10px;margin-top:8px}
+:root{
+  --bg:#071a2c; --card:#0b2744; --muted:#98b2c6; --text:#e9f4ff; --line:rgba(255,255,255,.12);
+  --accent:#42b6ff; --accent2:#8ad4ff; --ok:#20d88a; --warn:#ffd166; --danger:#ff6b6b;
+  --radius:14px; --gap:14px;
+}
+*{box-sizing:border-box}
+html,body{height:100%}
+body{
+  margin:0;
+  background:
+    radial-gradient(800px 500px at 90% -10%, rgba(66,182,255,.18), transparent 60%),
+    radial-gradient(600px 400px at -10% 110%, rgba(138,212,255,.12), transparent 55%),
+    var(--bg);
+  color:var(--text);
+  font-family: Inter, ui-sans-serif, -apple-system, "Noto Sans TC", "Microsoft JhengHei", "PingFang TC", Segoe UI, Roboto, Helvetica, Arial, sans-serif;
+}
+header{position:sticky;top:0;z-index:20;padding:10px 12px;background:linear-gradient(180deg, rgba(10,37,64,.96), rgba(10,37,64,.7));backdrop-filter: blur(8px); border-bottom:1px solid var(--line)}
+.hbar{max-width:1100px;margin:auto;display:flex;gap:10px;align-items:center}
+.logo{width:34px;height:34px;border-radius:10px;background:linear-gradient(135deg,var(--accent),var(--accent2));display:grid;place-items:center;color:#002037;font-weight:900;font-size:12px;letter-spacing:1px}
+.ttl{font-weight:800;letter-spacing:.3px;font-size:16px}
+.toolbar{margin-left:auto;display:none;gap:8px;flex-wrap:wrap}
+.btn{background:linear-gradient(180deg,rgba(255,255,255,.06),rgba(255,255,255,.02));border:1px solid var(--line);color:var(--text);padding:8px 12px;border-radius:10px;cursor:pointer;font-weight:700}
+.btn:hover{border-color:rgba(255,255,255,.25)}
+.m-actions{margin-left:auto}
+.iconbtn{width:36px;height:36px;border-radius:10px;border:1px solid var(--line);background:linear-gradient(180deg,rgba(255,255,255,.06),rgba(255,255,255,.02));color:var(--text);display:grid;place-items:center;font-size:20px}
+.sheet{position:fixed;inset:auto 0 0 0;background:rgba(7,26,44,.7);backdrop-filter:blur(4px);display:none}
+.sheet.open{display:block}
+.sheet .box{background:linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.02));border-top:1px solid var(--line);padding:12px;display:grid;gap:10px}
+.sheet .box .row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+main{max-width:900px;margin:12px auto;padding:0 12px;display:grid;gap:var(--gap)}
+.card{background:linear-gradient(180deg, rgba(255,255,255,.03), rgba(255,255,255,.01)); border:1px solid var(--line); border-radius:var(--radius); padding:14px; box-shadow:0 10px 30px rgba(0,0,0,.25)}
+h2{margin:0 0 8px; color:#cfe9ff; letter-spacing:.2px; font-size:16px}
+.note{color:var(--muted); font-size:12px}
+.grid{display:grid;grid-template-columns:1fr;gap:10px}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+input,select,textarea{background:#0e3154;border:1px solid var(--line);color:var(--text);border-radius:10px;padding:10px 12px;width:100%;font-size:15px}
+textarea.textarea-big{min-height:120px; resize:vertical}
+.pill{display:inline-block;border:1px solid var(--line);padding:6px 10px;border-radius:999px;font-size:13px}
+.ok{color:var(--ok)} .loss{color:var(--danger)} .warn{color:var(--warn)}
+.kpis{display:grid;grid-template-columns:1fr;gap:10px}
+.kpi{background:#0b2b4b;border:1px solid var(--line);border-radius:12px;padding:12px}
+.kpi h3{margin:0 0 6px; font-size:12px; color:#a5c6db}
+.kpi .v{font-size:20px; font-weight:800}
+.progress{height:12px;border-radius:999px;background:#0c2f52;border:1px solid var(--line);overflow:hidden}
+.progress>i{display:block;height:100%;background:linear-gradient(90deg,var(--accent),var(--accent2));width:0%}
+table{width:100%;border-collapse:collapse;margin-top:8px;font-size:14px}
+th,td{border-bottom:1px solid rgba(255,255,255,.08);padding:10px 6px;text-align:center}
+th{color:#aac7db}
+.del{cursor:pointer;border:1px solid rgba(255,255,255,.18);border-radius:8px;padding:4px 10px;background:rgba(255,255,255,.06)}
+.del:hover{background:rgba(255,0,0,.18)}
+.footer{opacity:.7;text-align:center;padding:18px 0 24px;font-size:12px}
+.badge{display:inline-block;padding:2px 8px;border:1px solid var(--line);border-radius:999px;font-size:12px;color:#cfe9ff}
+.subtle{color:var(--muted);font-size:12px}
+.accordion{background:#0b2b4b;border:1px solid var(--line);border-radius:12px;padding:12px;margin-top:10px}
 .timeline{list-style:none;margin:8px 0 0;padding:0}
 .timeline li{border-left:2px solid rgba(255,255,255,.15);padding:6px 10px;margin-left:6px;margin-bottom:6px}
-.timeline .date{opacity:.8;margin-right:6px}
+.timeline .date{color:#aac7db;font-size:12px;margin-right:8px}
+@media (min-width:768px){
+  .toolbar{display:flex}
+  .m-actions{display:none}
+  .grid.grid-3{grid-template-columns:repeat(3,1fr)}
+  .kpis{grid-template-columns:repeat(4,1fr)}
+}
 </style>
 </head>
 <body>
-<header><div class="hbar"><div class="logo">IFNT</div><div class="ttl">IFNT · 無限翻轉人生（穩定版）</div></div></header>
+<header>
+  <div class="hbar">
+    <div class="logo">IFNT</div>
+    <div class="ttl">IFNT · 無限翻轉人生｜每季 UFO 三項</div>
+    <div class="toolbar">
+      <button class="btn" id="btnExportJSON">匯出 JSON</button>
+      <label class="btn">匯入 JSON<input type="file" id="impJSON" accept="application/json,.json" hidden></label>
+      <button class="btn" id="btnClear">清空全部</button>
+      <button class="btn" id="btnInstall">加入主畫面</button>
+      <button class="btn" id="btnSettings">設定</button>
+    </div>
+    <div class="m-actions">
+      <button class="iconbtn" id="openSheet">⋮</button>
+    </div>
+  </div>
+</header>
+<div class="sheet" id="sheet">
+  <div class="box">
+    <div class="row">
+      <button class="btn" id="mExp">匯出 JSON</button>
+      <label class="btn">匯入 JSON<input type="file" id="mImp" accept="application/json,.json" hidden></label>
+      <button class="btn" id="mClear">清空全部</button>
+      <button class="btn" id="mInstall">加入主畫面</button>
+      <button class="btn" id="mSettings">設定</button>
+    </div>
+    <button class="btn" id="closeSheet">關閉</button>
+  </div>
+</div>
 <main>
   <section class="card">
-    <h2>季度總覽</h2>
-    <div class="grid">
-      <div class="row"><div class="pill">季度：<span id="qLabel">未設定</span></div></div>
-      <div class="row">
-        <div style="flex:1">
-          <div>親自招募（目標 1 人）</div><div class="progress"><i id="b1"></i></div>
-          <div id="k1" style="margin-top:4px">0 / 1 人</div>
-        </div>
-        <div style="flex:1">
-          <div>零售＋自購（目標 1500 BV）</div><div class="progress"><i id="b2"></i></div>
-          <div id="k2" style="margin-top:4px">0 / 1500（差 1500）</div>
-        </div>
-        <div style="flex:1">
-          <div>家庭轉移（目標 300 IBV）</div><div class="progress"><i id="b3"></i></div>
-          <div id="k3" style="margin-top:4px">0 / 300（差 300）</div>
-        </div>
-      </div>
-      <div class="row">
-        <input id="qStart" type="date"><input id="qEnd" type="date">
-        <input id="goalBV" type="number" placeholder="BV 目標（預設 1500）">
-        <input id="goalIBV" type="number" placeholder="IBV 目標（預設 300）">
-        <button class="btn" id="apply">儲存並套用</button>
-      </div>
+    <h2>季度總覽（Dashboard）</h2>
+    <div class="kpis">
+      <div class="kpi"><h3>親自招募（目標：1人）</h3><div class="v" id="k1">0 / 1 人</div><div class="progress"><i id="b1"></i></div></div>
+      <div class="kpi"><h3>零售＋自購（目標：1500 BV）</h3><div class="v" id="k2">0 / 1500 BV（差 1500）</div><div class="progress"><i id="b2"></i></div></div>
+      <div class="kpi"><h3>家庭轉移消費（目標：300 IBV）</h3><div class="v" id="k3">0 / 300 IBV（差 300）</div><div class="progress"><i id="b3"></i></div></div>
+      <div class="kpi"><h3>季度設定</h3><div class="v" id="qLabel">（未設定）</div></div>
     </div>
   </section>
-
   <section class="card">
     <h2>① 親自招募 1 人</h2>
     <div class="grid">
@@ -71,24 +125,39 @@ table{width:100%;border-collapse:collapse;margin-top:6px} th,td{padding:8px 6px;
     <div class="row" style="margin-top:6px">
       <span class="pill">累計人數：<span id="rCount">0</span>／目標 1</span>
       <span class="pill" id="rStatus">未達標</span>
+      <div style="margin-left:auto"></div>
+      <button class="btn" id="rExpCSV">匯出CSV</button>
     </div>
-    <table><thead><tr><th>#</th><th>日期</th><th>姓名</th><th>操作</th></tr></thead><tbody id="rBody"></tbody></table>
+    <table>
+      <thead><tr><th>#</th><th>日期</th><th>姓名</th><th>操作</th></tr></thead>
+      <tbody id="rBody"></tbody>
+    </table>
   </section>
-
   <section class="card">
     <h2>② 零售＋自購 1500 BV</h2>
     <div class="grid">
       <input id="bDate" type="date">
       <input id="bName" type="text" placeholder="顧客姓名（必填）">
       <input id="bItem" type="text" placeholder="零售品項（自行輸入）">
-      <input id="bAmt" type="number" placeholder="BV（必填）">
+      <input id="bAmt" type="number" placeholder="零售 BV（必填）">
       <button class="btn" id="bAdd">新增 BV</button>
     </div>
-    <table><thead><tr><th>#</th><th>日期</th><th>顧客姓名</th><th>品項</th><th>BV</th><th>操作</th></tr></thead><tbody id="bBody"></tbody></table>
+    <div class="kpis" style="margin-top:8px">
+      <div class="kpi"><h3>累計 BV</h3><div class="v" id="bSumV">0</div><div class="progress"><i id="bBar"></i></div></div>
+      <div class="kpi"><h3>距離目標</h3><div class="v" id="bRemainV">1500</div></div>
+      <div class="kpi"><h3>目標</h3><div class="v" id="bGoalV">1500</div></div>
+      <div class="kpi"><h3>狀態</h3><div class="v" id="bStatus">未達標</div></div>
+    </div>
+    <div class="row" style="margin-top:6px;justify-content:end">
+      <button class="btn" id="bExpCSV">匯出CSV</button>
+    </div>
+    <table>
+      <thead><tr><th>#</th><th>日期</th><th>顧客姓名</th><th>品項</th><th>BV</th><th>操作</th></tr></thead>
+      <tbody id="bBody"></tbody>
+    </table>
   </section>
-
   <section class="card">
-    <h2>③ 家庭轉移 300 IBV</h2>
+    <h2>③ 家庭轉移消費 300 IBV</h2>
     <div class="grid">
       <input id="iDate" type="date">
       <input id="iName" type="text" placeholder="顧客姓名或自己（必填）">
@@ -96,46 +165,100 @@ table{width:100%;border-collapse:collapse;margin-top:6px} th,td{padding:8px 6px;
       <input id="iAmt" type="number" placeholder="IBV（必填）">
       <button class="btn" id="iAdd">新增 IBV</button>
     </div>
-    <table><thead><tr><th>#</th><th>日期</th><th>姓名</th><th>品項</th><th>IBV</th><th>操作</th></tr></thead><tbody id="iBody"></tbody></table>
+    <div class="kpis" style="margin-top:8px">
+      <div class="kpi"><h3>累計 IBV</h3><div class="v" id="iSumV">0</div><div class="progress"><i id="iBar"></i></div></div>
+      <div class="kpi"><h3>距離目標</h3><div class="v" id="iRemainV">300</div></div>
+      <div class="kpi"><h3>目標</h3><div class="v" id="iGoalV">300</div></div>
+      <div class="kpi"><h3>狀態</h3><div class="v" id="iStatus">未達標</div></div>
+    </div>
+    <div class="row" style="margin-top:6px;justify-content:end">
+      <button class="btn" id="iExpCSV">匯出CSV</button>
+    </div>
+    <table>
+      <thead><tr><th>#</th><th>日期</th><th>姓名</th><th>品項</th><th>IBV</th><th>操作</th></tr></thead>
+      <tbody id="iBody"></tbody>
+    </table>
   </section>
 
-  <section class="card">
+  <section class="card" id="mod-312">
     <h2>④ 312 互動名單</h2>
     <div class="grid">
-      <input id="cCity" type="text" placeholder="居住縣市（必填）">
-      <input id="cName" type="text" placeholder="姓名（必填）">
-      <input id="cGroup" type="text" placeholder="族群（必填）">
+      <select id="cCity">
+        <option value="" selected>選擇居住縣市（必選）</option>
+        <option>台北市</option><option>新北市</option><option>桃園市</option><option>台中市</option><option>台南市</option><option>高雄市</option>
+        <option>基隆市</option><option>新竹市</option><option>嘉義市</option>
+        <option>新竹縣</option><option>苗栗縣</option><option>彰化縣</option><option>南投縣</option><option>雲林縣</option><option>嘉義縣</option>
+        <option>屏東縣</option><option>宜蘭縣</option><option>花蓮縣</option><option>台東縣</option>
+        <option>澎湖縣</option><option>金門縣</option><option>連江縣</option>
+      </select>
+
+      <input id="cName" type="text" list="nameList" placeholder="姓名（可選清單或自行輸入，必填）">
+      <datalist id="nameList"></datalist>
+
+      <input id="cGroup" type="text" list="groupList" placeholder="族群（可選清單或自行輸入，必填）">
+      <datalist id="groupList"></datalist>
+
       <input id="cDate" type="date">
-      <textarea id="cNote" placeholder="互動情況 / 備註（可寫很多）"></textarea>
+      <textarea id="cNote" class="textarea-big" placeholder="互動情況 / 備註（可輸入很多內容）"></textarea>
       <button class="btn" id="cAdd">新增 / 累加互動</button>
     </div>
-    <table><thead><tr><th>#</th><th>縣市</th><th>姓名</th><th>族群</th><th>最近互動日</th><th>次數</th><th>操作</th></tr></thead><tbody id="cBody"></tbody></table>
-
+    <div class="kpis" style="margin-top:8px">
+      <div class="kpi"><h3>人員數</h3><div class="v" id="cPeople">0</div></div>
+      <div class="kpi"><h3>互動總次數</h3><div class="v" id="cLogs">0</div></div>
+      <div class="kpi"><h3>最近互動日</h3><div class="v" id="cLast">—</div></div>
+      <div class="kpi"><h3>工具</h3><div class="v">
+        <button class="btn" id="cExpPeople">匯出人員CSV</button>
+        <button class="btn" id="cExpLogs">匯出互動CSV</button>
+      </div></div>
+    </div>
+    <table>
+      <thead>
+        <tr>
+          <th>#</th><th>縣市</th><th>姓名</th><th>族群</th><th>最近互動日</th><th>次數</th><th>操作</th>
+        </tr>
+      </thead>
+      <tbody id="cBody"></tbody>
+    </table>
     <div id="cDetail" class="accordion" hidden>
-      <div class="row">
+      <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
         <span class="badge" id="dCity"></span>
         <span class="badge" id="dName"></span>
         <span class="badge" id="dGroup"></span>
-        <span id="dCount"></span>
+        <span class="subtle" id="dCount"></span>
         <div style="margin-left:auto"></div>
         <button class="btn" id="dClose">收起詳情</button>
       </div>
-      <div class="grid">
+      <div class="grid" style="margin-top:10px">
         <input id="dDate" type="date">
-        <textarea id="dNote" placeholder="新增這位的互動紀錄…"></textarea>
+        <textarea id="dNote" class="textarea-big" placeholder="新增這位的互動紀錄…"></textarea>
         <button class="btn" id="dAdd">新增這位的互動紀錄</button>
       </div>
       <ul class="timeline" id="dTimeline"></ul>
     </div>
   </section>
-</main>
 
+  <section class="card" id="settings" hidden>
+    <h2>設定</h2>
+    <div class="grid">
+      <div><div class="note">季度開始</div><input id="qStart" type="date"></div>
+      <div><div class="note">季度結束</div><input id="qEnd" type="date"></div>
+      <div><div class="note">零售＋自購 目標 BV</div><input id="goalBV" type="number" placeholder="預設 1500"></div>
+      <div><div class="note">家庭轉移 目標 IBV</div><input id="goalIBV" type="number" placeholder="預設 300"></div>
+    </div>
+    <div class="row" style="margin-top:8px;justify-content:end">
+      <button class="btn" id="apply">儲存並套用</button>
+      <button class="btn" id="collapse">收起</button>
+    </div>
+    <div class="note" style="margin-top:6px">所有資料僅儲存在此裝置（localStorage）。</div>
+  </section>
+  <div class="footer">© IFNT · 無限翻轉人生 · PWA · 行動版最佳化</div>
+</main>
 <script>
-const $ = s => document.querySelector(s);
+const $ = s=>document.querySelector(s);
 const nf = new Intl.NumberFormat('zh-Hant',{maximumFractionDigits:0});
 const todayStr = () => new Date().toISOString().slice(0,10);
-function get(k,d){ try{const v=localStorage.getItem(k); return v? JSON.parse(v): d;}catch(e){ return d; } }
-function set(k,v){ try{ localStorage.setItem(k, JSON.stringify(v)); }catch(e){} }
+function get(k,d){ try{const v=localStorage.getItem(k); return v? JSON.parse(v): d;}catch(e){return d;} }
+function set(k,v){ try{localStorage.setItem(k, JSON.stringify(v));}catch(e){} }
 
 const st = {
   qStart: get('qStart',''),
@@ -145,76 +268,49 @@ const st = {
   recruits: get('recruits',[]),
   bvs: get('bvs',[]),
   ibvs: get('ibvs',[]),
-  contacts: get('contacts',[])
+  contacts: get('contacts', []),
+  nameOpts: get('nameOpts', []),
+  groupOpts: get('groupOpts', [])
 };
 
-['rDate','bDate','iDate','cDate','dDate'].forEach(id => { const el = $('#'+id); if(el) el.value = todayStr(); });
+['rDate','bDate','iDate','cDate','dDate'].forEach(id=>{ const el=$('#'+id); if(el) el.value=todayStr(); });
 
-$('#apply').addEventListener('click', () => {
+function refreshDatalists(){
+  const nameList = $('#nameList'); const groupList = $('#groupList');
+  if(nameList) nameList.innerHTML = st.nameOpts.map(n=> `<option value="${n}"></option>`).join('');
+  if(groupList) groupList.innerHTML = st.groupOpts.map(g=> `<option value="${g}"></option>`).join('');
+}
+function maybeAddToOptions(name, group){
+  if(name){
+    if(!st.nameOpts.includes(name)){ st.nameOpts.unshift(name); }
+    if(st.nameOpts.length>200) st.nameOpts.pop();
+    set('nameOpts', st.nameOpts);
+  }
+  if(group){
+    if(!st.groupOpts.includes(group)){ st.groupOpts.unshift(group); }
+    if(st.groupOpts.length>200) st.groupOpts.pop();
+    set('groupOpts', st.groupOpts);
+  }
+  refreshDatalists();
+}
+
+function openSettings(){ $('#settings').hidden=false; }
+function closeSettings(){ $('#settings').hidden=true; }
+$('#btnSettings').addEventListener('click', openSettings);
+const mSettings = $('#mSettings'); if(mSettings){ mSettings.addEventListener('click', ()=>{closeSheet(); openSettings();}); }
+$('#collapse').addEventListener('click', closeSettings);
+$('#apply').addEventListener('click', ()=>{
   st.qStart = $('#qStart').value || st.qStart;
-  st.qEnd   = $('#qEnd').value   || st.qEnd;
+  st.qEnd = $('#qEnd').value || st.qEnd;
   st.goalBV = Number($('#goalBV').value || st.goalBV || 1500);
-  st.goalIBV= Number($('#goalIBV').value|| st.goalIBV|| 300);
-  set('qStart',st.qStart); set('qEnd',st.qEnd); set('goalBV',st.goalBV); set('goalIBV',st.goalIBV);
+  st.goalIBV = Number($('#goalIBV').value || st.goalIBV || 300);
+  set('qStart', st.qStart); set('qEnd', st.qEnd);
+  set('goalBV', st.goalBV); set('goalIBV', st.goalIBV);
   renderAll(); alert('設定已儲存');
 });
 
-function withinQuarter(dateStr){
-  if(!st.qStart || !st.qEnd) return true;
-  return dateStr >= st.qStart && dateStr <= st.qEnd;
-}
-
-function renderDashboard(){
-  const rCnt = st.recruits.filter(x=>withinQuarter(x.date)).length;
-  $('#b1').style.width = Math.min(100, rCnt*100) + '%';
-  $('#k1').textContent = `${rCnt} / 1 人`;
-  $('#rCount').textContent = rCnt;
-  $('#rStatus').textContent = rCnt>=1? '已達標':'未達標';
-  $('#rStatus').className = 'pill ' + (rCnt>=1? 'ok':'warn');
-
-  const bvSum = st.bvs.filter(x=>withinQuarter(x.date)).reduce((s,x)=> s + (+x.bv||0), 0);
-  const bGoal = +st.goalBV || 1500, bRemain = Math.max(0, bGoal - bvSum);
-  $('#b2').style.width = Math.min(100, Math.round(bvSum/bGoal*100)) + '%';
-  $('#k2').textContent = `${nf.format(bvSum)} / ${bGoal}（差 ${nf.format(bRemain)}）`;
-
-  const ibvSum = st.ibvs.filter(x=>withinQuarter(x.date)).reduce((s,x)=> s + (+x.ibv||0), 0);
-  const iGoal = +st.goalIBV || 300, iRemain = Math.max(0, iGoal - ibvSum);
-  $('#b3').style.width = Math.min(100, Math.round(ibvSum/iGoal*100)) + '%';
-  $('#k3').textContent = `${nf.format(ibvSum)} / ${iGoal}（差 ${nf.format(iRemain)}）`;
-
-  $('#qLabel').textContent = (st.qStart && st.qEnd) ? `${st.qStart} ～ ${st.qEnd}` : '未設定';
-}
-
-function renderRecruits(){
-  const body = $('#rBody'); body.innerHTML='';
-  st.recruits.map((x,i)=>({...x,_i:i})).filter(x=>withinQuarter(x.date)).sort((a,b)=>a.date.localeCompare(b.date)).forEach((x,idx)=>{
-    const tr = document.createElement('tr');
-    tr.innerHTML = `<td>${idx+1}</td><td>${x.date}</td><td>${x.name}</td><td><button class="btn" onclick="delRecruit(${x._i})">刪除</button></td>`;
-    body.appendChild(tr);
-  });
-}
-
-function renderBV(){
-  const body = $('#bBody'); body.innerHTML='';
-  st.bvs.map((x,i)=>({...x,_i:i})).filter(x=>withinQuarter(x.date)).sort((a,b)=>a.date.localeCompare(b.date)).forEach((x,idx)=>{
-    const tr = document.createElement('tr');
-    tr.innerHTML = `<td>${idx+1}</td><td>${x.date}</td><td>${x.name}</td><td>${x.item||''}</td><td>${nf.format(x.bv)}</td><td><button class="btn" onclick="delBV(${x._i})">刪除</button></td>`;
-    body.appendChild(tr);
-  });
-}
-
-function renderIBV(){
-  const body = $('#iBody'); body.innerHTML='';
-  st.ibvs.map((x,i)=>({...x,_i:i})).filter(x=>withinQuarter(x.date)).sort((a,b)=>a.date.localeCompare(b.date)).forEach((x,idx)=>{
-    const tr = document.createElement('tr');
-    tr.innerHTML = `<td>${idx+1}</td><td>${x.date}</td><td>${x.name}</td><td>${x.item||''}</td><td>${nf.format(x.ibv)}</td><td><button class="btn" onclick="delIBV(${x._i})">刪除</button></td>`;
-    body.appendChild(tr);
-  });
-}
-
 function addRecruit(){
-  const d = $('#rDate').value || todayStr();
-  const n = ($('#rName').value||'').trim();
+  const d=$('#rDate').value, n=($('#rName').value||'').trim();
   if(!n){ alert('請輸入招募姓名'); return; }
   st.recruits.push({date:d,name:n}); set('recruits', st.recruits);
   $('#rName').value=''; renderRecruits(); renderDashboard();
@@ -222,10 +318,7 @@ function addRecruit(){
 function delRecruit(i){ st.recruits.splice(i,1); set('recruits', st.recruits); renderRecruits(); renderDashboard(); }
 
 function addBV(){
-  const d=$('#bDate').value || todayStr();
-  const n=($('#bName').value||'').trim();
-  const it=($('#bItem').value||'').trim();
-  const v=Number($('#bAmt').value||0);
+  const d=$('#bDate').value, n=($('#bName').value||'').trim(), it=($('#bItem').value||'').trim(), v=Number($('#bAmt').value||0);
   if(!n || !v){ alert('請輸入顧客姓名與 BV'); return; }
   st.bvs.push({date:d,name:n,item:it,bv:v}); set('bvs', st.bvs);
   $('#bName').value=''; $('#bItem').value=''; $('#bAmt').value=''; renderBV(); renderDashboard();
@@ -233,79 +326,293 @@ function addBV(){
 function delBV(i){ st.bvs.splice(i,1); set('bvs', st.bvs); renderBV(); renderDashboard(); }
 
 function addIBV(){
-  const d=$('#iDate').value || todayStr();
-  const n=($('#iName').value||'').trim();
-  const it=($('#iItem').value||'').trim();
-  const v=Number($('#iAmt').value||0);
+  const d=$('#iDate').value, n=($('#iName').value||'').trim(), it=($('#iItem').value||'').trim(), v=Number($('#iAmt').value||0);
   if(!n || !v){ alert('請輸入姓名與 IBV'); return; }
   st.ibvs.push({date:d,name:n,item:it,ibv:v}); set('ibvs', st.ibvs);
   $('#iName').value=''; $('#iItem').value=''; $('#iAmt').value=''; renderIBV(); renderDashboard();
 }
 function delIBV(i){ st.ibvs.splice(i,1); set('ibvs', st.ibvs); renderIBV(); renderDashboard(); }
 
-function openContact(id){
-  const c = st.contacts.find(x=>x.id===id); if(!c) return;
-  $('#cDetail').hidden = false; $('#cDetail').dataset.id = id;
-  $('#dCity').textContent=c.city; $('#dName').textContent=c.name; $('#dGroup').textContent=c.group;
-  $('#dCount').textContent=`共 ${c.logs.length} 次互動`;
-  $('#dDate').value=todayStr(); $('#dNote').value='';
-  renderTimeline(c);
-  document.getElementById('cDetail').scrollIntoView({behavior:'smooth',block:'start'});
-}
-function closeDetail(){ $('#cDetail').hidden=true; $('#cDetail').dataset.id=''; }
-function renderTimeline(c){
-  const ul = $('#dTimeline'); ul.innerHTML='';
-  [...c.logs].sort((a,b)=> (a.date||'').localeCompare(b.date||'')).forEach((log,i)=>{
-    const li=document.createElement('li');
-    li.innerHTML = `<span class="date">${log.date||''}</span><span>${String(log.note||'').replace(/</g,'&lt;')}</span>`;
-    ul.appendChild(li);
-  });
-}
-function addLogToCurrent(){
-  const id=$('#cDetail').dataset.id; const c=st.contacts.find(x=>x.id===id); if(!c) return;
-  const date=$('#dDate').value || todayStr(); const note=($('#dNote').value||'').trim(); if(!note){ alert('請輸入互動情況'); return; }
-  c.logs.push({date, note}); set('contacts', st.contacts); $('#dNote').value=''; renderTimeline(c); renderContacts();
-}
-function addOrAppendContact(){
-  const city=($('#cCity').value||'').trim();
-  const name=($('#cName').value||'').trim();
-  const group=($('#cGroup').value||'').trim();
-  const date=$('#cDate').value || todayStr();
-  const note=($('#cNote').value||'').trim();
-  if(!city || !name || !group){ alert('請填寫「縣市／姓名／族群」'); return; }
-  if(!note){ alert('請輸入互動情況'); return; }
-  const key=`${city}__${name}__${group}`;
-  let c=st.contacts.find(x=>x.id===key);
-  if(!c){ c={id:key, city,name,group,logs:[]}; st.contacts.push(c); }
-  c.logs.push({date, note}); set('contacts', st.contacts);
-  $('#cNote').value=''; renderContacts();
-}
-function renderContacts(){
-  const body=$('#cBody'); body.innerHTML='';
-  const list=st.contacts.map(c=>{
-    const sorted=[...c.logs].sort((a,b)=> (a.date||'').localeCompare(b.date||''));
-    const last=sorted.length? sorted[sorted.length-1].date : '';
-    return {...c, count:c.logs.length, last};
-  }).sort((a,b)=> (b.last||'').localeCompare(a.last||''));
-  list.forEach((c,idx)=>{
-    const tr=document.createElement('tr');
-    tr.innerHTML=`<td>${idx+1}</td><td>${c.city}</td><td>${c.name}</td><td>${c.group}</td><td>${c.last||'—'}</td><td>${c.count}</td>
-    <td><button class="btn" onclick="openContact('${c.id.replace(/'/g,"\\'")}')">查看</button></td>`;
-    body.appendChild(tr);
-  });
-  if($('#cDetail').dataset.id && !st.contacts.find(x=>x.id===$('#cDetail').dataset.id)){ closeDetail(); }
-}
 $('#rAdd').addEventListener('click', addRecruit);
 $('#bAdd').addEventListener('click', addBV);
 $('#iAdd').addEventListener('click', addIBV);
-$('#cAdd').addEventListener('click', addOrAppendContact);
-$('#dAdd').addEventListener('click', addLogToCurrent);
-$('#dClose').addEventListener('click', closeDetail);
+
+function csvEscape(s){ s=String(s); return s.includes(',')? `"${s.replace(/"/g,'""')}"`: s; }
+function exportCSV(arr, headers, name){
+  const lines=[headers.join(',')];
+  arr.forEach((row,i)=>{
+    const map={ '#':'#','日期':'date','姓名':'name','顧客姓名':'name','品項':'item','BV':'bv','IBV':'ibv' };
+    const vals=headers.map(h=> h==='#' ? i+1 : csvEscape(row[map[h]||h] ?? ''));
+    lines.push(vals.join(','));
+  });
+  const blob=new Blob([lines.join('\n')],{type:'text/csv;charset=utf-8'});
+  const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download=name; a.click();
+}
+$('#rExpCSV').addEventListener('click', ()=> exportCSV(st.recruits, ['#','日期','姓名'], 'recruits.csv'));
+$('#bExpCSV').addEventListener('click', ()=> exportCSV(st.bvs, ['#','日期','顧客姓名','品項','BV'], 'bv.csv'));
+$('#iExpCSV').addEventListener('click', ()=> exportCSV(st.ibvs, ['#','日期','姓名','品項','IBV'], 'ibv.csv'));
+
+function exportJSON(){ const blob=new Blob([JSON.stringify(st,null,2)],{type:'application/json'}); const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download='ufo_backup.json'; a.click(); }
+$('#btnExportJSON').addEventListener('click', exportJSON);
+const mExp = $('#mExp'); if(mExp){ mExp.addEventListener('click', ()=>{ exportJSON(); closeSheet(); }); }
+
+async function importJSON(file){
+  const text=await file.text();
+  try{
+    const data=JSON.parse(text);
+    if(typeof data==='object'){
+      Object.assign(st,data);
+      set('qStart', st.qStart); set('qEnd', st.qEnd); set('goalBV', st.goalBV); set('goalIBV', st.goalIBV);
+      set('recruits', st.recruits); set('bvs', st.bvs); set('ibvs', st.ibvs); set('contacts', st.contacts||[]);
+      set('nameOpts', st.nameOpts||[]); set('groupOpts', st.groupOpts||[]);
+      refreshDatalists();
+      renderAll();
+    }else alert('JSON 格式不正確');
+  }catch{ alert('JSON 解析失敗'); }
+}
+$('#impJSON').addEventListener('change', e=>{ if(e.target.files[0]) importJSON(e.target.files[0]); e.target.value=''; });
+const mImp = $('#mImp'); if(mImp){ mImp.addEventListener('change', e=>{ if(e.target.files[0]) importJSON(e.target.files[0]); e.target.value=''; closeSheet(); }); }
+
+function clearAll(){
+  if(!confirm('確定要清空全部資料？此動作無法還原')) return;
+  st.recruits=[]; st.bvs=[]; st.ibvs=[]; st.contacts=[]; st.nameOpts=[]; st.groupOpts=[];
+  set('recruits', st.recruits); set('bvs', st.bvs); set('ibvs', st.ibvs); set('contacts', st.contacts);
+  set('nameOpts', st.nameOpts); set('groupOpts', st.groupOpts);
+  refreshDatalists();
+  renderAll();
+}
+$('#btnClear').addEventListener('click', clearAll);
+const mClear = $('#mClear'); if(mClear){ mClear.addEventListener('click', ()=>{ clearAll(); closeSheet(); }); }
+
+let deferredPrompt=null;
+window.addEventListener('beforeinstallprompt', e=>{ e.preventDefault(); deferredPrompt=e; });
+function doInstall(){
+  if(deferredPrompt){ deferredPrompt.prompt(); deferredPrompt=null; }
+  else alert('若要加入主畫面：請用瀏覽器「分享」→「加入主畫面」。');
+}
+$('#btnInstall').addEventListener('click', doInstall);
+const mInstall = $('#mInstall'); if(mInstall){ mInstall.addEventListener('click', ()=>{ doInstall(); closeSheet(); }); }
+
+const sheet=$('#sheet');
+function openSheet(){ sheet.classList.add('open'); }
+function closeSheet(){ sheet.classList.remove('open'); }
+$('#openSheet').addEventListener('click', openSheet);
+$('#closeSheet').addEventListener('click', closeSheet);
+sheet.addEventListener('click', e=>{ if(e.target===sheet) closeSheet(); });
+
+function withinQuarter(dateStr){
+  if(!st.qStart || !st.qEnd) return true;
+  return dateStr >= st.qStart && dateStr <= st.qEnd;
+}
+function renderDashboard(){
+  const rCnt=st.recruits.filter(x=>withinQuarter(x.date)).length;
+  $('#k1').textContent=`${rCnt} / 1 人`; $('#b1').style.width=Math.min(100,Math.round(rCnt*100))+'%';
+  $('#rCount').textContent=rCnt; $('#rStatus').textContent=rCnt>=1?'已達標':'未達標';
+  $('#rStatus').className='pill '+(rCnt>=1?'ok':'warn');
+
+  const bvSum=st.bvs.filter(x=>withinQuarter(x.date)).reduce((s,x)=>s+(+x.bv||0),0);
+  const bGoal=+st.goalBV||1500, bRemain=Math.max(0,bGoal-bvSum);
+  $('#k2').textContent=`${nf.format(bvSum)} / ${bGoal} BV（差 ${nf.format(bRemain)}）`; $('#b2').style.width=Math.min(100,Math.round(bvSum/bGoal*100))+'%';
+  $('#bSumV').textContent=nf.format(bvSum); $('#bRemainV').textContent=nf.format(bRemain); $('#bGoalV').textContent=nf.format(bGoal);
+  $('#bBar').style.width=Math.min(100,Math.round(bvSum/bGoal*100))+'%'; $('#bStatus').textContent=bvSum>=bGoal?'已達標':'未達標'; $('#bStatus').className='v '+(bvSum>=bGoal?'ok':'warn');
+
+  const ibvSum=st.ibvs.filter(x=>withinQuarter(x.date)).reduce((s,x)=>s+(+x.ibv||0),0);
+  const iGoal=+st.goalIBV||300, iRemain=Math.max(0,iGoal-ibvSum);
+  $('#k3').textContent=`${nf.format(ibvSum)} / ${iGoal} IBV（差 ${nf.format(iRemain)}）`; $('#b3').style.width=Math.min(100,Math.round(ibvSum/iGoal*100))+'%';
+  $('#iSumV').textContent=nf.format(ibvSum); $('#iRemainV').textContent=nf.format(iRemain); $('#iGoalV').textContent=nf.format(iGoal);
+  $('#iBar').style.width=Math.min(100,Math.round(ibvSum/iGoal*100))+'%'; $('#iStatus').textContent=iGoal<=ibvSum?'已達標':'未達標'; $('#iStatus').className='v '+(ibvSum>=iGoal?'ok':'warn');
+
+  $('#qLabel').textContent=(st.qStart&&st.qEnd)? `${st.qStart} ～ ${st.qEnd}` : '（未設定）';
+}
+function renderRecruits(){
+  const body=$('#rBody'); body.innerHTML='';
+  st.recruits.map((x,i)=>({...x,_i:i})).filter(x=>withinQuarter(x.date)).sort((a,b)=>a.date.localeCompare(b.date)).forEach((x,idx)=>{
+    const tr=document.createElement('tr');
+    tr.innerHTML=`<td>${idx+1}</td><td>${x.date}</td><td>${x.name}</td><td><button class="del" onclick="delRecruit(${x._i})">🗑 刪除</button></td>`;
+    body.appendChild(tr);
+  });
+}
+function renderBV(){
+  const body=$('#bBody'); body.innerHTML='';
+  st.bvs.map((x,i)=>({...x,_i:i})).filter(x=>withinQuarter(x.date)).sort((a,b)=>a.date.localeCompare(b.date)).forEach((x,idx)=>{
+    const tr=document.createElement('tr');
+    tr.innerHTML=`<td>${idx+1}</td><td>${x.date}</td><td>${x.name}</td><td>${x.item||''}</td><td>${nf.format(x.bv)}</td><td><button class="del" onclick="delBV(${x._i})">🗑 刪除</button></td>`;
+    body.appendChild(tr);
+  });
+}
+function renderIBV(){
+  const body=$('#iBody'); body.innerHTML='';
+  st.ibvs.map((x,i)=>({...x,_i:i})).filter(x=>withinQuarter(x.date)).sort((a,b)=>a.date.localeCompare(b.date)).forEach((x,idx)=>{
+    const tr=document.createElement('tr');
+    tr.innerHTML=`<td>${idx+1}</td><td>${x.date}</td><td>${x.name}</td><td>${x.item||''}</td><td>${nf.format(x.ibv)}</td><td><button class="del" onclick="delIBV(${x._i})">🗑 刪除</button></td>`;
+    body.appendChild(tr);
+  });
+}
+
+function openContact(id){
+  const c = st.contacts.find(x=> x.id===id);
+  if(!c) return;
+  $('#cDetail').hidden = false;
+  $('#cDetail').dataset.id = id;
+  $('#dCity').textContent = c.city;
+  $('#dName').textContent = c.name;
+  $('#dGroup').textContent = c.group;
+  $('#dCount').textContent = `共 ${c.logs.length} 次互動`;
+  $('#dDate').value = todayStr();
+  $('#dNote').value = '';
+  renderTimeline(c);
+  document.getElementById('cDetail').scrollIntoView({behavior:'smooth', block:'start'});
+}
+function closeDetail(){ $('#cDetail').hidden = true; $('#cDetail').dataset.id=''; }
+const dClose = $('#dClose'); if(dClose){ dClose.addEventListener('click', closeDetail); }
+
+function delContact(id){
+  if(!confirm('確定刪除此人及其所有互動紀錄？')) return;
+  st.contacts = st.contacts.filter(x=> x.id!==id);
+  set('contacts', st.contacts);
+  renderContacts();
+}
+
+function delLog(id, idx){
+  const c = st.contacts.find(x=> x.id===id);
+  if(!c) return;
+  c.logs.splice(idx,1);
+  set('contacts', st.contacts);
+  if($('#cDetail').dataset.id===id){ renderTimeline(c); }
+  renderContacts();
+}
+
+function renderTimeline(c){
+  const ul = $('#dTimeline'); ul.innerHTML='';
+  const items = [...c.logs].sort((a,b)=> (a.date||'').localeCompare(b.date||''));
+  items.forEach((log, i)=>{
+    const li = document.createElement('li');
+    li.innerHTML = `
+      <span class="date">${log.date||''}</span>
+      <span>${(log.note||'').replace(/</g,'&lt;')}</span>
+      <div style="margin-top:6px">
+        <button class="del" onclick="delLog('${c.id.replace(/'/g,"\\'")}', ${i})">刪除此則</button>
+      </div>
+    `;
+    ul.appendChild(li);
+  });
+}
+
+function addLogToCurrent(){
+  const id = $('#cDetail').dataset.id;
+  const c = st.contacts.find(x=> x.id===id);
+  if(!c) return;
+  const date = $('#dDate').value || todayStr();
+  const note = ($('#dNote').value||'').trim();
+  if(!note){ alert('請輸入互動情況'); return; }
+  c.logs.push({date, note});
+  set('contacts', st.contacts);
+  $('#dNote').value='';
+  renderTimeline(c);
+  renderContacts();
+}
+const dAdd = $('#dAdd'); if(dAdd){ dAdd.addEventListener('click', addLogToCurrent); }
+
+function addOrAppendContact(){
+  const city = $('#cCity').value;
+  const name = ($('#cName').value||'').trim();
+  const group = ($('#cGroup').value||'').trim();
+  const date = $('#cDate').value || todayStr();
+  const note = ($('#cNote').value||'').trim();
+  if(!city){ alert('請選擇縣市'); return; }
+  if(!name || !group){ alert('請填寫姓名與族群'); return; }
+  if(!note){ alert('請輸入互動情況'); return; }
+  const key = `${city}__${name}__${group}`;
+  let c = st.contacts.find(x=> x.id === key);
+  if(!c){ c = { id:key, city, name, group, logs:[] }; st.contacts.push(c); }
+  c.logs.push({date, note});
+  set('contacts', st.contacts);
+
+  // 記住姓名/族群選項
+  maybeAddToOptions(name, group);
+
+  $('#cNote').value='';
+  renderContacts();
+}
+const cAdd = $('#cAdd'); if(cAdd){ cAdd.addEventListener('click', addOrAppendContact); }
+
+function exportPeopleCSV(){
+  const lines = ['縣市,姓名,族群,互動次數,最近互動日'];
+  st.contacts.forEach(c=>{
+    const last = c.logs.length? [...c.logs].sort((a,b)=> (a.date||'').localeCompare(b.date||'')) .slice(-1)[0].date : '';
+    lines.push([c.city,c.name,c.group,c.logs.length,last].map(v=>{
+      v=String(v??''); return v.includes(',')? `"${v.replace(/"/g,'""')}"`: v;
+    }).join(','));
+  });
+  const blob = new Blob([lines.join('\n')],{type:'text/csv;charset=utf-8'});
+  const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download='contacts.csv'; a.click();
+}
+function exportLogsCSV(){
+  const lines = ['縣市,姓名,族群,日期,互動內容'];
+  st.contacts.forEach(c=>{
+    c.logs.forEach(log=>{
+      const row = [c.city,c.name,c.group,log.date||'',log.note||''].map(v=>{
+        v=String(v??''); return v.includes(',')? `"${v.replace(/"/g,'""')}"`: v;
+      }).join(',');
+      lines.push(row);
+    });
+  });
+  const blob = new Blob([lines.join('\n')],{type:'text/csv;charset=utf-8'});
+  const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download='contact_logs.csv'; a.click();
+}
+const cExpPeople = $('#cExpPeople'); if(cExpPeople){ cExpPeople.addEventListener('click', exportPeopleCSV); }
+const cExpLogs = $('#cExpLogs'); if(cExpLogs){ cExpLogs.addEventListener('click', exportLogsCSV); }
+
+function renderContacts(){
+  const body = $('#cBody'); body.innerHTML='';
+  const list = st.contacts.map(c=>{
+    const sorted = [...c.logs].sort((a,b)=> (a.date||'').localeCompare(b.date||''));
+    const last = sorted.length? sorted[sorted.length-1].date : '';
+    return { ...c, count:c.logs.length, last };
+  }).sort((a,b)=> (b.last||'').localeCompare(a.last||''));
+  const totalLogs = st.contacts.reduce((s,c)=> s + c.logs.length, 0);
+  const latest = list.length? (list[0].last || '—') : '—';
+  $('#cPeople').textContent = list.length;
+  $('#cLogs').textContent = totalLogs;
+  $('#cLast').textContent = latest;
+  list.forEach((c, idx)=>{
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td>${idx+1}</td>
+      <td>${c.city}</td>
+      <td>${c.name}</td>
+      <td>${c.group}</td>
+      <td>${c.last || '—'}</td>
+      <td>${c.count}</td>
+      <td>
+        <button class="btn" onclick="openContact('${c.id.replace(/'/g,"\\'")}')">查看</button>
+        <button class="del" onclick="delContact('${c.id.replace(/'/g,"\\'")}')">刪除</button>
+      </td>
+    `;
+    body.appendChild(tr);
+  });
+  const cur = $('#cDetail').dataset.id;
+  if(cur && !st.contacts.find(x=>x.id===cur)){ closeDetail(); }
+}
 
 function renderAll(){
-  renderDashboard(); renderRecruits(); renderBV(); renderIBV(); renderContacts();
+  $('#qStart').value=st.qStart||''; $('#qEnd').value=st.qEnd||''; $('#goalBV').value=st.goalBV||1500; $('#goalIBV').value=st.goalIBV||300;
+  refreshDatalists();
+  renderRecruits(); renderBV(); renderIBV(); renderDashboard(); renderContacts();
 }
 renderAll();
+
+// 註冊 SW：固定網址也自動更新
+if('serviceWorker' in navigator){ navigator.serviceWorker.register('./service-worker.js'); }
+
+// Sheet 行動面板
+window.delRecruit=delRecruit; window.delBV=delBV; window.delIBV=delIBV;
+window.openContact=openContact; window.delContact=delContact; window.delLog=delLog;
+const sheetEl=document.getElementById('sheet');
+function openSheet(){ sheetEl.classList.add('open'); }
+function closeSheet(){ sheetEl.classList.remove('open'); }
+document.getElementById('openSheet').addEventListener('click', openSheet);
+document.getElementById('closeSheet').addEventListener('click', closeSheet);
 </script>
 </body>
 </html>
