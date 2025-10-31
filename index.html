@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>IFNT 無限翻轉人生</title>
+  <link rel="manifest" href="manifest.json?v=20251031-2" />
+  <link rel="stylesheet" href="styles.css?v=20251031-2" />
+  <link rel="icon" href="logo.png?v=20251031-2" type="image/png" />
+  <script>
+    if('serviceWorker' in navigator){
+      window.addEventListener('load',()=>{
+        navigator.serviceWorker.register('./service-worker.js?v=20251031-2');
+      });
+    }
+  </script>
+</head>
+<body>
+  <header class="header">
+    <div class="brand">
+      <img src="logo.png?v=20251031-2" class="logo" alt="IFNT Logo" />
+      <h1>IFNT 無限翻轉人生</h1>
+    </div>
+    <nav class="quick-nav">
+      <button onclick="scrollToId('recruit')">招募</button>
+      <button onclick="scrollToId('bv')">BV</button>
+      <button onclick="scrollToId('ibv')">IBV</button>
+      <button onclick="scrollToId('interaction')">312名單</button>
+    </nav>
+  </header>
+
+  <main>
+    <section id="recruit">
+      <h2>👥 親自招募</h2>
+      <div class="input-row">
+        <input type="date" id="recruitDate" />
+        <input type="text" id="recruitName" placeholder="招募姓名" />
+        <button id="addRecruit">新增</button>
+      </div>
+      <div id="recruitList"></div>
+      <button class="back-btn" onclick="scrollToTop()">🔙 回首頁</button>
+    </section>
+
+    <section id="bv">
+      <h2>💼 零售 + 自購 1500BV</h2>
+      <div class="input-row">
+        <input type="date" id="bvDate" />
+        <input type="text" id="bvName" placeholder="顧客姓名" />
+        <input type="text" id="bvItem" placeholder="零售品項 (例如：平泰秀、OPC、NAD)" />
+        <input type="number" id="bvAmount" placeholder="BV 數量" />
+        <button id="addBV">新增</button>
+      </div>
+      <p>目前累計：<span id="bvTotal" class="goal">0</span> / <span id="bvGoal">1500</span> BV</p>
+      <span id="bvBadge" class="badge badge-red">距離 1500</span>
+      <button class="back-btn" onclick="scrollToTop()">🔙 回首頁</button>
+    </section>
+
+    <section id="ibv">
+      <h2>🏠 家庭轉移消費 300IBV</h2>
+      <div class="input-row">
+        <input type="date" id="ibvDate" />
+        <input type="text" id="ibvName" placeholder="顧客或本人" />
+        <input type="text" id="ibvItem" placeholder="消費品項 (例如：洗衣精、保健品)" />
+        <input type="number" id="ibvAmount" placeholder="IBV 數量" />
+        <button id="addIBV">新增</button>
+      </div>
+      <p>目前累計：<span id="ibvTotal" class="goal">0</span> / <span id="ibvGoal">300</span> IBV</p>
+      <span id="ibvBadge" class="badge badge-red">距離 300</span>
+      <button class="back-btn" onclick="scrollToTop()">🔙 回首頁</button>
+    </section>
+
+    <section id="interaction">
+      <h2>🗂️ 312 互動名單</h2>
+      <div class="input-row">
+        <select id="city">
+          <option value="">選擇縣市</option>
+          <option>基隆市</option><option>臺北市</option><option>新北市</option>
+          <option>桃園市</option><option>新竹市</option><option>新竹縣</option>
+          <option>苗栗縣</option><option>臺中市</option><option>彰化縣</option>
+          <option>南投縣</option><option>雲林縣</option><option>嘉義市</option>
+          <option>嘉義縣</option><option>臺南市</option><option>高雄市</option>
+          <option>屏東縣</option><option>宜蘭縣</option><option>花蓮縣</option>
+          <option>臺東縣</option><option>澎湖縣</option><option>金門縣</option>
+          <option>連江縣</option>
+        </select>
+        <input type="text" id="group" placeholder="族群" />
+        <input type="text" id="person" placeholder="姓名" list="nameList" />
+        <input type="date" id="interactDate" />
+      </div>
+      <textarea id="interactionDetail" placeholder="互動情況，記錄細節..." rows="3"></textarea>
+      <button id="addInteraction">新增互動紀錄</button>
+      <datalist id="nameList"></datalist>
+      <div id="interactionList"></div>
+      <button class="back-btn" onclick="scrollToTop()">🔙 回首頁</button>
+    </section>
+
+    <div class="export">
+      <button id="exportCSV">📤 匯出 CSV</button>
+    </div>
+  </main>
+
+  <script src="app.js?v=20251031-2" defer></script>
+</body>
+</html>

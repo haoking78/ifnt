@@ -1,0 +1,60 @@
+
+*{box-sizing:border-box}
+html,body{scroll-behavior:smooth}
+body {
+  font-family: "Noto Sans TC", system-ui, -apple-system, Segoe UI, Arial, sans-serif;
+  background: linear-gradient(to bottom, #032c3c, #0a4755);
+  color: #fff;
+  margin: 0;
+  padding: 0 0 60px 0;
+  text-align: center;
+}
+.header{
+  position: sticky; top: 0; z-index: 50;
+  background: rgba(3,44,60,.85);
+  backdrop-filter: blur(6px);
+  border-bottom: 1px solid rgba(255,255,255,.08);
+}
+.brand{ display:flex; align-items:center; justify-content:center; gap:10px; padding:10px 10px 6px; }
+.logo { width: 40px; height:40px; }
+h1 { margin: 0; font-size: 1.2em; font-weight:800; letter-spacing:.02em; }
+.quick-nav{
+  display:flex; gap:8px; justify-content:center; padding:6px 10px 10px;
+  flex-wrap:wrap;
+}
+.quick-nav button{
+  background:#39b5ff; color:#fff; border:none; padding:6px 12px;
+  border-radius:999px; cursor:pointer; transition:.2s; font-weight:700;
+}
+.quick-nav button:hover{ background:#1f9ee0; transform:translateY(-1px) scale(1.02); }
+section {
+  background: rgba(255, 255, 255, 0.08);
+  margin: 15px auto;
+  padding: 15px;
+  width: 92%;
+  border-radius: 12px;
+}
+.input-row {
+  display: flex; flex-wrap: wrap; justify-content: center; gap: 6px;
+}
+.input-row input, select, textarea {
+  padding: 8px; border-radius: 8px; border: none; outline: none;
+}
+button {
+  background: #39b5ff; border: none; padding: 8px 14px;
+  color: white; border-radius: 10px; cursor: pointer; transition: .2s;
+}
+button:hover { background: #1f9ee0; transform: translateY(-1px) scale(1.02); }
+.back-btn { margin-top: 10px; background: #39b5ff; color: white; padding: 8px 18px; border-radius: 20px; }
+.export { margin: 20px; }
+.badge { display:inline-block; padding: .2rem .6rem; border-radius: .6rem; font-weight: 700; border: 1px solid transparent; }
+.badge-red { background:#ef44441a; color:#ef9a9a; border-color:#ef4444; }
+.badge-green { background:#22c55e1a; color:#86efac; border-color:#22c55e; }
+.badge-pop { animation: flashGreen 1.2s ease; }
+.goal { font-weight: 800; }
+@keyframes flashGreen {
+  0% { color: #22c55e; transform: scale(1.1); }
+  50% { color: #fff; transform: scale(1.2); }
+  100% { color: #22c55e; transform: scale(1); }
+}
+.record { text-align: left; margin: 6px auto; padding: 8px; background: rgba(0,0,0,.15); border-radius: 8px; width: 92%; }
