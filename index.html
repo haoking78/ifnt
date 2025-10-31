@@ -1,104 +1,109 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="zh-Hant">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>IFNT 無限翻轉人生</title>
-  <link rel="manifest" href="manifest.json?v=20251031-2" />
-  <link rel="stylesheet" href="styles.css?v=20251031-2" />
-  <link rel="icon" href="logo.png?v=20251031-2" type="image/png" />
-  <script>
-    if('serviceWorker' in navigator){
-      window.addEventListener('load',()=>{
-        navigator.serviceWorker.register('./service-worker.js?v=20251031-2');
-      });
-    }
-  </script>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>IFNT 無限翻轉人生 v6.2.11</title>
+  <link rel="manifest" href="manifest.json">
+  <link rel="icon" href="logo.png">
+  <link rel="apple-touch-icon" href="logo.png">
+  <link rel="stylesheet" href="styles.css?v=20251031-1">
 </head>
 <body>
-  <header class="header">
-    <div class="brand">
-      <img src="logo.png?v=20251031-2" class="logo" alt="IFNT Logo" />
-      <h1>IFNT 無限翻轉人生</h1>
+<header class="topbar">
+  <img src="logo.png" class="logo" alt="IFNT">
+  <div class="title">IFNT 無限翻轉人生 <span class="ver">v6.2.11</span></div>
+  <div class="actions">
+    <button id="btnExport" class="ghost">匯出 CSV</button>
+    <button id="btnSettings" class="ghost">設定</button>
+  </div>
+</header>
+
+<nav class="tabs">
+  <button data-tab="recruit" class="tab active">招募</button>
+  <button data-tab="bv" class="tab">BV</button>
+  <button data-tab="ibv" class="tab">IBV</button>
+  <button data-tab="book" class="tab">312 名單</button>
+</nav>
+
+<main>
+  <!-- Recruit -->
+  <section id="recruit" class="panel show">
+    <h2>👥 親自招募</h2>
+    <div class="grid">
+      <label>日期<input type="date" id="recDate"/></label>
+      <label>招募姓名<input type="text" id="recName" placeholder="輸入姓名"/></label>
     </div>
-    <nav class="quick-nav">
-      <button onclick="scrollToId('recruit')">招募</button>
-      <button onclick="scrollToId('bv')">BV</button>
-      <button onclick="scrollToId('ibv')">IBV</button>
-      <button onclick="scrollToId('interaction')">312名單</button>
-    </nav>
-  </header>
-
-  <main>
-    <section id="recruit">
-      <h2>👥 親自招募</h2>
-      <div class="input-row">
-        <input type="date" id="recruitDate" />
-        <input type="text" id="recruitName" placeholder="招募姓名" />
-        <button id="addRecruit">新增</button>
-      </div>
-      <div id="recruitList"></div>
-      <button class="back-btn" onclick="scrollToTop()">🔙 回首頁</button>
-    </section>
-
-    <section id="bv">
-      <h2>💼 零售 + 自購 1500BV</h2>
-      <div class="input-row">
-        <input type="date" id="bvDate" />
-        <input type="text" id="bvName" placeholder="顧客姓名" />
-        <input type="text" id="bvItem" placeholder="零售品項 (例如：平泰秀、OPC、NAD)" />
-        <input type="number" id="bvAmount" placeholder="BV 數量" />
-        <button id="addBV">新增</button>
-      </div>
-      <p>目前累計：<span id="bvTotal" class="goal">0</span> / <span id="bvGoal">1500</span> BV</p>
-      <span id="bvBadge" class="badge badge-red">距離 1500</span>
-      <button class="back-btn" onclick="scrollToTop()">🔙 回首頁</button>
-    </section>
-
-    <section id="ibv">
-      <h2>🏠 家庭轉移消費 300IBV</h2>
-      <div class="input-row">
-        <input type="date" id="ibvDate" />
-        <input type="text" id="ibvName" placeholder="顧客或本人" />
-        <input type="text" id="ibvItem" placeholder="消費品項 (例如：洗衣精、保健品)" />
-        <input type="number" id="ibvAmount" placeholder="IBV 數量" />
-        <button id="addIBV">新增</button>
-      </div>
-      <p>目前累計：<span id="ibvTotal" class="goal">0</span> / <span id="ibvGoal">300</span> IBV</p>
-      <span id="ibvBadge" class="badge badge-red">距離 300</span>
-      <button class="back-btn" onclick="scrollToTop()">🔙 回首頁</button>
-    </section>
-
-    <section id="interaction">
-      <h2>🗂️ 312 互動名單</h2>
-      <div class="input-row">
-        <select id="city">
-          <option value="">選擇縣市</option>
-          <option>基隆市</option><option>臺北市</option><option>新北市</option>
-          <option>桃園市</option><option>新竹市</option><option>新竹縣</option>
-          <option>苗栗縣</option><option>臺中市</option><option>彰化縣</option>
-          <option>南投縣</option><option>雲林縣</option><option>嘉義市</option>
-          <option>嘉義縣</option><option>臺南市</option><option>高雄市</option>
-          <option>屏東縣</option><option>宜蘭縣</option><option>花蓮縣</option>
-          <option>臺東縣</option><option>澎湖縣</option><option>金門縣</option>
-          <option>連江縣</option>
-        </select>
-        <input type="text" id="group" placeholder="族群" />
-        <input type="text" id="person" placeholder="姓名" list="nameList" />
-        <input type="date" id="interactDate" />
-      </div>
-      <textarea id="interactionDetail" placeholder="互動情況，記錄細節..." rows="3"></textarea>
-      <button id="addInteraction">新增互動紀錄</button>
-      <datalist id="nameList"></datalist>
-      <div id="interactionList"></div>
-      <button class="back-btn" onclick="scrollToTop()">🔙 回首頁</button>
-    </section>
-
-    <div class="export">
-      <button id="exportCSV">📤 匯出 CSV</button>
+    <div class="row">
+      <button id="btnRecAdd" class="primary">新增</button>
     </div>
-  </main>
+    <div id="recList" class="list"></div>
+    <div class="goal">
+      <span>累計達 <b id="recCount">0</b> / 目標 <b>1</b></span>
+      <span id="recBadge" class="badge hidden">🎉 已達標！</span>
+    </div>
+  </section>
 
-  <script src="app.js?v=20251031-2" defer></script>
+  <!-- BV -->
+  <section id="bv" class="panel">
+    <h2>💼 零售 + 自購 1500 BV</h2>
+    <div class="grid">
+      <label>日期<input type="date" id="bvDate"/></label>
+      <label>顧客姓名<input type="text" id="bvName" placeholder="可留空或輸入"/></label>
+      <label>零售品項<input type="text" id="bvItem" placeholder="例如：平泰秀、OPC、NAD"/></label>
+      <label>BV 數量<input type="number" id="bvVal" min="0" step="1" placeholder="數值"/></label>
+    </div>
+    <div class="row">
+      <button id="btnBvAdd" class="primary">新增 BV</button>
+    </div>
+    <div class="sumline">目前累計：<b id="bvSum">0</b> / 1500 BV <span id="bvBadge" class="badge hidden">🎉 已達標！</span></div>
+    <div id="bvList" class="list"></div>
+  </section>
+
+  <!-- IBV -->
+  <section id="ibv" class="panel">
+    <h2>🏠 家庭轉移消費 300 IBV</h2>
+    <div class="grid">
+      <label>日期<input type="date" id="ibvDate"/></label>
+      <label>姓名（或自己）<input type="text" id="ibvName" placeholder="可留空或輸入"/></label>
+      <label>消費品項<input type="text" id="ibvItem" placeholder="例如：保健、家電、日用品"/></label>
+      <label>IBV 數量<input type="number" id="ibvVal" min="0" step="1" placeholder="數值"/></label>
+    </div>
+    <div class="row">
+      <button id="btnIbvAdd" class="primary">新增 IBV</button>
+    </div>
+    <div class="sumline">目前累計：<b id="ibvSum">0</b> / 300 IBV <span id="ibvBadge" class="badge hidden">🎉 已達標！</span></div>
+    <div id="ibvList" class="list"></div>
+  </section>
+
+  <!-- 312 Book -->
+  <section id="book" class="panel">
+    <h2>📒 312 互動名單</h2>
+    <div class="grid">
+      <label>居住縣市<select id="bkCity"></select></label>
+      <label>姓名（可選清單或自行輸入）<input type="text" id="bkName" list="bkNames" placeholder="輸入或選擇姓名"><datalist id="bkNames"></datalist></label>
+      <label>族群 / 關係<input type="text" id="bkGroup" list="bkGroups" placeholder="例如：同學、客戶、親戚"><datalist id="bkGroups"></datalist></label>
+      <label>互動日期<input type="date" id="bkDate"/></label>
+    </div>
+    <label>互動情況 / 備註（可輸入很多內容）
+      <textarea id="bkNote" rows="3" placeholder="互動內容、需求、跟進事項..."></textarea>
+    </label>
+    <div class="row">
+      <button id="btnBkAdd" class="primary">新增 / 累加互動</button>
+      <button id="btnBkClear" class="ghost">清空欄位</button>
+    </div>
+    <div id="bkList" class="list"></div>
+  </section>
+</main>
+
+<!-- 成功動畫（煙火 + 勳章）-->
+<canvas id="fxCanvas"></canvas>
+<div id="centerBadge" class="center-badge hidden"></div>
+
+<audio id="sndDing" preload="auto">
+  <source src="data:audio/wav;base64,UklGRoQAAABXQVZFZm10IBAAAAABAAEAESsAACJWAAACABYAAAESAAAASAAAAGZtYQAA" type="audio/wav">
+</audio>
+
+<script src="app.js?v=20251031-1"></script>
 </body>
 </html>
