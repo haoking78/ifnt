@@ -1,5 +1,5 @@
 
-// IFNT v6.2.6 - shared name-group memory & auto-fill
+// IFNT v6.2.7 – name-group memory, badges, CSV, cache-busting friendly
 const $ = (s)=>document.querySelector(s);
 const $$ = (s)=>document.querySelectorAll(s);
 const store = {
@@ -12,7 +12,7 @@ const state = store.get('ifnt-state', {
   ibvMap: {},
   people: [],
   settings: { bvTarget:1500, ibvTarget:300 },
-  nameGroups: {} // NEW: { "姓名": "族群/關係" }
+  nameGroups: {} // { "姓名": "族群/關係" }
 });
 function save(){ store.set('ifnt-state', state); }
 
@@ -32,7 +32,7 @@ $('#city').innerHTML = cities.map(c=>`<option value="${c}">${c}</option>`).join(
 const nz = v => (v ?? '').toString().trim();
 const sum = (arr, pick= x => x) => arr.reduce((s,v)=>s+(typeof pick==='function'?pick(v):v),0);
 
-// Settings
+// Settings modal
 function openSettings(){ $('#inpTargetBV').value=state.settings.bvTarget||1500; $('#inpTargetIBV').value=state.settings.ibvTarget||300; $('#settingsModal').style.display='block'; }
 function closeSettings(){ $('#settingsModal').style.display='none'; }
 function saveSettings(){ const bv=Number($('#inpTargetBV').value||0), ibv=Number($('#inpTargetIBV').value||0); if(bv<=0||ibv<=0) return alert('請輸入大於 0 的目標數值'); state.settings.bvTarget=bv; state.settings.ibvTarget=ibv; save(); closeSettings(); updateTargetsBadge(); }
@@ -67,7 +67,7 @@ function updateTargetsBadge(){
   else{ const left=state.settings.bvTarget-bvTotal; bvBadge.textContent='距離 '+left; bvBadge.classList.remove('badge-green'); bvBadge.classList.add('badge-red'); }
 
   if(ibvOK){ ibvBadge.textContent='已達標'; ibvBadge.classList.remove('badge-red'); ibvBadge.classList.add('badge-green'); if(!_wasIBVOK){ celebrateBadge(ibvBadge); fireworks(1200);} }
-  else{ const left=state.settings.ibvTarget-ibvTotal; ibvBadge.textContent='距離 '+left; ibvBadge.textContent='距離 '+left; ibvBadge.classList.remove('badge-green'); ibvBadge.classList.add('badge-red'); }
+  else{ const left=state.settings.ibvTarget-ibvTotal; ibvBadge.textContent='距離 '+left; ibvBadge.classList.remove('badge-green'); ibvBadge.classList.add('badge-red'); }
 
   _wasBVOK=bvOK; _wasIBVOK=ibvOK;
 }
@@ -139,7 +139,7 @@ window.delIBV = (name)=>{
   if(confirm(`刪除「${name}」的所有 IBV 記錄？`)){ delete state.ibvMap[name]; save(); renderIBV(); updateTargetsBadge(); refreshNameLists(); }
 };
 
-// 312 - auto-fill group by name & shared names
+// 312 – name→group memory, list accumulation
 $('#btnAddLog').addEventListener('click', ()=>{
   const city=$('#city').value, name=nz($('#pName').value), group=nz($('#pGroup').value), date=$('#pDate').value, note=nz($('#pNote').value);
   if(!name) return alert('請輸入姓名');
@@ -152,20 +152,17 @@ $('#btnAddLog').addEventListener('click', ()=>{
   renderPeople(); refreshNameLists();
 });
 
-// When typing/choosing a name, auto-fill group if we have memory
+// Auto-fill group when a known name is entered
 function hookAutoFill(){
   const np=$('#pName'); const gp=$('#pGroup');
   if(!np || !gp) return;
   const apply = ()=>{
     const name = np.value.trim();
-    if(name && state.nameGroups[name]){
-      gp.value = state.nameGroups[name];
-    }
+    if(name && state.nameGroups[name]) gp.value = state.nameGroups[name];
   };
   np.addEventListener('change', apply);
   np.addEventListener('blur', apply);
   np.addEventListener('input', ()=>{
-    // if user typed a full existing name, also apply
     const nm = np.value.trim();
     if(state.nameGroups[nm]) gp.value = state.nameGroups[nm];
   });
@@ -199,18 +196,16 @@ function renderPeople(){
 }
 
 function refreshNameLists(){
-  // refresh all datalists for name inputs
   const names=[...new Set(state.people.map(p=>p.name)
     .concat(Object.keys(state.bvMap))
     .concat(Object.keys(state.ibvMap)))].sort();
   const html = names.map(n=>`<option value="${n}">`).join('');
-  const lists=['#nameList','#nameList2'];
-  lists.forEach(id=>{ const dl=document.querySelector(id); if(dl) dl.innerHTML = html; });
+  ['#nameList','#nameList2'].forEach(id=>{ const dl=document.querySelector(id); if(dl) dl.innerHTML = html; });
 }
 
 // CSV export
 $('#btnExport').addEventListener('click', ()=>{
-  const L=[]; L.push('"IFNT 匯出","v6.2.6","'+new Date().toISOString()+'"');
+  const L=[]; L.push('"IFNT 匯出","v6.2.7","'+new Date().toISOString()+'"');
   L.push('--- 招募'); L.push('"日期","姓名"'); state.recruits.forEach(x=>L.push(`"${x.date}","${x.name.replace(/"/g,'""')}"`));
   L.push('--- BV(每人彙總)'); L.push('"姓名","筆數","小計BV","明細"');
   Object.values(state.bvMap).forEach(p=>{ const d=p.items.map(x=>`${x.date} ${x.item} ${x.bv}`).join(' | '); L.push(`"${p.name.replace(/"/g,'""')}",${p.items.length},${p.total},"${d.replace(/"/g,'""')}"`); });
@@ -221,7 +216,7 @@ $('#btnExport').addEventListener('click', ()=>{
     L.push(`"${(p.city||'').replace(/"/g,'""')}","${p.name.replace(/"/g,'""')}","${(p.group||'').replace(/"/g,'""')}","${latest}",${p.logs.length},"${logs.replace(/"/g,'""')}"`);
   });
   const blob=new Blob([L.join('\n')],{type:'text/csv;charset=utf-8'});
-  const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download='IFNT_export_v6.2.6.csv'; a.click(); setTimeout(()=>URL.revokeObjectURL(a.href),500);
+  const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download='IFNT_export_v6.2.7.csv'; a.click(); setTimeout(()=>URL.revokeObjectURL(a.href),500);
 });
 
 // Clear buttons
