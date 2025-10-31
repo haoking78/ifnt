@@ -1,15 +1,13 @@
-const VERSION='v6.1.2';
+
+const VERSION='v6.1.4';
 const $=(s,root=document)=>root.querySelector(s);
 const $$=(s,root=document)=>Array.from(root.querySelectorAll(s));
-
 const storageKey='ifnt:data';
 const load=()=>{try{return JSON.parse(localStorage.getItem(storageKey))||{}}catch{return {}}};
 const save=(d)=>localStorage.setItem(storageKey,JSON.stringify(d));
-
 const data=Object.assign({recruits:[],bv:[],ibv:[],crm:[],names:[],groups:[]},load());
 const today=()=>new Date().toISOString().slice(0,10);
 const fmt=(d)=>d||'';
-
 function persist(){save(data); renderAll();}
 
 $('#tabs').addEventListener('click',e=>{const t=e.target.closest('.tab');if(!t)return;$$('.tab').forEach(x=>x.classList.toggle('active',x===t));$$('section.card[data-panel]').forEach(p=>p.hidden=p.dataset.panel!==t.dataset.tab);});
@@ -33,23 +31,19 @@ function renderIBV(){const sum=data.ibv.reduce((s,x)=>s+(x.ibv||0),0);$('#iRemai
 const TAIWAN_CITIES=['基隆市','臺北市','新北市','桃園市','新竹市','新竹縣','苗栗縣','臺中市','彰化縣','南投縣','雲林縣','嘉義市','嘉義縣','臺南市','高雄市','屏東縣','宜蘭縣','花蓮縣','臺東縣','澎湖縣','金門縣','連江縣'];
 $('#cCity').innerHTML=TAIWAN_CITIES.map(c=>`<option value="${'{}'}">${'{}'}</option>`.replace('${'+'{}'+'}',c).replace('${'+'{}'+'}',c)).join('');
 $('#cDate').value=today();
-
 function upsertCRM(city,name,group,date,note){let p=data.crm.find(x=>x.name===name);if(!p){p={city,name,group,logs:[]};data.crm.push(p);}else{p.city=city;p.group=group||p.group;}p.logs.push({date,note});if(!data.names.includes(name))data.names.push(name);if(group&&!data.groups.includes(group))data.groups.push(group);}
 $('#btnAddCRM').onclick=()=>{const city=$('#cCity').value;const name=$('#cName').value.trim();const group=$('#cGroup').value.trim();const date=$('#cDate').value||today();const note=$('#cNote').value.trim();if(!name)return alert('請輸入姓名');upsertCRM(city,name,group,date,note);$('#cName').value='';$('#cGroup').value='';$('#cNote').value='';persist();};
 $('#btnClearForm').onclick=()=>{$('#cName').value='';$('#cGroup').value='';$('#cNote').value='';};
-
 function renderCRM(){const addOpt=(el,arr)=>el.innerHTML=arr.map(v=>`<option value='${'{}'}'>`.replace('${'+'{}'+'}',v)).join('');addOpt($('#nameList'),data.names);addOpt($('#groupList'),data.groups);const tb=$('#cTable');tb.innerHTML='';const summary=data.crm.map(p=>({name:p.name,city:p.city,group:p.group,count:p.logs.length,last:(p.logs.map(l=>l.date).sort().slice(-1)[0]||'')})).sort((a,b)=>(b.last||'').localeCompare(a.last||''));summary.forEach((r,i)=>{const tr=document.createElement('tr');tr.innerHTML=`<td>${i+1}</td><td>${r.city||''}</td><td>${r.name}</td><td>${r.group||''}</td><td>${fmt(r.last)}</td><td>${r.count}</td><td class='right'><button class='btn' data-view='${r.name}'>查看</button> <button class='btn' data-del='${r.name}'>刪除</button></td>`;tb.appendChild(tr);});tb.onclick=e=>{const v=e.target.closest('button[data-view]');if(v){showDetail(v.dataset.view);return;}const d=e.target.closest('button[data-del]');if(d){const n=d.dataset.del;const i=data.crm.findIndex(x=>x.name===n);if(i>-1&&confirm('確定刪除此人所有互動紀錄？')){data.crm.splice(i,1);persist();}}};$('#crmSummary').textContent=`共 ${summary.length} 位，已依最近互動排序`;};
 function showDetail(name){const p=data.crm.find(x=>x.name===name);if(!p)return;const logs=p.logs.sort((a,b)=>(a.date||'').localeCompare(b.date||''));$('#crmDetail').innerHTML=`<div class='chip'>${p.city||''} · ${p.group||''} · ${p.name}</div>`+'<ul style="margin:6px 0 0;padding:0 0 0 18px">' + logs.map(l=>`<li>${fmt(l.date)} — ${(l.note||'').replace(/[<>]/g,'')}</li>`).join('') + '</ul>';}
 
-// KPI strip
-function renderKPI(){$('#kpiRecruit').textContent=data.recruits.length;const bv=data.bv.reduce((s,x)=>s+(x.bv||0),0);const ibv=data.ibv.reduce((s,x)=>s+(x.ibv||0),0);$('#kpiBV').textContent=bv;$('#kpiIBV').textContent=ibv;$('#kpiFlag').textContent=(data.recruits.length>=1&&bv>=1500&&ibv>=300)?'已達標':'未達標';}
+function renderKPI(){/* placeholder KPI if needed */}
 function renderAll(){renderRecruit();renderBV();renderIBV();renderCRM();renderKPI();}
 renderAll();
 
-// CSV export
+// CSV export (kept)
 function toCSV(rows, headers){const esc=v=>(''+(v==null?'':v)).replace(/"/g,'""');return [headers.join(','),...rows.map(r=>headers.map(h=>/[,
 ]/.test(r[h])?`"${esc(r[h])}"`:(r[h]??'')).join(','))].join('\n');}
 document.body.addEventListener('click',e=>{const btn=e.target.closest('#btnExport');if(!btn)return;const files=[];files.push({name:'recruits.csv',data:toCSV(data.recruits,['date','name'])});files.push({name:'bv.csv',data:toCSV(data.bv,['date','customer','item','bv'])});files.push({name:'ibv.csv',data:toCSV(data.ibv,['date','who','item','ibv'])});const crmFlat=data.crm.flatMap(p=>p.logs.map(l=>({city:p.city,name:p.name,group:p.group,date:l.date,note:l.note})));files.push({name:'crm.csv',data:toCSV(crmFlat,['city','name','group','date','note'])});const s=document.createElement('script');s.src='https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js';s.onload=()=>{const zip=new JSZip();files.forEach(f=>zip.file(f.name,'\ufeff'+f.data));zip.generateAsync({type:'blob'}).then(b=>{const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='IFNT_export_'+new Date().toISOString().slice(0,10)+'.zip';a.click();URL.revokeObjectURL(a.href);});};document.body.appendChild(s);});
 
-// SW register
-if('serviceWorker' in navigator){window.addEventListener('load',()=>navigator.serviceWorker.register('service-worker.js?v=v6.1.2'));}
+if('serviceWorker' in navigator){window.addEventListener('load',()=>navigator.serviceWorker.register('service-worker.js?v=v6.1.4').then(reg=>{if(reg.waiting)reg.waiting.postMessage({type:'SKIP_WAITING'});}));}
