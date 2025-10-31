@@ -1,406 +1,138 @@
 <!doctype html>
-<html lang="zh-Hant">
+<html lang="zh-Hant-TW">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-  <title>IFNT · 無限翻轉人生 v6.1</title>
-  <link rel="manifest" href="manifest.json">
-  <meta name="theme-color" content="#0b2a3c"/>
+  <title>IFNT · 無限翻轉人生 v6.1.2</title>
+  <meta name="theme-color" content="#0d2b3f" />
+  <link rel="manifest" href="manifest.json?v=v6.1.2">
+  <link rel="apple-touch-icon" href="icons/icon-192.png">
   <style>
-    :root{
-      --bg:#071b27; --card:#0e2f44; --muted:#9fb8c7; --line:#123a52; --text:#dfeaf0;
-      --accent:#49b6ff; --accent2:#1f99e6; --ok:#22c55e; --bad:#ef4444;
-      --field-bg:#0e2a36; --field-border:#274c5e;
+    :root {
+      --bg:#061a26; --panel:#0f2736; --muted:#87b5d1; --text:#def2ff;
+      --accent:#1ec8ff; --good:#35e58a; --bad:#ff6767; --warn:#ffd15c;
+      --chip:#14384c; --ring:#2e5a76;
     }
     *{box-sizing:border-box}
-    html,body{height:100%}
-    body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"PingFang TC","Noto Sans TC",Segoe UI,Roboto,Arial;
-         background:radial-gradient(1200px 700px at 60% -10%,#133a52,transparent 60%) , var(--bg); color:var(--text)}
-    .wrap{max-width:980px;margin:0 auto;padding:24px 16px 80px}
-    header{display:flex;align-items:center;gap:10px;margin-bottom:16px}
-    header img{width:36px;height:36px;border-radius:10px}
-    h1{font-size:20px;margin:0}
-    .sub{color:var(--muted);font-size:12px;margin-top:2px}
-    .tabs{display:flex;gap:8px;flex-wrap:wrap;margin:12px 0 16px}
-    .tab{padding:10px 14px;border:1px solid var(--line);background:linear-gradient(180deg,#11354a,#0c2636);border-radius:12px;cursor:pointer;color:#cfe3ee;box-shadow:0 8px 20px rgba(0,0,0,.25)}
-    .tab.active{background:linear-gradient(180deg,#1b5172,#143f59);color:#fff;outline:2px solid var(--accent);}
-    .card{background:linear-gradient(180deg,#11354a,#0f2d41);border:1px solid var(--line);border-radius:16px;padding:14px 14px 10px;box-shadow:0 10px 30px rgba(0,0,0,.35);margin-bottom:16px}
-    .title{font-size:18px;margin:0 0 10px}
-    .grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-    .row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
-    .btn{padding:12px 16px;border-radius:12px;border:1px solid var(--line);background:linear-gradient(180deg,var(--accent),var(--accent2));color:#052231;font-weight:700;cursor:pointer}
-    .btn.secondary{background:linear-gradient(180deg,#143545,#0e2a36);color:#dfeaf0}
-    .btn.ok{background:linear-gradient(180deg,#28d07f,#16a45c);color:#052a1a}
-    .btn.warn{background:linear-gradient(180deg,#ffd162,#ffb23a);color:#402300}
-    .btn.danger{background:linear-gradient(180deg,#ff7a8b,#ff586c);color:#2b0f14}
-    .kpi{display:flex;gap:12px;flex-wrap:wrap;margin:8px 0}
-    .kpi .box{flex:1;min-width:160px;background:linear-gradient(180deg,#0f2d41,#0c2636);border:1px solid var(--line);border-radius:12px;padding:12px}
-    .kpi .val{font-size:20px;font-weight:800}
-    table{width:100%;border-collapse:collapse;margin-top:10px}
-    th,td{border-bottom:1px solid var(--line);padding:10px 8px;text-align:left}
-    th{color:#bcd5e2;font-weight:700}
-    .right{display:flex;gap:8px;justify-content:flex-end}
-    .muted{color:var(--muted)}
-    /* v6: 統一欄位與日期寬度 */
-    .field, .field * { box-sizing: border-box; }
-    .field{ margin:8px 0; }
-    .field label{display:block;font-size:13px;color:var(--muted);margin:0 0 6px 2px}
-    .field input[type="text"],
-    .field input[type="number"],
-    .field input[type="date"],
-    .field select,
-    .field textarea{
-      width:100%;height:56px;padding:14px 16px;border-radius:14px;border:1px solid var(--field-border);background:var(--field-bg);color:var(--text);display:block;
-    }
-    .field textarea{height:120px;resize:vertical;line-height:1.55}
-    .field input[type="date"]{-webkit-appearance:none;appearance:none;line-height:28px}
-    .date-wrap{width:100%}.date-wrap input[type="date"]{width:100%}
-    /* 達標徽章 + 彩帶 */
-    .achieve-badge{display:inline-flex;align-items:center;gap:.4rem;padding:.2rem .6rem;border-radius:9999px;background:#16a34a;color:#fff;font-weight:700;font-size:.9rem;margin-left:.5rem}
-    .confetti{position:fixed;inset:0;pointer-events:none;overflow:hidden;z-index:9999}
-    .confetti i{position:absolute;width:10px;height:10px;will-change:transform,opacity;animation:confetti-fall 1200ms linear forwards}
-    @keyframes confetti-fall{to{transform:translate(var(--tx),110vh) rotate(720deg);opacity:0}}
-    @media (prefers-reduced-motion: reduce){.confetti i{animation:none}}
-    .footer{color:#93b6c8;font-size:12px;text-align:center;margin:20px 0 6px}
-    @media (max-width:780px){.grid{grid-template-columns:1fr}}
+    html,body{height:100%; background:radial-gradient(circle at 30% 10%, #0c2331, #061a26 60%); color:var(--text); margin:0; font-family: 'Noto Sans TC', 'Inter', system-ui, -apple-system, Segoe UI, Roboto, 'PingFang TC', 'Microsoft JhengHei', sans-serif;}
+    header{display:flex;align-items:center;gap:12px;padding:12px 16px;position:sticky;top:0;background:linear-gradient(180deg,#061a26,rgba(6,26,38,.6));backdrop-filter:blur(6px);z-index:3;border-bottom:1px solid #0e3247}
+    .logo{width:34px;height:34px;border-radius:8px;background:#000 url('icons/icon-192.png') center/90% no-repeat;box-shadow:0 0 0 1px var(--ring), 0 8px 18px rgba(0,0,0,.35)}
+    h1{margin:0;font-size:18px;line-height:1.15;font-weight:800;letter-spacing:.5px}
+    small.tag{display:block;color:var(--muted);font-size:12px;margin-top:2px}
+    .wrap{max-width:980px;margin:0 auto;padding:0 14px 100px}
+    .tabs{display:flex;gap:10px;flex-wrap:wrap;margin:8px 0 14px}
+    .tab{padding:10px 14px;border-radius:999px;background:var(--chip);color:var(--muted);border:1px solid var(--ring);cursor:pointer;user-select:none}
+    .tab.active{background:linear-gradient(180deg,#1b4054,#15394c);color:var(--text);box-shadow:inset 0 0 0 1px var(--ring)}
+    section.card{background:linear-gradient(180deg,#0e2a3a,#0b2432);border:1px solid var(--ring);border-radius:18px;box-shadow:0 10px 30px rgba(0,0,0,.28);padding:14px;margin:14px 0}
+    h2{margin:4px 0 10px;font-size:20px}
+    .row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+    .row3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px}
+    @media(max-width:860px){ .row,.row3{grid-template-columns:1fr} }
+    label.cap{display:block;color:var(--muted);font-size:12px;margin:6px 6px 6px 2px}
+    input,select,textarea{width:100%;padding:14px;border-radius:12px;background:linear-gradient(180deg,#0c2331,#0a1e2a);border:1px solid var(--ring);color:var(--text)}
+    textarea{min-height:96px;resize:vertical}
+    .btn{padding:12px 16px;border-radius:12px;border:1px solid var(--ring);background:linear-gradient(180deg,#103248,#0e2b3d);color:var(--text);cursor:pointer}
+    .btn.good{background:linear-gradient(180deg,#2de58e,#1bcf7a);color:#003021;border:1px solid #58f3a7}
+    .row-actions{display:flex;gap:10px;justify-content:flex-end}
+    .chip{padding:12px;border:1px dashed var(--ring);border-radius:12px;background:rgba(20,56,76,.35);text-align:center}
+    .chip b{display:block;font-size:20px;margin-top:6px}
+    .progress{height:8px;background:#0b2b3b;border-radius:999px;border:1px solid var(--ring);overflow:hidden}
+    .bar{height:100%;background:linear-gradient(90deg,#2de58e,#1ec8ff)}
+    .right{text-align:right}
   </style>
 </head>
 <body>
+  <header>
+    <div class="logo" aria-hidden="true"></div>
+    <div>
+      <h1>IFNT · 無限翻轉人生 <span>v6.1.2</span></h1>
+      <small class="tag">本機儲存 · 可安裝為 App · 一鍵匯出 CSV</small>
+    </div>
+  </header>
   <div class="wrap">
-    <header>
-      <img src="app_icon_192.png" alt="icon">
-      <div>
-        <h1>IFNT · 無限翻轉人生 v6.1</h1>
-        <div class="sub">本機儲存 · 手機可安裝 · 匯出 CSV</div>
-      </div>
-    </header>
-
-    <div class="tabs">
-      <div class="tab active" data-tab="u1">① 招募 1 人</div>
-      <div class="tab" data-tab="u2">② 零售＋自購 1500 BV</div>
-      <div class="tab" data-tab="u3">③ 家庭轉移 300 IBV</div>
-      <div class="tab" data-tab="u4">④ 312 互動名單</div>
+    <div class="tabs" id="tabs">
+      <div class="tab active" data-tab="recruit">① 招募 1 人</div>
+      <div class="tab" data-tab="bv">② 零售＋自購 1500 BV</div>
+      <div class="tab" data-tab="ibv">③ 家庭轉移消費 300 IBV</div>
+      <div class="tab" data-tab="crm">④ 312 互動名單</div>
     </div>
 
-    <!-- ① 招募 -->
-    <section id="u1" class="card">
-      <h2 class="title" id="recruitHeader">① 親自招募 1 人</h2>
-      <div class="grid">
-        <div class="field date-wrap"><label>日期</label><input id="r-date" type="date"></div>
-        <div class="field"><label>招募姓名</label><input id="r-name" type="text" placeholder="輸入姓名"></div>
+    <!-- Recruit -->
+    <section class="card" data-panel="recruit">
+      <h2>① 親自招募 1 人 <span id="flagRecruit" class="chip" style="display:inline-block">未達標</span></h2>
+      <div class="row">
+        <div><label class="cap">日期</label><input type="date" id="rDate"></div>
+        <div><label class="cap">招募姓名</label><input type="text" id="rName" placeholder="輸入姓名"></div>
       </div>
-      <div class="right" style="margin-top:8px"><button class="btn ok" id="r-add">新增招募</button></div>
-      <div class="kpi">
-        <div class="box"><div class="muted">累計人數</div><div class="val" id="r-sum">0</div></div>
-        <div class="box"><div class="muted">目標</div><div class="val">1</div></div>
+      <div class="row" style="align-items:end">
+        <div><label class="cap">累計人數</label><div class="chip"><b id="rTotal">0</b></div></div>
+        <div class="row-actions"><button class="btn good" id="btnAddRecruit">新增招募</button></div>
       </div>
-      <table id="r-table"><thead><tr><th>#</th><th>日期</th><th>姓名</th><th>操作</th></tr></thead><tbody></tbody></table>
+      <div class="progress" style="margin-top:10px"><div class="bar" id="barRecruit" style="width:0%"></div></div>
+      <table><thead><tr><th>#</th><th>日期</th><th>姓名</th><th class="right">操作</th></tr></thead><tbody id="rTable"></tbody></table>
     </section>
 
-    <!-- ② BV -->
-    <section id="u2" class="card" hidden>
-      <h2 class="title" id="bvHeader">② 零售＋自購 1500 BV</h2>
-      <div class="grid">
-        <div class="field date-wrap"><label>日期</label><input id="b-date" type="date"></div>
-        <div class="field"><label>顧客姓名</label><input id="b-customer" list="b-customers" placeholder="輸入或選擇顧客姓名"><datalist id="b-customers"></datalist></div>
-        <div class="field"><label>零售品項（自行輸入）</label><input id="b-item" type="text" placeholder="例如：平泰秀、OPC、NAD…"></div>
-        <div class="field"><label>零售 BV</label><input id="b-bv" type="number" inputmode="decimal" placeholder="例如：120"></div>
+    <!-- BV -->
+    <section class="card" data-panel="bv" hidden>
+      <h2>② 零售＋自購 1500 BV <span id="flagBV" class="chip" style="display:inline-block">未達標</span></h2>
+      <div class="row3">
+        <div><label class="cap">日期</label><input type="date" id="bDate"></div>
+        <div><label class="cap">顧客姓名</label><input type="text" id="bCustomer" placeholder="可選清單或自行輸入"></div>
+        <div><label class="cap">零售品項（例如：平泰秀、OPC、NAD）</label><input type="text" id="bItem" placeholder="例如：平泰秀、OPC、NAD"></div>
       </div>
-      <div class="right" style="margin-top:8px"><button class="btn ok" id="b-add">新增 BV</button></div>
-      <div class="kpi">
-        <div class="box"><div class="muted">本季累計 BV</div><div class="val" id="b-sum">0</div></div>
-        <div class="box"><div class="muted">距 1500 BV 還差</div><div class="val" id="b-left">1500</div></div>
+      <div class="row3">
+        <div><label class="cap">BV（數值）</label><input type="number" id="bBV" step="1" min="0" placeholder="輸入 BV 數值"></div>
+        <div class="row-actions"><button class="btn good" id="btnAddBV">新增 BV</button></div>
       </div>
-      <table id="b-table"><thead><tr><th>#</th><th>日期</th><th>姓名</th><th>品項</th><th>BV</th><th>操作</th></tr></thead><tbody></tbody></table>
+      <div class="progress" style="margin-top:10px"><div class="bar" id="barBV" style="width:0%"></div></div>
+      <div class="chip">目標：1500 BV ｜ 尚差 <b id="bRemain">1500</b></div>
+      <table><thead><tr><th>#</th><th>日期</th><th>顧客</th><th>品項</th><th>BV</th><th class="right">操作</th></tr></thead><tbody id="bTable"></tbody></table>
     </section>
 
-    <!-- ③ IBV -->
-    <section id="u3" class="card" hidden>
-      <h2 class="title" id="ibvHeader">③ 家庭轉移消費 300 IBV</h2>
-      <div class="grid">
-        <div class="field date-wrap"><label>日期</label><input id="i-date" type="date"></div>
-        <div class="field"><label>消費對象（自己/家人/客戶…）</label><input id="i-who" list="i-who-list" placeholder="輸入或選擇對象"><datalist id="i-who-list"></datalist></div>
-        <div class="field"><label>消費品項（自行輸入）</label><input id="i-item" type="text" placeholder="例如：保健、清潔、居家…"></div>
-        <div class="field"><label>IBV</label><input id="i-ibv" type="number" inputmode="decimal" placeholder="例如：20"></div>
+    <!-- IBV -->
+    <section class="card" data-panel="ibv" hidden>
+      <h2>③ 家庭轉移消費 300 IBV <span id="flagIBV" class="chip" style="display:inline-block">未達標</span></h2>
+      <div class="row3">
+        <div><label class="cap">日期</label><input type="date" id="iDate"></div>
+        <div><label class="cap">姓名 / 自己</label><input type="text" id="iWho" placeholder="顧客姓名或自己"></div>
+        <div><label class="cap">消費品項（自行輸入）</label><input type="text" id="iItem" placeholder="例如：清潔補充包、咖啡..."></div>
       </div>
-      <div class="right" style="margin-top:8px"><button class="btn ok" id="i-add">新增 IBV</button></div>
-      <div class="kpi">
-        <div class="box"><div class="muted">本季累計 IBV</div><div class="val" id="i-sum">0</div></div>
-        <div class="box"><div class="muted">距 300 IBV 還差</div><div class="val" id="i-left">300</div></div>
+      <div class="row3">
+        <div><label class="cap">IBV（數值）</label><input type="number" id="iIBV" step="1" min="0" placeholder="輸入 IBV 數值"></div>
+        <div class="row-actions"><button class="btn good" id="btnAddIBV">新增 IBV</button></div>
       </div>
-      <table id="i-table"><thead><tr><th>#</th><th>日期</th><th>對象</th><th>品項</th><th>IBV</th><th>操作</th></tr></thead><tbody></tbody></table>
+      <div class="progress" style="margin-top:10px"><div class="bar" id="barIBV" style="width:0%"></div></div>
+      <div class="chip">目標：300 IBV ｜ 尚差 <b id="iRemain">300</b></div>
+      <table><thead><tr><th>#</th><th>日期</th><th>姓名</th><th>品項</th><th>IBV</th><th class="right">操作</th></tr></thead><tbody id="iTable"></tbody></table>
     </section>
 
-    <!-- ④ People -->
-    <section id="u4" class="card" hidden>
-      <h2 class="title">④ 312 互動名單</h2>
-      <div class="grid">
-        <div class="field"><label>居住縣市</label><select id="p-city"></select></div>
-        <div class="field"><label>姓名（可選清單或自行輸入）</label><input id="p-name" list="p-name-list" placeholder="輸入或選擇姓名"><datalist id="p-name-list"></datalist></div>
-        <div class="field"><label>族群 / 關係</label><input id="p-group" list="p-group-list" placeholder="例如：國小同學、客戶、親戚"><datalist id="p-group-list"></datalist></div>
-        <div class="field date-wrap"><label>互動日期</label><input id="p-date" type="date"></div>
+    <!-- CRM -->
+    <section class="card" data-panel="crm" hidden>
+      <h2>④ 312 互動名單</h2>
+      <div class="row3">
+        <div><label class="cap">居住縣市</label><select id="cCity"></select></div>
+        <div><label class="cap">姓名（可選清單或自行輸入）</label><input type="text" id="cName" list="nameList" placeholder="輸入或選擇姓名"><datalist id="nameList"></datalist></div>
+        <div><label class="cap">族群 / 關係</label><input type="text" id="cGroup" list="groupList" placeholder="例如：國小同學、客戶、親戚"><datalist id="groupList"></datalist></div>
       </div>
-      <div class="field"><label>互動情況 / 備註（可輸入很多內容）</label><textarea id="p-note" placeholder="互動內容、需求、跟進事項…"></textarea></div>
-      <div class="right" style="margin-top:6px">
-        <button class="btn ok" id="p-add">新增 / 累加互動</button>
-        <button class="btn" id="p-export">匯出 CSV（人彙總＋互動明細）</button>
+      <div class="row3">
+        <div><label class="cap">互動日期</label><input type="date" id="cDate"></div>
       </div>
-      <table id="p-table"><thead><tr><th>#</th><th>縣市</th><th>姓名</th><th>族群</th><th>最近互動日</th><th>次數</th><th>操作</th></tr></thead><tbody></tbody></table>
+      <div><label class="cap">互動情況 / 備註（可輸入很多內容）</label><textarea id="cNote" placeholder="互動內容、需求、跟進事項…"></textarea></div>
+      <div class="row-actions" style="margin-top:10px">
+        <button class="btn good" id="btnAddCRM">新增 / 累加互動</button>
+        <button class="btn" id="btnClearForm">清空欄位</button>
+      </div>
+      <div id="crmSummary" style="margin-top:10px" class="chip">載入名單中…</div>
+      <table><thead><tr><th>#</th><th>縣市</th><th>姓名</th><th>族群</th><th>最近互動日</th><th>次數</th><th>操作</th></tr></thead><tbody id="cTable"></tbody></table>
+      <section class="card" style="margin-top:12px"><h3 style="margin:0 0 10px">查看互動紀錄</h3><div id="crmDetail">點「查看」以展開某位的完整互動紀錄。</div></section>
     </section>
-
-    <dialog id="dlg">
-      <div style="display:flex;justify-content:space-between;align-items:center;padding:12px 14px;border-bottom:1px solid var(--line)">
-        <div id="dlg-title">互動詳情</div>
-        <button class="btn secondary" id="dlg-close">關閉</button>
-      </div>
-      <div style="padding:12px 14px" id="dlg-body"></div>
-    </dialog>
-
-    <div class="footer">資料僅存放於你的裝置（LocalStorage）。</div>
   </div>
 
-<script>
-  const $ = s => document.querySelector(s);
-  const $$ = s => Array.from(document.querySelectorAll(s));
-  const fmt = d => d ? new Date(d).toISOString().slice(0,10) : "";
-  const today = () => fmt(new Date());
-
-  // Tabs
-  $$(".tab").forEach(t=>t.addEventListener("click",()=>{
-    $$(".tab").forEach(x=>x.classList.remove("active"));
-    t.classList.add("active");
-    const id=t.dataset.tab;
-    ["u1","u2","u3","u4"].forEach(s=>$("#"+s).hidden=(s!==id));
-  }));
-
-  // Cities
-  const CITIES = ["基隆市","臺北市","新北市","桃園市","新竹市","新竹縣","苗栗縣","臺中市","彰化縣","南投縣","雲林縣","嘉義市","嘉義縣","臺南市","高雄市","屏東縣","宜蘭縣","花蓮縣","臺東縣","澎湖縣","金門縣","連江縣"];
-  function fillCities(sel){ sel.innerHTML = CITIES.map(c=>`<option value="${c}">${c}</option>`).join(""); }
-
-  // Storage
-  const KEY = "ifnt_integrated_data_v6_1";
-  let DB = JSON.parse(localStorage.getItem(KEY) || JSON.stringify({
-    recruit:[], bv:[], ibv:[], people:[], memories:{ customers:[], who:[], names:[], groups:[] },
-    celebrated:{} // 記錄達標是否已慶祝
-  }));
-  function persist(){ localStorage.setItem(KEY, JSON.stringify(DB)); }
-
-  // Achievements
-  function showBadge(anchorEl, text){
-    if(!anchorEl) return;
-    let b = anchorEl.querySelector('.achieve-badge');
-    if(!b){
-      b = document.createElement('span');
-      b.className = 'achieve-badge';
-      b.textContent = text || '✅ 已達標';
-      anchorEl.appendChild(b);
-    }else{
-      b.textContent = text || '✅ 已達標';
+  <script src="app.js?v=v6.1.2"></script>
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => navigator.serviceWorker.register('service-worker.js?v=v6.1.2'));
     }
-  }
-  function celebrateOnce(key, anchorEl, text){
-    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    if(DB.celebrated[key] || reduceMotion){
-      showBadge(anchorEl, text);
-      return;
-    }
-    DB.celebrated[key]=true; persist();
-    const layer=document.createElement('div'); layer.className='confetti'; document.body.appendChild(layer);
-    const colors=['#22c55e','#60a5fa','#f59e0b','#ef4444','#a78bfa','#f472b6'];
-    const rect=anchorEl.getBoundingClientRect(); const originX=rect.left+rect.width/2; const originY=rect.top+window.scrollY+10;
-    for(let i=0;i<140;i++){
-      const el=document.createElement('i');
-      el.style.background=colors[i%colors.length];
-      el.style.left=originX+'px'; el.style.top=originY+'px';
-      el.style.setProperty('--tx',(Math.random()*240-120)+'px');
-      layer.appendChild(el);
-    }
-    setTimeout(()=>layer.remove(),1600);
-    showBadge(anchorEl, text);
-  }
-  function resetCelebrateFlags(){ DB.celebrated={}; persist(); $$('.achieve-badge').forEach(b=>b.remove()); }
-
-  // Section 1 Recruit
-  $("#r-date").value = today();
-  function renderRecruit(){
-    $("#r-sum").textContent = DB.recruit.length;
-    const tb=$("#r-table tbody"); tb.innerHTML="";
-    DB.recruit.forEach((r,i)=>{
-      const tr=document.createElement('tr');
-      tr.innerHTML=`<td>${i+1}</td><td>${r.date}</td><td>${r.name}</td><td class="right"><button class="btn warn" data-i="${i}" data-act="r-del">刪除</button></td>`;
-      tb.appendChild(tr);
-    });
-    if(DB.recruit.length>=1) celebrateOnce('recruit', $('#recruitHeader'), '🎉 已達成 1 人');
-  }
-  $("#r-add").onclick=()=>{
-    const name=$("#r-name").value.trim(); const date=$("#r-date").value || today();
-    if(!name){ alert("請輸入姓名"); return; }
-    DB.recruit.push({date,name}); persist(); $("#r-name").value=""; renderRecruit();
-  };
-  $("#r-table").addEventListener("click",e=>{
-    if(e.target.dataset.act==="r-del"){ DB.recruit.splice(+e.target.dataset.i,1); persist(); renderRecruit(); }
-  });
-
-  // Section 2 BV
-  $("#b-date").value = today();
-  function fillMemories(){
-    $("#b-customers").innerHTML = DB.memories.customers.map(n=>`<option value="${n}">`).join("");
-    $("#i-who-list").innerHTML = DB.memories.who.map(n=>`<option value="${n}">`).join("");
-    $("#p-name-list").innerHTML = DB.memories.names.map(n=>`<option value="${n}">`).join("");
-    $("#p-group-list").innerHTML = DB.memories.groups.map(n=>`<option value="${n}">`).join("");
-  }
-  function upsertMem(list,val){ if(!val) return; if(!list.includes(val)) list.push(val); }
-  function renderBV(){
-    const sum = DB.bv.reduce((a,b)=>a+(+b.bv||0),0);
-    $("#b-sum").textContent = sum.toFixed(0);
-    $("#b-left").textContent = Math.max(0,1500-sum).toFixed(0);
-    const tb=$("#b-table tbody"); tb.innerHTML="";
-    DB.bv.forEach((r,i)=>{
-      const tr=document.createElement('tr');
-      tr.innerHTML=`<td>${i+1}</td><td>${r.date}</td><td>${r.customer||""}</td><td>${r.item||""}</td><td>${r.bv}</td><td class="right"><button class="btn warn" data-i="${i}" data-act="b-del">刪除</button></td>`;
-      tb.appendChild(tr);
-    });
-    if(sum>=1500) celebrateOnce('bv', $('#bvHeader'), '🎉 已達成 1500 BV');
-  }
-  $("#b-add").onclick=()=>{
-    const date=$("#b-date").value||today(), customer=$("#b-customer").value.trim(), item=$("#b-item").value.trim(), bv=+$("#b-bv").value||0;
-    if(!customer || !bv){ alert("請輸入顧客與 BV"); return; }
-    DB.bv.push({date,customer,item,bv}); upsertMem(DB.memories.customers,customer); persist(); fillMemories(); renderBV();
-    $("#b-item").value=""; $("#b-bv").value="";
-  };
-  $("#b-table").addEventListener("click",e=>{
-    if(e.target.dataset.act==="b-del"){ DB.bv.splice(+e.target.dataset.i,1); persist(); renderBV(); }
-  });
-
-  // Section 3 IBV
-  $("#i-date").value = today();
-  function renderIBV(){
-    const sum = DB.ibv.reduce((a,b)=>a+(+b.ibv||0),0);
-    $("#i-sum").textContent = sum.toFixed(0);
-    $("#i-left").textContent = Math.max(0,300-sum).toFixed(0);
-    const tb=$("#i-table tbody"); tb.innerHTML="";
-    DB.ibv.forEach((r,i)=>{
-      const tr=document.createElement('tr');
-      tr.innerHTML=`<td>${i+1}</td><td>${r.date}</td><td>${r.who||""}</td><td>${r.item||""}</td><td>${r.ibv}</td><td class="right"><button class="btn warn" data-i="${i}" data-act="i-del">刪除</button></td>`;
-      tb.appendChild(tr);
-    });
-    if(sum>=300) celebrateOnce('ibv', $('#ibvHeader'), '🎉 已達成 300 IBV');
-  }
-  $("#i-add").onclick=()=>{
-    const date=$("#i-date").value||today(), who=$("#i-who").value.trim(), item=$("#i-item").value.trim(), ibv=+$("#i-ibv").value||0;
-    if(!who || !ibv){ alert("請輸入對象與 IBV"); return; }
-    DB.ibv.push({date,who,item,ibv}); upsertMem(DB.memories.who,who); persist(); fillMemories(); renderIBV();
-    $("#i-item").value=""; $("#i-ibv").value="";
-  };
-  $("#i-table").addEventListener("click",e=>{
-    if(e.target.dataset.act==="i-del"){ DB.ibv.splice(+e.target.dataset.i,1); persist(); renderIBV(); }
-  });
-
-  // Section 4 People
-  fillCities($("#p-city"));
-  $("#p-date").value = today();
-  function findPerson(name){ return DB.people.find(p => p.name === name); }
-  function renderPeople(){
-    const tb=$("#p-table tbody"); tb.innerHTML="";
-    DB.people.sort((a,b)=> (b.lastDate||"").localeCompare(a.lastDate||""));
-    DB.people.forEach((p,i)=>{
-      const tr=document.createElement("tr");
-      tr.innerHTML = `<td>${i+1}</td><td>${p.city||""}</td><td>${p.name||""}</td><td>${p.group||""}</td>
-        <td>${p.lastDate||""}</td><td>${(p.interactions||[]).length}</td>
-        <td class="right">
-          <button class="btn" data-i="${i}" data-act="p-view">查看</button>
-          <button class="btn danger" data-i="${i}" data-act="p-del">刪除</button>
-        </td>`;
-      tb.appendChild(tr);
-    });
-  }
-  $("#p-name").addEventListener("change",()=>{
-    const nm=$("#p-name").value.trim(); const p=findPerson(nm);
-    if(p){ $("#p-city").value=p.city||$("#p-city").value; $("#p-group").value=p.group||""; }
-  });
-  $("#p-add").onclick=()=>{
-    const city=$("#p-city").value, name=$("#p-name").value.trim(), group=$("#p-group").value.trim();
-    const date=$("#p-date").value||today(), note=$("#p-note").value.trim();
-    if(!name){ alert("請輸入姓名"); return; }
-    let p=findPerson(name);
-    if(!p){ p={city,name,group,interactions:[]}; DB.people.push(p); }
-    p.city=city; if(group) p.group=group;
-    p.interactions.push({date, note}); p.lastDate=date;
-    if(!DB.memories.names.includes(name)) DB.memories.names.push(name);
-    if(group && !DB.memories.groups.includes(group)) DB.memories.groups.push(group);
-    persist(); fillMemories(); renderPeople();
-    // v6.1: 清空姓名/族群（保留縣市與日期），聚焦姓名
-    $("#p-name").value=""; $("#p-group").value="";
-    $("#p-name").focus();
-  };
-  $("#p-table").addEventListener("click",e=>{
-    const i=+e.target.dataset.i; const act=e.target.dataset.act;
-    if(act==="p-del"){ if(confirm("確定刪除此人與所有互動？")){ DB.people.splice(i,1); persist(); renderPeople(); } return;}
-    if(act==="p-view"){ openPerson(i); }
-  });
-  function openPerson(i){
-    const p=DB.people[i]; $("#dlg-title").textContent = `${p.name}（${p.city||"-"}｜${p.group||"-"}）`;
-    const body = [`<div class="row"><button class="btn" data-i="${i}" id="ex-person">匯出此人 CSV</button></div>`,
-      `<table style="width:100%;margin-top:10px"><thead><tr><th>#</th><th>日期</th><th>內容</th><th>操作</th></tr></thead><tbody>`,
-      ...p.interactions.map((it,idx)=>`<tr><td>${idx+1}</td><td>${it.date}</td><td>${(it.note||"").replace(/</g,"&lt;")}</td>
-        <td class="right"><button class="btn warn" data-i="${i}" data-j="${idx}" data-act="p-del-inter">刪除</button></td></tr>`),
-      `</tbody></table>`].join("");
-    $("#dlg-body").innerHTML = body;
-    $("#dlg").showModal();
-    $("#ex-person").onclick=()=> exportPersonCSV(p);
-    $("#dlg-body").onclick = (ev)=>{
-      const t=ev.target; if(t.dataset.act==="p-del-inter"){ const j=+t.dataset.j; DB.people[i].interactions.splice(j,1); persist(); openPerson(i); renderPeople(); }
-    }
-  }
-  $("#dlg-close").onclick = ()=> $("#dlg").close();
-
-  function toCSV(rows){
-    return rows.map(r => r.map(v => {
-      v = (v==null?"":String(v));
-      if(/[",
-]/.test(v)) v='"'+v.replace(/"/g,'""')+'"';
-      return v;
-    }).join(",")).join("
-");
-  }
-  function download(name, text){
-    const blob = new Blob([text], {type:"text/csv;charset=utf-8"});
-    const url = URL.createObjectURL(blob); const a=document.createElement("a"); a.href=url; a.download=name; a.click(); URL.revokeObjectURL(url);
-  }
-  function exportAllCSV(){
-    const sumRows = [["縣市","姓名","族群","最近互動日","互動次數"]];
-    DB.people.forEach(p=> sumRows.push([p.city,p.name,p.group,p.lastDate,(p.interactions||[]).length]));
-    const detRows = [["縣市","姓名","族群","日期","內容"]];
-    DB.people.forEach(p=> (p.interactions||[]).forEach(it=> detRows.push([p.city,p.name,p.group,it.date,it.note])) );
-    download(`IFNT-人彙總-${today()}.csv`, toCSV(sumRows));
-    download(`IFNT-互動明細-${today()}.csv`, toCSV(detRows));
-  }
-  function exportPersonCSV(p){
-    const rows=[["姓名",p.name],["縣市",p.city],["族群",p.group],[],["日期","內容"]];
-    (p.interactions||[]).forEach(it=> rows.push([it.date,it.note]));
-    download(`IFNT-${p.name}-${today()}.csv`, toCSV(rows));
-  }
-  $("#p-export").onclick = exportAllCSV;
-
-  // Init
-  fillCities($("#p-city"));
-  $("#p-date").value = today(); $("#b-date").value = today(); $("#i-date").value = today(); $("#r-date").value = today();
-  function fillMemories(){ /* already defined above but re-run at boot */ }
-  // Restore memories arrays if missing
-  if(!DB.memories) DB.memories={customers:[],who:[],names:[],groups:[]};
-  // Render sequences
-  (function boot(){
-    // Rebind proper fillMemories now (overwrite placeholder)
-    function _fill(){
-      $("#b-customers").innerHTML = DB.memories.customers.map(n=>`<option value="${n}">`).join("");
-      $("#i-who-list").innerHTML = DB.memories.who.map(n=>`<option value="${n}">`).join("");
-      $("#p-name-list").innerHTML = DB.memories.names.map(n=>`<option value="${n}">`).join("");
-      $("#p-group-list").innerHTML = DB.memories.groups.map(n=>`<option value="${n}">`).join("");
-    }
-    fillMemories = _fill; // reassign
-    fillMemories();
-    renderRecruit(); renderBV(); renderIBV(); renderPeople();
-  })();
-</script>
+  </script>
 </body>
 </html>
