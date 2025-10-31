@@ -1,0 +1,21 @@
+{
+  "name": "IFNT · 無限翻轉人生",
+  "short_name": "IFNT",
+  "description": "本機儲存・手動可安裝・匯出 CSV",
+  "start_url": "./?v=20251031-5&source=pwa",
+  "display": "standalone",
+  "background_color": "#0a2a32",
+  "theme_color": "#0a2a32",
+  "icons": [
+    {
+      "src": "app_icon_192.png?v=20251031-5",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "app_icon_512.png?v=20251031-5",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
