@@ -1,28 +1,32 @@
-// IFNT app bootstrap
-(function(){'use strict';
-  console.log('IFNT boot v6.1.6-20251031-2');
-
-  if ('serviceWorker' in navigator) {
-    window.addEventListener('load', () => {
-      navigator.serviceWorker.register('./service-worker.js?ver=v6.1.6-20251031-2', { scope: './' })
-        .then(reg => {
-          console.log('[SW] registered', reg.scope);
-          reg.addEventListener('updatefound', () => {
-            const nw = reg.installing;
-            if (!nw) return;
-            nw.addEventListener('statechange', () => {
-              if (nw.state === 'installed' && navigator.serviceWorker.controller) {
-                console.log('[SW] new content available, skipping waiting');
-                nw.postMessage({ type: 'SKIP_WAITING' });
-              }
-            });
-          });
-        }).catch(err => console.error('[SW] register failed', err));
-
-      navigator.serviceWorker.addEventListener('controllerchange', () => {
-        console.log('[SW] controller changed -> reload once');
-        window.location.reload();
-      });
-    });
-  }
-})();
+const storeKey='ifnt_data_v62';const $=(s,p=document)=>p.querySelector(s);const $$=(s,p=document)=>[...p.querySelectorAll(s)];const todayStr=()=>new Date().toISOString().slice(0,10);
+const defaultData={version:'6.2',goals:{recruit:1,bv:1500,ibv:300},recruit:{list:[]},retail:{list:[]},family:{list:[]},contacts:{order:[],index:{}}};
+function load(){try{const j=localStorage.getItem(storeKey);if(!j)return structuredClone(defaultData);const d=JSON.parse(j);d.goals??={recruit:1,bv:1500,ibv:300};d.recruit??={list:[]};d.retail??={list:[]};d.family??={list:[]};d.contacts??={order:[],index:{}};return d}catch(e){return structuredClone(defaultData)}}
+function save(){localStorage.setItem(storeKey,JSON.stringify(DB))}let DB=load();
+function setActive(tab){$$("#tabs .chip").forEach(c=>c.classList.toggle('active',c.dataset.tab===tab));$$(".tab").forEach(t=>t.style.display=(t.id==='tab-'+tab?'':'none'))}
+$("#tabs").addEventListener('click',e=>{const chip=e.target.closest('.chip');if(!chip)return;setActive(chip.dataset.tab)});
+// Recruit
+const recTbody=$("#recTbody");function renderRecruit(){$("#recGoal").textContent=DB.goals.recruit;$("#recTotal").textContent=DB.recruit.list.length;recTbody.innerHTML=DB.recruit.list.map((r,i)=>`<tr><td>${i+1}</td><td>${r.date}</td><td>${r.name}</td><td><button class="btn ghost" data-del="${i}">刪除</button></td></tr>`).join('');const ok=DB.recruit.list.length>=DB.goals.recruit;const p=$("#recStatus");p.textContent=ok?"🎉 已達標":"尚未達標";p.className="pill "+(ok?"oktxt":"")}
+recTbody.addEventListener('click',e=>{const idx=e.target.dataset.del;if(idx!==undefined){DB.recruit.list.splice(+idx,1);save();renderRecruit()}});
+$("#btnRecAdd").addEventListener('click',()=>{const date=$("#recDate").value||todayStr();const name=$("#recName").value.trim();if(!name){alert("請輸入姓名");return}DB.recruit.list.push({date,name});save();$("#recName").value="";$("#recDate").value="";renderRecruit()});
+// Retail
+const retTbody=$("#retTbody");function renderRetail(){const sum=DB.retail.list.reduce((a,b)=>a+Number(b.bv||0),0);$("#retGoal").textContent=DB.goals.bv;$("#retTotal").textContent=sum;const remain=Math.max(0,DB.goals.bv-sum);$("#retRemain").textContent=remain===0?"🎉 已達標":`尚差 ${remain}`;retTbody.innerHTML=DB.retail.list.map((r,i)=>`<tr><td>${i+1}</td><td>${r.date}</td><td>${(r.customer||'')}${r.item?'｜'+r.item:''}</td><td class="right">${r.bv}</td><td><button class="btn ghost" data-del="${i}">刪除</button></td></tr>`).join('')}
+retTbody.addEventListener('click',e=>{const idx=e.target.dataset.del;if(idx!==undefined){DB.retail.list.splice(+idx,1);save();renderRetail()}});
+$("#btnRetAdd").addEventListener('click',()=>{const date=$("#retDate").value||todayStr();const customer=$("#retCustomer").value.trim();const item=$("#retItem").value.trim();const bv=Number($("#retBV").value||0);if(bv<=0){alert("請輸入 BV 數字");return}DB.retail.list.push({date,customer,item,bv});save();$("#retDate").value=$("#retCustomer").value=$("#retItem").value=$("#retBV").value="";renderRetail()});
+// Family
+const famTbody=$("#famTbody");function renderFamily(){const sum=DB.family.list.reduce((a,b)=>a+Number(b.ibv||0),0);$("#famGoal").textContent=DB.goals.ibv;$("#famTotal").textContent=sum;const remain=Math.max(0,DB.goals.ibv-sum);$("#famRemain").textContent=remain===0?"🎉 已達標":`尚差 ${remain}`;famTbody.innerHTML=DB.family.list.map((r,i)=>`<tr><td>${i+1}</td><td>${r.date}</td><td>${(r.person||'')}${r.item?'｜'+r.item:''}</td><td class="right">${r.ibv}</td><td><button class="btn ghost" data-del="${i}">刪除</button></td></tr>`).join('')}
+famTbody.addEventListener('click',e=>{const idx=e.target.dataset.del;if(idx!==undefined){DB.family.list.splice(+idx,1);save();renderFamily()}});
+$("#btnFamAdd").addEventListener('click',()=>{const date=$("#famDate").value||todayStr();const person=$("#famPerson").value.trim();const item=$("#famItem").value.trim();const ibv=Number($("#famIBV").value||0);if(ibv<=0){alert("請輸入 IBV 數字");return}DB.family.list.push({date,person,item,ibv});save();$("#famDate").value=$("#famPerson").value=$("#famItem").value=$("#famIBV").value="";renderFamily()});
+// Contacts
+const cities=["基隆市","臺北市","新北市","桃園市","新竹市","新竹縣","苗栗縣","臺中市","彰化縣","南投縣","雲林縣","嘉義市","嘉義縣","臺南市","高雄市","屏東縣","宜蘭縣","花蓮縣","臺東縣","澎湖縣","金門縣","連江縣"];const citySel=$("#ctCity");citySel.innerHTML=cities.map(c=>`<option value="${c}">${c}</option>`).join('');
+const ctTbody=$("#ctTbody");function renderContacts(){const rows=DB.contacts.order.map((name,i)=>{const it=DB.contacts.index[name];const last=it.logs.length?it.logs[it.logs.length-1].date:"-";return `<tr><td>${i+1}</td><td>${it.city||""}</td><td>${name}</td><td>${it.group||""}</td><td>${last}</td><td class="right">${it.logs.length}</td><td><button class="btn ghost" data-view="${name}">查看</button> <button class="btn ghost" data-del="${name}">刪除</button></td></tr>`}).join('');ctTbody.innerHTML=rows||`<tr><td colspan="7" style="opacity:.7">尚無資料</td></tr>`}
+ctTbody.addEventListener('click',e=>{const v=e.target.dataset.view;const d=e.target.dataset.del;if(v){const it=DB.contacts.index[v];const detail=it.logs.map(l=>`${l.date}｜${l.note}`).join('\n');alert(`【${v}】(${it.city}｜${it.group||''}) 互動紀錄：\n`+(detail||'尚無'))}if(d){if(confirm(`刪除「${d}」整筆名單與所有互動？`)){delete DB.contacts.index[d];DB.contacts.order=DB.contacts.order.filter(n=>n!==d);save();renderContacts()}}});
+$("#btnCtAdd").addEventListener('click',()=>{const city=$("#ctCity").value;const name=$("#ctName").value.trim();const group=$("#ctGroup").value.trim();const date=$("#ctDate").value||todayStr();const note=$("#ctNote").value.trim();if(!name){alert("請輸入姓名");return}if(!DB.contacts.index[name]){DB.contacts.index[name]={city,group,logs:[]};DB.contacts.order.push(name)}DB.contacts.index[name].city=city;if(group)DB.contacts.index[name].group=group;DB.contacts.index[name].logs.push({date,note});save();$("#ctName").value=$("#ctGroup").value=$("#ctNote").value=$("#ctDate").value="";renderContacts()});
+$("#btnCtClear").addEventListener('click',()=>{$("#ctName").value=$("#ctGroup").value=$("#ctNote").value=$("#ctDate").value=""});
+// Export CSV
+$("#btnExport").addEventListener('click',()=>{let out=[];out.push('=== 招募 1 人 ===');out.push('日期,姓名');DB.recruit.list.forEach(r=>out.push(`${r.date},${r.name}`));out.push('');out.push('=== 零售＋自購 1500 BV ===');out.push('日期,顧客,品項,BV');DB.retail.list.forEach(r=>out.push(`${r.date},${r.customer||''},${r.item||''},${r.bv}`));out.push('');out.push('=== 家庭轉移 300 IBV ===');out.push('日期,對象,品項,IBV');DB.family.list.forEach(r=>out.push(`${r.date},${r.person||''},${r.item||''},${r.ibv}`));out.push('');out.push('=== 312 互動名單 ===');out.push('姓名,縣市,族群,最近互動,次數,所有互動(日期｜內容；…)');DB.contacts.order.forEach(name=>{const it=DB.contacts.index[name];const last=it.logs.length?it.logs[it.logs.length-1].date:'';const joined=it.logs.map(x=>`${x.date}｜${(x.note||'').replace(/,/g,'、')}`).join('；');out.push(`${name},${it.city||''},${it.group||''},${last},${it.logs.length},${joined}`)});const blob=new Blob([out.join('\n')],{type:'text/csv;charset=utf-8'});const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download=`IFNT_export_${new Date().toISOString().slice(0,10)}.csv`;document.body.appendChild(a);a.click();a.remove();URL.revokeObjectURL(url)});
+// Clear, PWA
+$("#btnClearAll").addEventListener('click',()=>{if(!confirm("確定要清空本機所有資料嗎？"))return;localStorage.removeItem(storeKey);DB=load();renderAll()});
+let deferredPrompt;window.addEventListener('beforeinstallprompt',e=>{e.preventDefault();deferredPrompt=e});$("#btnInstall").addEventListener('click',async()=>{if(deferredPrompt){deferredPrompt.prompt();deferredPrompt=null}else alert("若未出現安裝提示，可用瀏覽器「加入主畫面」。")});
+function renderAll(){$("#recDate").value=$("#retDate").value=$("#famDate").value=$("#ctDate").value=todayStr();renderRecruit();renderRetail();renderFamily();renderContacts()}
+renderAll();
+if('serviceWorker'in navigator){window.addEventListener('load',()=>{navigator.serviceWorker.register('./service-worker.js')})}
