@@ -1,342 +1,121 @@
-<!DOCTYPE html>
-<html lang="zh-Hant">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<link rel="manifest" href="manifest.json">
-<title>IFNT · 無限翻轉人生（312 互動名單 v5）</title>
+<!doctype html><html lang="zh-Hant"><head>
+<meta charset="utf-8"/><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"/>
+<title>IFNT · 無限翻轉人生（整合主頁）</title>
+<link rel="manifest" href="manifest.json"><meta name="theme-color" content="#0b2a3c"/>
 <style>
-*{box-sizing:border-box}
-:root{
-  --bg:#0b2233;
-  --panel:#102a3d;
-  --muted:#8fb3c7;
-  --text:#e6f2f9;
-  --primary:#14b8a6;
-  --accent:#0ea5e9;
-  --danger:#ef4444;
-  --chip:#0b3750;
-  --soft:#11425d;
-}
-html,body{height:100%}
-body{margin:0;background:var(--bg);color:var(--text);font-family:system-ui,-apple-system,'PingFang TC','Noto Sans TC',Segoe UI,Roboto,Helvetica,Arial}
-.app{max-width:980px;margin:0 auto;padding:16px}
-.header{display:flex;align-items:center;gap:12px;margin-bottom:12px}
-.logo{width:36px;height:36px;border-radius:8px;background:#000 url('app_icon_192.png') center/cover no-repeat}
-h1{font-size:20px;margin:0}
-.card{background:var(--panel);border:1px solid var(--soft);border-radius:14px;padding:16px;margin:16px 0;box-shadow:0 6px 24px rgba(0,0,0,.25) inset}
-h3{margin:0 0 10px 0;font-size:18px}
-.grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-.field{display:flex;flex-direction:column;gap:6px;min-width:0}
-.field.col-2{grid-column:span 2}
-label{font-size:13px;color:var(--muted);display:flex;align-items:center;gap:6px}
-.caret{font-size:12px;opacity:.7}
-input,select,textarea,button{
-  width:100%;border:1px solid var(--soft);background:#0f2536;color:var(--text);
-  border-radius:10px;padding:12px 12px;font-size:16px;outline:none
-}
-textarea{resize:vertical}
-button{cursor:pointer;transition:.15s}
-button.primary{background:var(--accent);border-color:transparent;color:#002234;font-weight:700}
-button.ghost{background:transparent}
-button.danger{background:var(--danger);border-color:transparent;color:white}
-button.mini{width:auto;padding:6px 10px;border-radius:8px;font-size:13px}
-hr.soft{border:none;border-top:1px dashed var(--soft);margin:14px 0}
-.list-header,.list-row{display:grid;grid-template-columns:40px 90px 1fr 1fr 130px 70px 90px;gap:10px;align-items:center}
-.list-header{color:var(--muted);font-size:13px;margin-bottom:8px}
-.list-row{padding:10px 8px;border-radius:10px;background:#0f2536;border:1px solid var(--soft);margin-bottom:8px}
-.detail.hidden{display:none}
-.detail{margin-top:8px;background:#0f2536;border:1px solid var(--soft);border-radius:12px;padding:12px}
-.detail-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
-.chip{background:var(--chip);padding:6px 10px;border-radius:999px;margin-right:6px;font-size:12px}
-.chip.strong{background:var(--accent);color:#002234;font-weight:800}
-.timeline{display:flex;flex-direction:column;gap:10px}
-.tl-item{display:grid;grid-template-columns:120px 1fr 80px;gap:10px;align-items:start;background:#0d2130;border:1px solid var(--soft);border-radius:10px;padding:10px}
-.tl-date{font-weight:700;color:#c7e7ff}
-.tl-note{white-space:pre-wrap;line-height:1.5}
-.toolbar{display:flex;gap:10px;justify-content:flex-end;margin-top:10px}
-.hint{color:var(--muted);font-weight:400}
-@media (max-width:720px){
-  .grid{grid-template-columns:1fr}
-  .field.col-2{grid-column:span 1}
-  .list-header,.list-row{grid-template-columns:32px 70px 1fr 1fr 120px 60px 80px}
-  .tl-item{grid-template-columns:100px 1fr 70px}
-}
-</style>
-</head>
-<body>
-<div class="app">
-  <div class="header">
-    <div class="logo"></div>
-    <h1>IFNT · 無限翻轉人生（穩定版 · 312 互動名單 v5）</h1>
-  </div>
+:root{--bg:#071b27;--card:#0e2f44;--line:#123a52;--text:#dfeaf0;--sub:#9fb8c7;--accent:#3aa0ff;--shadow:0 8px 20px rgba(0,0,0,.25);--radius:14px}
+*{box-sizing:border-box}html,body{height:100%}body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"PingFang TC","Noto Sans TC",Segoe UI,Roboto,Arial;background:radial-gradient(1200px 700px at 60% -10%,#133a52,transparent 60%),#071b27;color:var(--text)}
+.wrap{max-width:980px;margin:0 auto;padding:24px 16px 80px}
+header{display:flex;align-items:center;gap:10px;margin-bottom:16px}header img{width:30px;height:30px;border-radius:8px}h1{font-size:22px;margin:0}
+.tabs{display:flex;gap:8px;flex-wrap:wrap;margin:10px 0 14px}.tab{padding:10px 14px;border:1px solid var(--line);background:linear-gradient(180deg,#11354a,#0c2636);border-radius:12px;cursor:pointer;color:#cfe3ee;box-shadow:var(--shadow)}.tab.active{background:linear-gradient(180deg,#1b5172,#143f59);color:#fff;outline:2px solid var(--accent)}
+.card{background:linear-gradient(180deg,#11354a,#0f2d41);border:1px solid var(--line);border-radius:var(--radius);padding:14px 14px 6px;box-shadow:var(--shadow);margin-bottom:14px}
+.title{font-size:20px;margin:0 0 12px;color:#e8f6ff}.grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.row{display:flex;gap:10px;align-items:center;margin:8px 0}label{font-size:13px;color:var(--sub)}
+input,select,textarea{width:100%;padding:14px;border-radius:12px;border:1px solid var(--line);background:linear-gradient(180deg,#0f2d41,#0c2636);color:var(--text);outline:none;box-shadow:inset 0 1px 0 rgba(255,255,255,.04)}
+input[type="date"]{min-height:48px}textarea{min-height:110px;resize:vertical}
+.btn{padding:12px 16px;border-radius:12px;border:1px solid var(--line);background:linear-gradient(180deg,#194b69,#123c56);color:#fff;cursor:pointer}.btn:hover{filter:brightness(1.05)}.btn.ok{background:linear-gradient(180deg,#27a05d,#1f874e)}.btn.warn{background:linear-gradient(180deg,#c33,#a22)}
+.kpi{display:flex;gap:12px;flex-wrap:wrap;margin:8px 0}.kpi .box{flex:1;min-width:160px;background:linear-gradient(180deg,#0f2d41,#0c2636);border:1px solid var(--line);border-radius:12px;padding:12px}.kpi .val{font-size:22px;font-weight:700}
+table{width:100%;border-collapse:collapse;margin-top:10px}th,td{border-bottom:1px solid var(--line);padding:12px 8px;text-align:left}th{color:#bcd5e2;font-weight:600}
+.right{display:flex;gap:8px;justify-content:flex-end}.muted{color:#9fb8c7}
+dialog{border:none;border-radius:16px;max-width:800px;width:92%;padding:0;box-shadow:0 30px 80px rgba(0,0,0,.6);background:#0a2230;color:var(--text)}.dlg-h{display:flex;justify-content:space-between;align-items:center;padding:14px;border-bottom:1px solid var(--line)}.dlg-b{padding:12px 14px 16px}.close-x{cursor:pointer;font-size:22px;color:#9fb8c7}
+.footer{position:fixed;inset:auto 0 0 0;background:linear-gradient(180deg,transparent,rgba(7,27,39,.9) 30%);padding:16px 12px}.footer .bar{max-width:980px;margin:0 auto;display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end}
+@media (max-width:780px){.grid{grid-template-columns:1fr}.footer .bar{justify-content:center}}
+</style></head><body>
+<div class="wrap">
+<header><img src="app_icon_192.png" alt="icon"><h1>IFNT · 無限翻轉人生（整合主頁）</h1></header>
+<div class="tabs"><div class="tab active" data-tab="ufo1">① 親自招募 1 人</div><div class="tab" data-tab="ufo2">② 零售＋自購 1500 BV</div><div class="tab" data-tab="ufo3">③ 家庭轉移消費 300 IBV</div><div class="tab" data-tab="ufo4">④ 312 互動名單</div></div>
 
-  <!-- Section 312 -->
-  <section id="sec-312" class="card">
-    <h3>④ 312 互動名單</h3>
-    <div class="grid">
-      <div class="field">
-        <label>居住縣市</label>
-        <select id="c_city_ddl"></select>
-      </div>
-      <div class="field">
-        <label>姓名 <span class="hint">（可選清單或自行輸入）</span> <span class="caret">▼</span></label>
-        <input id="c_name" list="nameList" placeholder="輸入或選擇姓名" autocomplete="off">
-        <datalist id="nameList"></datalist>
-      </div>
-      <div class="field">
-        <label>族群 / 關係 <span class="caret">▼</span></label>
-        <input id="c_group" list="groupList" placeholder="例如：國小同學、客戶、親戚" autocomplete="off">
-        <datalist id="groupList"></datalist>
-      </div>
-      <div class="field">
-        <label>互動日期</label>
-        <input id="c_date" type="date">
-      </div>
-      <div class="field col-2">
-        <label>互動情況 / 備註（可輸入很多內容）</label>
-        <textarea id="c_note" rows="3" placeholder="互動內容、需求、跟進事項…"></textarea>
-      </div>
-      <div class="field col-2">
-        <button id="btnAddOrAppend" class="primary">新增 / 累加互動</button>
-        <button id="btnClearPerson" class="ghost">清空欄位</button>
-      </div>
-    </div>
+<section id="ufo1" class="card"><h2 class="title">① 親自招募 1 人</h2>
+<div class="grid"><div><label>日期</label><input id="r-date" type="date"></div><div><label>招募姓名</label><input id="r-name" type="text" placeholder="輸入姓名"></div></div>
+<div class="right" style="margin-top:10px"><button class="btn ok" id="r-add">新增招募</button></div>
+<div class="kpi"><div class="box"><div class="muted">累計人數</div><div class="val" id="r-sum">0</div></div><div class="box"><div class="muted">目標</div><div class="val">1</div></div></div>
+<table id="r-table"><thead><tr><th>#</th><th>日期</th><th>姓名</th><th>操作</th></tr></thead><tbody></tbody></table>
+</section>
 
-    <hr class="soft">
+<section id="ufo2" class="card" hidden><h2 class="title">② 零售＋自購 1500 BV</h2>
+<div class="grid">
+  <div><label>日期</label><input id="b-date" type="date"></div>
+  <div><label>顧客姓名</label><input id="b-customer" list="b-customers" placeholder="輸入或選擇顧客姓名"><datalist id="b-customers"></datalist></div>
+  <div><label>零售品項（自行輸入）</label><input id="b-item" type="text" placeholder="例如：平泰秀、OPC、NAD…"></div>
+  <div><label>零售 BV</label><input id="b-bv" type="number" inputmode="decimal" placeholder="例如：120"></div>
+</div>
+<div class="right" style="margin-top:10px"><button class="btn ok" id="b-add">新增 BV</button></div>
+<div class="kpi"><div class="box"><div class="muted">本季累計 BV</div><div class="val" id="b-sum">0</div></div><div class="box"><div class="muted">距 1500 BV 還差</div><div class="val" id="b-left">1500</div></div></div>
+<table id="b-table"><thead><tr><th>#</th><th>日期</th><th>姓名</th><th>品項</th><th>BV</th><th>操作</th></tr></thead><tbody></tbody></table>
+</section>
 
-    <div class="list-header">
-      <div>#</div><div>縣市</div><div>姓名</div><div>族群</div><div>最近互動日</div><div>次數</div><div>操作</div>
-    </div>
-    <div id="personList" class="list-body"></div>
+<section id="ufo3" class="card" hidden><h2 class="title">③ 家庭轉移消費 300 IBV</h2>
+<div class="grid">
+  <div><label>日期</label><input id="i-date" type="date"></div>
+  <div><label>消費對象（自己/家人/客戶…）</label><input id="i-who" list="i-who-list" placeholder="輸入或選擇對象"><datalist id="i-who-list"></datalist></div>
+  <div><label>消費品項（自行輸入）</label><input id="i-item" type="text" placeholder="例如：保健、清潔、居家…"></div>
+  <div><label>IBV</label><input id="i-ibv" type="number" inputmode="decimal" placeholder="例如：20"></div>
+</div>
+<div class="right" style="margin-top:10px"><button class="btn ok" id="i-add">新增 IBV</button></div>
+<div class="kpi"><div class="box"><div class="muted">本季累計 IBV</div><div class="val" id="i-sum">0</div></div><div class="box"><div class="muted">距 300 IBV 還差</div><div class="val" id="i-left">300</div></div></div>
+<table id="i-table"><thead><tr><th>#</th><th>日期</th><th>對象</th><th>品項</th><th>IBV</th><th>操作</th></tr></thead><tbody></tbody></table>
+</section>
 
-    <div id="personDetail" class="detail hidden">
-      <div class="detail-header">
-        <div>
-          <span id="d_city" class="chip"></span>
-          <span id="d_name" class="chip strong"></span>
-          <span id="d_group" class="chip"></span>
-          <span id="d_count" class="chip">共 0 次互動</span>
-        </div>
-        <button id="btnCloseDetail" class="ghost">收起詳情</button>
-      </div>
-      <div id="timeline" class="timeline"></div>
-      <div class="detail-actions" style="display:flex;gap:10px;justify-content:flex-end;margin-top:10px;">
-        <button id="btnDeletePerson" class="danger">刪除這位的所有互動</button>
-        <button id="btnExportPerson" class="ghost">匯出這位的互動 CSV</button>
-      </div>
-    </div>
+<section id="ufo4" class="card" hidden><h2 class="title">④ 312 互動名單</h2>
+<div class="grid">
+  <div><label>居住縣市</label><select id="p-city"></select></div>
+  <div><label>姓名（可選清單或自行輸入）</label><input id="p-name" list="p-name-list" placeholder="輸入或選擇姓名"><datalist id="p-name-list"></datalist></div>
+  <div><label>族群 / 關係</label><input id="p-group" list="p-group-list" placeholder="例如：國小同學、客戶、親戚"><datalist id="p-group-list"></datalist></div>
+  <div><label>互動日期</label><input id="p-date" type="date"></div>
+</div>
+<div class="row"><div style="flex:1"><label>互動情況 / 備註（可輸入很多內容）</label><textarea id="p-note" placeholder="互動內容、需求、跟進事項…"></textarea><div class="muted" style="font-size:12px">若姓名為既有對象，會自動帶出其縣市與族群；新增後將累加到該人的互動時間軸。</div></div></div>
+<div class="right" style="margin-top:6px"><button class="btn ok" id="p-add">新增 / 累加互動</button><button class="btn" id="p-export">匯出 CSV（人彙總＋互動明細）</button></div>
+<table id="p-table"><thead><tr><th>#</th><th>縣市</th><th>姓名</th><th>族群</th><th>最近互動日</th><th>次數</th><th>操作</th></tr></thead><tbody></tbody></table>
+</section>
 
-    <div class="toolbar">
-      <button id="btnExportPeople" class="ghost">匯出「人彙總」CSV</button>
-      <button id="btnExportInteractions" class="ghost">匯出「互動明細」CSV</button>
-    </div>
-  </section>
+<dialog id="dlg"><div class="dlg-h"><div id="dlg-title">互動詳情</div><div class="close-x" id="dlg-close">✕</div></div><div class="dlg-b" id="dlg-body"></div></dialog>
+
+<div class="footer"><div class="bar"><button class="btn" id="btn-save">儲存資料</button><button class="btn warn" id="btn-clear">清空全部</button></div></div>
 </div>
 
 <script>
-const STORAGE_KEY = 'ifnt_people_v1';
-const OLD_KEY = 'ifnt_312_list';
-const cityListTW = ["\u57fa\u9686\u5e02", "\u81fa\u5317\u5e02", "\u65b0\u5317\u5e02", "\u6843\u5712\u5e02", "\u65b0\u7af9\u5e02", "\u65b0\u7af9\u7e23", "\u82d7\u6817\u7e23", "\u81fa\u4e2d\u5e02", "\u5f70\u5316\u7e23", "\u5357\u6295\u7e23", "\u96f2\u6797\u7e23", "\u5609\u7fa9\u5e02", "\u5609\u7fa9\u7e23", "\u81fa\u5357\u5e02", "\u9ad8\u96c4\u5e02", "\u5c4f\u6771\u7e23", "\u5b9c\u862d\u7e23", "\u82b1\u84ee\u7e23", "\u81fa\u6771\u7e23", "\u6f8e\u6e56\u7e23", "\u91d1\u9580\u7e23", "\u9023\u6c5f\u7e23"]
+const $=s=>document.querySelector(s), $$=s=>Array.from(document.querySelectorAll(s));
+const fmt=d=>d?new Date(d).toISOString().slice(0,10):""; const today=()=>fmt(new Date());
+const CITIES=["基隆市","臺北市","新北市","桃園市","新竹市","新竹縣","苗栗縣","臺中市","彰化縣","南投縣","雲林縣","嘉義市","嘉義縣","臺南市","高雄市","屏東縣","宜蘭縣","花蓮縣","臺東縣","澎湖縣","金門縣","連江縣"];
+function fillCities(sel){ sel.innerHTML=CITIES.map(c=>`<option value="${c}">${c}</option>`).join("") }
+$$(".tab").forEach(t=>t.addEventListener("click",()=>{$$(".tab").forEach(x=>x.classList.remove("active")); t.classList.add("active"); const id=t.dataset.tab; ["ufo1","ufo2","ufo3","ufo4"].forEach(s=>$("#"+s).hidden=(s!==id));}));
 
-let PEOPLE = {}
+const KEY="ifnt_integrated_data_v1";
+let DB=JSON.parse(localStorage.getItem(KEY)||JSON.stringify({recruit:[],bv:[],ibv:[],people:[],memories:{customers:[],who:[],names:[],groups:[]}}));
+function persist(){localStorage.setItem(KEY,JSON.stringify(DB))}
 
-const el = {
-  city:  document.getElementById('c_city_ddl'),
-  name:  document.getElementById('c_name'),
-  group: document.getElementById('c_group'),
-  date:  document.getElementById('c_date'),
-  note:  document.getElementById('c_note'),
-  btnAdd: document.getElementById('btnAddOrAppend'),
-  btnClear: document.getElementById('btnClearPerson'),
-  list:  document.getElementById('personList'),
-  detail: document.getElementById('personDetail'),
-  d_city: document.getElementById('d_city'),
-  d_name: document.getElementById('d_name'),
-  d_group: document.getElementById('d_group'),
-  d_count: document.getElementById('d_count'),
-  timeline: document.getElementById('timeline'),
-  btnCloseDetail: document.getElementById('btnCloseDetail'),
-  btnDeletePerson: document.getElementById('btnDeletePerson'),
-  btnExportPerson: document.getElementById('btnExportPerson'),
-  nameList: document.getElementById('nameList'),
-  groupList: document.getElementById('groupList'),
-  btnExportPeople: document.getElementById('btnExportPeople'),
-  btnExportInteractions: document.getElementById('btnExportInteractions'),
-};
+$("#r-date").value=today();
+function renderRecruit(){ $("#r-sum").textContent=DB.recruit.length; const tb=$("#r-table tbody"); tb.innerHTML=""; DB.recruit.forEach((r,i)=>{const tr=document.createElement("tr"); tr.innerHTML=`<td>${i+1}</td><td>${r.date}</td><td>${r.name}</td><td class='right'><button class='btn warn' data-i='${i}' data-act='r-del'>刪除</button></td>`; tb.appendChild(tr); });}
+$("#r-add").onclick=()=>{ const name=$("#r-name").value.trim(); const date=$("#r-date").value||today(); if(!name){alert("請輸入姓名");return} DB.recruit.push({date,name}); persist(); $("#r-name").value=""; renderRecruit(); };
+$("#r-table").addEventListener("click",e=>{ if(e.target.dataset.act==="r-del"){ DB.recruit.splice(+e.target.dataset.i,1); persist(); renderRecruit(); }});
 
-function initCityDDL() {
-  el.city.innerHTML = cityListTW.map(c => `<option value="${c}">${c}</option>`).join('');
-}
+$("#b-date").value=today(); $("#i-date").value=today();
+function fillMemories(){ $("#b-customers").innerHTML=DB.memories.customers.map(n=>`<option value="${n}">`).join(""); $("#i-who-list").innerHTML=DB.memories.who.map(n=>`<option value="${n}">`).join(""); $("#p-name-list").innerHTML=DB.memories.names.map(n=>`<option value="${n}">`).join(""); $("#p-group-list").innerHTML=DB.memories.groups.map(n=>`<option value="${n}">`).join(""); }
+function upsertMem(list,val){ if(!val) return; if(!list.includes(val)) list.push(val); }
+function renderBV(){ const sum=DB.bv.reduce((a,b)=>a+(+b.bv||0),0); $("#b-sum").textContent=sum.toFixed(0); $("#b-left").textContent=Math.max(0,1500-sum).toFixed(0); const tb=$("#b-table tbody"); tb.innerHTML=""; DB.bv.forEach((r,i)=>{const tr=document.createElement("tr"); tr.innerHTML=`<td>${i+1}</td><td>${r.date}</td><td>${r.customer||""}</td><td>${r.item||""}</td><td>${r.bv}</td><td class='right'><button class='btn warn' data-i='${i}' data-act='b-del'>刪除</button></td>`; tb.appendChild(tr); });}
+$("#b-add").onclick=()=>{ const date=$("#b-date").value||today(), customer=$("#b-customer").value.trim(), item=$("#b-item").value.trim(), bv=+$("#b-bv").value||0; if(!customer||!bv){alert("請輸入顧客與 BV");return} DB.bv.push({date,customer,item,bv}); upsertMem(DB.memories.customers,customer); persist(); fillMemories(); renderBV(); $("#b-item").value=""; $("#b-bv").value=""; };
+$("#b-table").addEventListener("click",e=>{ if(e.target.dataset.act==="b-del"){ DB.bv.splice(+e.target.dataset.i,1); persist(); renderBV(); }});
 
-function load() {
-  const raw = localStorage.getItem(STORAGE_KEY);
-  PEOPLE = raw ? JSON.parse(raw) : {}
-}
-function save() { localStorage.setItem(STORAGE_KEY, JSON.stringify(PEOPLE)) }
+function renderIBV(){ const sum=DB.ibv.reduce((a,b)=>a+(+b.ibv||0),0); $("#i-sum").textContent=sum.toFixed(0); $("#i-left").textContent=Math.max(0,300-sum).toFixed(0); const tb=$("#i-table tbody"); tb.innerHTML=""; DB.ibv.forEach((r,i)=>{const tr=document.createElement("tr"); tr.innerHTML=`<td>${i+1}</td><td>${r.date}</td><td>${r.who||""}</td><td>${r.item||""}</td><td>${r.ibv}</td><td class='right'><button class='btn warn' data-i='${i}' data-act='i-del'>刪除</button></td>`; tb.appendChild(tr); });}
+$("#i-add").onclick=()=>{ const date=$("#i-date").value||today(), who=$("#i-who").value.trim(), item=$("#i-item").value.trim(), ibv=+$("#i-ibv").value||0; if(!who||!ibv){alert("請輸入對象與 IBV");return} DB.ibv.push({date,who,item,ibv}); upsertMem(DB.memories.who,who); persist(); fillMemories(); renderIBV(); $("#i-item").value=""; $("#i-ibv").value=""; };
+$("#i-table").addEventListener("click",e=>{ if(e.target.dataset.act==="i-del"){ DB.ibv.splice(+e.target.dataset.i,1); persist(); renderIBV(); }});
 
-function migrateOld() {
-  const old = localStorage.getItem(OLD_KEY);
-  if (!old) return;
-  try {
-    const arr = JSON.parse(old);
-    arr.forEach(row => {
-      const key = row.name?.trim();
-      if (!key) return;
-      if (!PEOPLE[key]) PEOPLE[key] = { city: row.city||'', group: row.group||'', interactions: [] }
-      PEOPLE[key].interactions.push({ date: row.date||'', note: row.note||'' });
-      if (row.group) PEOPLE[key].group = row.group;
-      if (row.city)  PEOPLE[key].city  = row.city;
-    });
-    save();
-    localStorage.removeItem(OLD_KEY);
-  } catch(e){}
-}
+fillCities($("#p-city")); $("#p-date").value=today();
+function findPerson(name){ return DB.people.find(p=>p.name===name) }
+function renderPeople(){ const tb=$("#p-table tbody"); tb.innerHTML=""; DB.people.sort((a,b)=> (b.lastDate||"").localeCompare(a.lastDate||"")); DB.people.forEach((p,i)=>{const tr=document.createElement("tr"); tr.innerHTML=`<td>${i+1}</td><td>${p.city||""}</td><td>${p.name||""}</td><td>${p.group||""}</td><td>${p.lastDate||""}</td><td>${(p.interactions||[]).length}</td><td class='right'><button class='btn' data-i='${i}' data-act='p-view'>查看</button><button class='btn warn' data-i='${i}' data-act='p-del'>刪除</button></td>`; tb.appendChild(tr); });}
+$("#p-name").addEventListener("change",()=>{ const nm=$("#p-name").value.trim(); const p=findPerson(nm); if(p){ $("#p-city").value=p.city||$("#p-city").value; $("#p-group").value=p.group||""; } });
+$("#p-add").onclick=()=>{ const city=$("#p-city").value, name=$("#p-name").value.trim(), group=$("#p-group").value.trim(); const date=$("#p-date").value||today(), note=$("#p-note").value.trim(); if(!name){alert("請輸入姓名");return} let p=findPerson(name); if(!p){ p={city,name,group,interactions:[]}; DB.people.push(p) } p.city=city; if(group) p.group=group; p.interactions.push({date,note}); p.lastDate=date; if(!DB.memories.names.includes(name)) DB.memories.names.push(name); if(group && !DB.memories.groups.includes(group)) DB.memories.groups.push(group); persist(); fillMemories(); renderPeople(); $("#p-note").value=""; };
+$("#p-table").addEventListener("click",e=>{ const i=+e.target.dataset.i, act=e.target.dataset.act; if(act==="p-del"){ if(confirm("確定刪除此人與所有互動？")){ DB.people.splice(i,1); persist(); renderPeople(); } return } if(act==="p-view"){ openPerson(i) } });
+function openPerson(i){ const p=DB.people[i]; $("#dlg-title").textContent=`${p.name}（${p.city||"-"}｜${p.group||"-"}）`; const body=[`<div class="row"><button class="btn ok" data-i="${i}" id="ex-person">匯出此人 CSV</button></div>`,`<table><thead><tr><th>#</th><th>日期</th><th>內容</th><th>操作</th></tr></thead><tbody>`,...p.interactions.map((it,idx)=>`<tr><td>${idx+1}</td><td>${it.date}</td><td>${(it.note||"").replace(/</g,"&lt;")}</td><td class='right'><button class='btn warn' data-i='${i}' data-j='${idx}' data-act='p-del-inter'>刪除</button></td></tr>`),`</tbody></table>`].join(""); $("#dlg-body").innerHTML=body; $("#dlg").showModal(); $("#ex-person").onclick=()=>exportPersonCSV(p); $("#dlg-body").onclick=ev=>{ const t=ev.target; if(t.dataset.act==="p-del-inter"){ const j=+t.dataset.j; DB.people[i].interactions.splice(j,1); persist(); openPerson(i); renderPeople(); } } }
+$("#dlg-close").onclick=()=>$("#dlg").close();
 
-function ensureToday() {
-  const t = new Date();
-  const m = String(t.getMonth()+1).padStart(2,'0');
-  const d = String(t.getDate()).padStart(2,'0');
-  el.date.value = `${t.getFullYear()}-${m}-${d}`
-}
+function toCSV(rows){ return rows.map(r=>r.map(v=>{v=(v==null?"":String(v)); if(/[",\n]/.test(v)) v='"'+v.replace(/"/g,'""')+'"'; return v}).join(",")).join("\n") }
+function download(name,text){ const blob=new Blob([text],{type:"text/csv;charset=utf-8"}); const url=URL.createObjectURL(blob); const a=document.createElement("a"); a.href=url; a.download=name; a.click(); URL.revokeObjectURL(url) }
+function exportAllCSV(){ const sumRows=[["縣市","姓名","族群","最近互動日","互動次數"]]; DB.people.forEach(p=>sumRows.push([p.city,p.name,p.group,p.lastDate,(p.interactions||[]).length])); const detRows=[["縣市","姓名","族群","日期","內容"]]; DB.people.forEach(p=>(p.interactions||[]).forEach(it=>detRows.push([p.city,p.name,p.group,it.date,it.note]))); download(`IFNT-人彙總-${today()}.csv`,toCSV(sumRows)); download(`IFNT-互動明細-${today()}.csv`,toCSV(detRows)) }
+function exportPersonCSV(p){ const rows=[["姓名",p.name],["縣市",p.city],["族群",p.group],[],["日期","內容"]]; (p.interactions||[]).forEach(it=>rows.push([it.date,it.note])); download(`IFNT-${p.name}-${today()}.csv`,toCSV(rows)) }
+$("#p-export").onclick=exportAllCSV;
 
-function renderNameGroupDatalists() {
-  const names = Object.keys(PEOPLE).sort();
-  el.nameList.innerHTML = names.map(n => `<option value="${n}"></option>`).join('');
-  const groups = Array.from(new Set(Object.values(PEOPLE).map(p=>p.group).filter(Boolean))).sort();
-  el.groupList.innerHTML = groups.map(g => `<option value="${g}"></option>`).join('');
-}
-
-function renderList() {
-  const rows = Object.entries(PEOPLE).map(([name,p])=>({
-    name, city:p.city||'—', group:p.group||'—',
-    last: p.interactions.length ? (p.interactions[p.interactions.length-1].date||'—') : '—',
-    cnt: p.interactions.length
-  })).sort((a,b)=>a.name.localeCompare(b.name,'zh-Hant'));
-
-  el.list.innerHTML = rows.map((r,i)=>`
-    <div class="list-row">
-      <div>${i+1}</div>
-      <div>${r.city}</div>
-      <div>${r.name}</div>
-      <div>${r.group}</div>
-      <div>${r.last}</div>
-      <div>${r.cnt}</div>
-      <div><button class="mini" data-view="${r.name}">查看</button></div>
-    </div>
-  `).join('');
-
-  el.list.querySelectorAll('button[data-view]').forEach(btn=>{
-    btn.onclick = ()=> openDetail(btn.dataset.view)
-  });
-}
-
-function openDetail(name) {
-  const p = PEOPLE[name]; if(!p) return;
-  el.detail.classList.remove('hidden');
-  el.d_city.textContent = p.city || '—';
-  el.d_name.textContent = name;
-  el.d_group.textContent = p.group || '—';
-  el.d_count.textContent = `共 ${p.interactions.length} 次互動`;
-
-  el.timeline.innerHTML = p.interactions.map((it,i)=>`
-    <div class="tl-item">
-      <div class="tl-date">${it.date||'—'}</div>
-      <div class="tl-note">${escapeHTML(it.note||'')}</div>
-      <div class="tl-op"><button class="mini danger" data-del="${i}" data-name="${name}">刪除</button></div>
-    </div>
-  `).join('');
-
-  el.timeline.querySelectorAll('button[data-del]').forEach(b=>{
-    b.onclick = ()=>{
-      const idx = +b.dataset.del;
-      const key = b.dataset.name;
-      PEOPLE[key].interactions.splice(idx,1);
-      save(); renderList(); openDetail(key);
-    }
-  });
-
-  el.btnDeletePerson.onclick = ()=>{
-    if(confirm(`刪除「${name}」的所有互動？`)) {
-      delete PEOPLE[name]; save(); renderNameGroupDatalists(); renderList(); closeDetail();
-    }
-  };
-  el.btnExportPerson.onclick = ()=> exportPersonCSV(name);
-}
-function closeDetail(){ el.detail.classList.add('hidden') }
-
-function addOrAppend(){
-  const name = el.name.value.trim(); if(!name){alert('請輸入姓名');return;}
-  const city = el.city.value||''; const group = el.group.value.trim();
-  const date = el.date.value||''; const note = el.note.value.trim();
-  if(!PEOPLE[name]) PEOPLE[name] = { city, group, interactions: [] }
-  if(city) PEOPLE[name].city = city;
-  if(group) PEOPLE[name].group = group;
-  PEOPLE[name].interactions.push({date, note});
-  save(); renderNameGroupDatalists(); renderList(); openDetail(name);
-  el.note.value=''; ensureToday();
-}
-
-function clearInputs(){
-  el.name.value=''; el.group.value=''; el.note.value=''; ensureToday();
-}
-
-function onNameChange(){
-  const key = el.name.value.trim();
-  const p = PEOPLE[key];
-  if(p){
-    if(p.city) el.city.value = p.city;
-    if(p.group) el.group.value = p.group;
-    openDetail(key);
-  }
-}
-
-function exportPersonCSV(name){
-  const p = PEOPLE[name]; if(!p) return;
-  const rows = [['city','name','group','date','note']].concat(
-    p.interactions.map(it=>[p.city||'', name, p.group||'', it.date||'', it.note||''])
-  );
-  downloadCSV(rows, `${name}_interactions.csv`);
-}
-function exportPeopleCSV(){
-  const rows = [['city','name','group','last_date','count']];
-  Object.entries(PEOPLE).forEach(([name,p])=>{
-    const cnt = p.interactions.length; const last = cnt ? (p.interactions[cnt-1].date||'') : '';
-    rows.push([p.city||'', name, p.group||'', last, String(cnt)]);
-  });
-  downloadCSV(rows, 'people_summary.csv');
-}
-function exportInteractionsCSV(){
-  const rows = [['city','name','group','date','note']];
-  Object.entries(PEOPLE).forEach(([name,p])=>{
-    p.interactions.forEach(it=> rows.push([p.city||'', name, p.group||'', it.date||'', it.note||'']));
-  });
-  downloadCSV(rows, 'people_interactions.csv');
-}
-function downloadCSV(rows, filename){
-  const csv = rows.map(r=>r.map(csvEscape).join(',')).join('\r\n');
-  const blob = new Blob([csv], {type:'text/csv;charset=utf-8;'});
-  const a = document.createElement('a');
-  a.href = URL.createObjectURL(blob); a.download = filename; a.click();
-  URL.revokeObjectURL(a.href);
-}
-function csvEscape(s){
-  s = s==null ? '' : String(s);
-  return /[",\n]/.test(s) ? `"${s.replace(/"/g,'""')}"` : s;
-}
-function escapeHTML(str){
-  return str.replace(/[&<>'"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'})[c]);
-}
-
-/* Bind & init */
-el.btnAdd.onclick = addOrAppend;
-el.btnClear.onclick = clearInputs;
-el.name.addEventListener('change', onNameChange);
-el.btnCloseDetail.onclick = closeDetail;
-el.btnExportPeople.onclick = exportPeopleCSV;
-el.btnExportInteractions.onclick = exportInteractionsCSV;
-
-initCityDDL(); load(); migrateOld(); renderNameGroupDatalists(); renderList(); ensureToday();
-</script>
-</body>
-</html>
+$("#btn-save").onclick=()=>{persist(); alert("已儲存到本機")};
+$("#btn-clear").onclick=()=>{ if(confirm("確定清空全部資料？")){ localStorage.removeItem(KEY); DB={recruit:[],bv:[],ibv:[],people:[],memories:{customers:[],who:[],names:[],groups:[]}}; persist(); renderRecruit(); renderBV(); renderIBV(); renderPeople(); fillMemories(); } }
+renderRecruit(); renderBV(); renderIBV(); renderPeople(); fillMemories();
+</script></body></html>
