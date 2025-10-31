@@ -1,119 +1,128 @@
 <!doctype html>
 <html lang="zh-Hant">
 <head>
-<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="theme-color" content="#0d3b66">
-<link rel="manifest" href="manifest.json">
-<link rel="apple-touch-icon" href="assets/logo.png">
-<title>IFNT · 無限翻轉人生 v6.2</title>
-<style>
-:root{--bg:#0d2438;--panel:#0f3a5a;--muted:#0b2c44;--ink:#e6f2ff;--accent:#19c2ff;--ok:#28c76f;--warn:#ff9f43;--bad:#ff4d4f;--line:rgba(255,255,255,.08)}
-*{box-sizing:border-box} body{margin:0;background:#062033;color:var(--ink);font:16px/1.6 system-ui,"Noto Sans TC","PingFang TC",Roboto}
-.container{max-width:1080px;margin:0 auto;padding:24px 16px}
-header{display:flex;gap:14px;align-items:center;margin-bottom:16px}
-header img{width:38px;height:38px;border-radius:10px;object-fit:cover}
-h1{margin:0;font-size:22px;font-weight:800;display:flex;gap:8px;align-items:center}
-.ver{opacity:.7;font-weight:700;font-size:12px;padding:3px 8px;border:1px solid var(--line);border-radius:999px}
-.note{opacity:.7;font-size:13px}
-.row{display:flex;gap:10px;flex-wrap:wrap}
-.chip{padding:8px 14px;border:1px solid var(--line);border-radius:10px;background:rgba(255,255,255,.03);cursor:pointer;font-weight:700}
-.chip.active{outline:2px solid var(--accent)}
-section.card{background:#0c2c45;border:1px solid var(--line);border-radius:14px;padding:16px;margin:14px 0}
-h2{margin:0 0 10px;font-size:20px}
-.grid{display:grid;gap:10px}
-@media(min-width:720px){.grid.cols-2{grid-template-columns:1fr 1fr}}
-label{font-size:12px;opacity:.8}
-input,select,textarea{width:100%;padding:12px 14px;border-radius:12px;border:1px solid var(--line);background:#0b2a41;color:var(--ink);outline:none}
-textarea{min-height:110px;resize:vertical}
-.btn{padding:10px 16px;border-radius:12px;border:1px solid var(--line);cursor:pointer;font-weight:800}
-.btn.primary{background:linear-gradient(180deg,#00b2ff,#0096d1)} .btn.ghost{background:transparent}
-.stat{display:flex;gap:10px;align-items:center;margin:6px 0 0} .stat b{font-size:22px}
-.pill{padding:3px 8px;border-radius:999px;border:1px solid var(--line);font-size:12px;opacity:.85}
-table{width:100%;border-collapse:collapse;margin-top:10px}
-th,td{border-bottom:1px dashed var(--line);padding:10px 8px;text-align:left;font-size:14px}
-.right{text-align:right}
-.hint{opacity:.67;font-size:12px;margin-top:6px}
-.oktxt{color:var(--ok);font-weight:800}
-</style>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+  <meta name="theme-color" content="#0b3b60" />
+  <title>IFNT · 無限翻轉人生 v6.2.1</title>
+  <link rel="manifest" href="./manifest.json?v=20251031-4" />
+  <link rel="apple-touch-icon" href="./app_icon_192.png" />
+  <style>
+    :root{--bg:#0b3b60;--card:#0e3a59;--ink:#eaf6ff;--muted:#a8c6d9;--line:rgba(255,255,255,.08);--ok:#21d07a;--warn:#ffbf47;--bad:#ff5b6a}
+    *{box-sizing:border-box} body{margin:0;background:#072a46;color:var(--ink);font:16px/1.6 system-ui,'Noto Sans TC','PingFang TC',sans-serif}
+    .wrap{max-width:980px;margin:0 auto;padding:20px 14px 56px}
+    header{display:flex;align-items:center;gap:12px;margin:10px 0 14px}
+    header img{width:40px;height:40px;border-radius:10px;object-fit:cover;box-shadow:0 2px 12px rgba(0,0,0,.35)}
+    h1{margin:0;font-size:22px;font-weight:800;letter-spacing:.02em}
+    .ver{margin-left:8px;font-size:12px;opacity:.8;border:1px solid var(--line);padding:2px 8px;border-radius:999px}
+    .chips{display:flex;gap:8px;flex-wrap:wrap;margin-left:auto}
+    .chip{padding:8px 12px;border-radius:999px;border:1px solid var(--line);background:rgba(255,255,255,.06);cursor:pointer}
+    .tabs{display:flex;gap:8px;flex-wrap:wrap;margin:10px 0 14px}
+    .tabbtn{padding:10px 14px;border-radius:999px;border:1px solid var(--line);background:#0a3a5e;cursor:pointer;font-weight:700}
+    .tabbtn.active{background:#1686f0}
+    section.card{background:linear-gradient(180deg,#0f3a5d,#0a2e49);border:1px solid var(--line);border-radius:14px;padding:16px;margin:14px 0}
+    h2{margin:0 0 10px;font-size:20px}
+    .grid{display:grid;gap:10px}
+    @media(min-width:720px){.cols-2{grid-template-columns:1fr 1fr}.cols-3{grid-template-columns:1fr 1fr 1fr}}
+    label{font-size:12px;opacity:.85}
+    input,textarea,select,button{width:100%;padding:12px 14px;border-radius:12px;border:1px solid var(--line);background:#0b3555;color:var(--ink);outline:none}
+    textarea{min-height:110px;resize:vertical}
+    .btn{background:linear-gradient(180deg,#27e0c6,#18b7ad);border:none;cursor:pointer;font-weight:800}
+    .btn.secondary{background:linear-gradient(180deg,#43a1ff,#1674f0)}
+    .btn.warn{background:linear-gradient(180deg,#ffc35d,#ff9f43)}
+    .btn.danger{background:linear-gradient(180deg,#ff7a8b,#ff4c63)}
+    .right{display:flex;gap:8px;justify-content:flex-end;flex-wrap:wrap;margin-top:10px}
+    table{width:100%;border-collapse:collapse;margin-top:10px}
+    th,td{padding:10px;border-bottom:1px dashed var(--line);text-align:left}
+    th{opacity:.85}
+    .mono{font-family:ui-monospace,Menlo,Consolas,monospace}
+    .pill{padding:4px 8px;border-radius:999px;border:1px solid var(--line);font-size:12px}
+    .ok{color:var(--ok);font-weight:800} .bad{color:var(--bad);font-weight:800}
+    .hint{opacity:.75;font-size:12px}
+  </style>
 </head>
 <body>
-<div class="container">
-<header>
-  <img src="assets/logo.png" alt="logo">
-  <div>
-    <h1>IFNT · 無限翻轉人生 <span class="ver" id="ver">v6.2</span></h1>
-    <div class="note">本機儲存 · 手機可安裝 · 一鍵匯出 CSV · 離線可用</div>
-  </div>
-  <div style="margin-left:auto" class="row">
-    <button class="chip" id="btnExport">匯出 CSV</button>
-    <button class="chip" id="btnInstall">安裝</button>
-    <button class="chip" id="btnClearAll">清空所有資料</button>
-  </div>
-</header>
+  <div class="wrap">
+    <header>
+      <img src="./assets/logo.png" alt="logo" onerror="this.style.display='none'">
+      <h1>IFNT · 無限翻轉人生 <span class="ver">v6.2.1</span></h1>
+      <div class="chips">
+        <button class="chip" id="btnExport">匯出 CSV</button>
+        <button class="chip" id="btnInstall" style="display:none">加入主畫面</button>
+      </div>
+    </header>
 
-<div class="row" id="tabs">
-  <div class="chip active" data-tab="recruit">① 招募 1 人</div>
-  <div class="chip" data-tab="retail">② 零售＋自購 1500 BV</div>
-  <div class="chip" data-tab="family">③ 家庭轉移 300 IBV</div>
-  <div class="chip" data-tab="contacts">④ 312 互動名單</div>
-</div>
+    <div class="tabs" id="tabs">
+      <button class="tabbtn active" data-tab="t1">① 招募 1 人</button>
+      <button class="tabbtn" data-tab="t2">② 零售＋自購 1500 BV</button>
+      <button class="tabbtn" data-tab="t3">③ 家庭轉移 300 IBV</button>
+      <button class="tabbtn" data-tab="t4">④ 312 互動名單</button>
+    </div>
 
-<section class="card tab" id="tab-recruit">
-  <h2>① 親自招募 1 人</h2>
-  <div class="grid cols-2">
-    <div><label>日期</label><input type="date" id="recDate"></div>
-    <div><label>招募姓名</label><input type="text" id="recName" placeholder="輸入姓名"></div>
-  </div>
-  <div style="text-align:right;margin-top:10px"><button class="btn primary" id="btnRecAdd">新增招募</button></div>
-  <div class="stat"><span class="pill">累計人數</span> <b id="recTotal">0</b><span class="pill">目標 <span id="recGoal">1</span></span><span id="recStatus" class="pill"></span></div>
-  <table><thead><tr><th>#</th><th>日期</th><th>姓名</th><th>操作</th></tr></thead><tbody id="recTbody"></tbody></table>
-</section>
+    <section class="card" id="t1">
+      <h2>① 親自招募 1 人</h2>
+      <div class="grid cols-2">
+        <div><label>日期</label><input type="date" id="rDate"></div>
+        <div><label>招募姓名</label><input type="text" id="rName" placeholder="輸入姓名"></div>
+      </div>
+      <div class="right"><button class="btn" id="btnAddRecruit">新增招募</button></div>
+      <div class="hint"><span class="pill">累計</span> <b id="rTotal">0</b> / 目標 <b>1</b> <span id="rStatus" class="pill"></span></div>
+      <table><thead><tr><th>#</th><th>日期</th><th>姓名</th><th>操作</th></tr></thead><tbody id="rList"></tbody></table>
+    </section>
 
-<section class="card tab" id="tab-retail" style="display:none">
-  <h2>② 零售＋自購 1500 BV</h2>
-  <div class="grid cols-2">
-    <div><label>日期</label><input type="date" id="retDate"></div>
-    <div><label>顧客姓名</label><input type="text" id="retCustomer" placeholder="可留空或輸入"></div>
-    <div><label>零售品項（自行輸入）</label><input type="text" id="retItem" placeholder="例如：平泰秀、OPC、NAD"></div>
-    <div><label>零售 BV</label><input type="number" id="retBV" placeholder="數字"></div>
-  </div>
-  <div style="text-align:right;margin-top:10px"><button class="btn primary" id="btnRetAdd">新增 BV</button></div>
-  <div class="stat"><span class="pill">累計 BV</span> <b id="retTotal">0</b><span class="pill">目標 <span id="retGoal">1500</span></span><span class="pill" id="retRemain">尚差 1500</span></div>
-  <table><thead><tr><th>#</th><th>日期</th><th>顧客/品項</th><th class="right">BV</th><th>操作</th></tr></thead><tbody id="retTbody"></tbody></table>
-</section>
+    <section class="card" id="t2" hidden>
+      <h2>② 零售＋自購 1500 BV</h2>
+      <div class="grid cols-3">
+        <div><label>日期</label><input type="date" id="bvDate"></div>
+        <div><label>顧客姓名</label><input type="text" id="bvName" placeholder="可留空或輸入"></div>
+        <div><label>零售品項（自行輸入）</label><input type="text" id="bvItem" placeholder="例如：平泰秀、OPC、NAD"></div>
+      </div>
+      <div class="grid cols-3">
+        <div><label>零售 BV</label><input type="number" id="bvAmount" placeholder="數值"></div>
+        <div class="hint"><span class="pill">小計</span> <b id="bvSum">0</b></div>
+        <div class="hint"><span class="pill">距離 1500</span> <b id="bvRemain">1500</b></div>
+      </div>
+      <div class="right"><button class="btn" id="btnAddBV">新增 BV</button></div>
+      <table><thead><tr><th>#</th><th>日期</th><th>姓名</th><th>品項</th><th class="mono">BV</th><th>操作</th></tr></thead><tbody id="bvList"></tbody></table>
+    </section>
 
-<section class="card tab" id="tab-family" style="display:none">
-  <h2>③ 家庭轉移消費 300 IBV</h2>
-  <div class="grid cols-2">
-    <div><label>日期</label><input type="date" id="famDate"></div>
-    <div><label>對象（自己/家人/客戶…）</label><input type="text" id="famPerson" placeholder="可留空或輸入"></div>
-    <div><label>消費品項（自行輸入）</label><input type="text" id="famItem" placeholder="例如：保健、保養、居家…"></div>
-    <div><label>IBV</label><input type="number" id="famIBV" placeholder="數字"></div>
-  </div>
-  <div style="text-align:right;margin-top:10px"><button class="btn primary" id="btnFamAdd">新增 IBV</button></div>
-  <div class="stat"><span class="pill">累計 IBV</span> <b id="famTotal">0</b><span class="pill">目標 <span id="famGoal">300</span></span><span class="pill" id="famRemain">尚差 300</span></div>
-  <table><thead><tr><th>#</th><th>日期</th><th>對象/品項</th><th class="right">IBV</th><th>操作</th></tr></thead><tbody id="famTbody"></tbody></table>
-</section>
+    <section class="card" id="t3" hidden>
+      <h2>③ 家庭轉移消費 300 IBV</h2>
+      <div class="grid cols-3">
+        <div><label>日期</label><input type="date" id="ibvDate"></div>
+        <div><label>姓名（或自己）</label><input type="text" id="ibvName" placeholder="可留空或輸入"></div>
+        <div><label>消費品項（自行輸入）</label><input type="text" id="ibvItem" placeholder="例如：保健、家電、日用品"></div>
+      </div>
+      <div class="grid cols-3">
+        <div><label>IBV</label><input type="number" id="ibvAmount" placeholder="數值"></div>
+        <div class="hint"><span class="pill">小計</span> <b id="ibvSum">0</b></div>
+        <div class="hint"><span class="pill">距離 300</span> <b id="ibvRemain">300</b></div>
+      </div>
+      <div class="right"><button class="btn" id="btnAddIBV">新增 IBV</button></div>
+      <table><thead><tr><th>#</th><th>日期</th><th>姓名</th><th>品項</th><th class="mono">IBV</th><th>操作</th></tr></thead><tbody id="ibvList"></tbody></table>
+    </section>
 
-<section class="card tab" id="tab-contacts" style="display:none">
-  <h2>④ 312 互動名單</h2>
-  <div class="grid cols-2">
-    <div><label>居住縣市</label><select id="ctCity"></select></div>
-    <div><label>姓名（可選清單或自行輸入）</label><input type="text" id="ctName" placeholder="輸入或選擇姓名"></div>
-    <div><label>族群 / 關係</label><input type="text" id="ctGroup" placeholder="例如：國小同學、客戶、親戚"></div>
-    <div><label>互動日期</label><input type="date" id="ctDate"></div>
-  </div>
-  <div><label>互動情況 / 備註（可輸入很多內容）</label><textarea id="ctNote" placeholder="互動內容、需求、跟進事項…"></textarea></div>
-  <div style="text-align:right;margin-top:10px">
-    <button class="btn primary" id="btnCtAdd">新增 / 累加互動</button>
-    <button class="btn ghost" id="btnCtClear">清空欄位</button>
-  </div>
-  <div class="hint">點「查看」可檢視該名單的所有互動紀錄（會持續累積於同一筆）。</div>
-  <table><thead><tr><th>#</th><th>縣市</th><th>姓名</th><th>族群</th><th>最近互動日</th><th class="right">次數</th><th>操作</th></tr></thead><tbody id="ctTbody"></tbody></table>
-</section>
+    <section class="card" id="t4" hidden>
+      <h2>④ 312 互動名單</h2>
+      <div class="grid cols-3">
+        <div><label>居住縣市</label><select id="city"></select></div>
+        <div><label>姓名（可選清單或自行輸入）</label><input type="text" id="pName" placeholder="輸入或選擇姓名"></div>
+        <div><label>族群 / 關係</label><input type="text" id="pGroup" placeholder="例如：國小同學、客戶、親戚"></div>
+      </div>
+      <div class="grid cols-2">
+        <div><label>互動日期</label><input type="date" id="pDate"></div>
+        <div><label>互動情況 / 備註（可輸入很多內容）</label><input type="text" id="pNote" placeholder="互動內容、需求、跟進事項…"></div>
+      </div>
+      <div class="right">
+        <button class="btn" id="btnAddInteract">新增 / 累加互動</button>
+        <button class="btn secondary" id="btnClearInputs4">清空欄位</button>
+      </div>
+      <table><thead><tr><th>#</th><th>縣市</th><th>姓名</th><th>族群</th><th>最近互動日</th><th class="mono">次數</th><th>操作</th></tr></thead><tbody id="pList"></tbody></table>
+    </section>
 
-<footer style="opacity:.6;text-align:center;font-size:12px;margin:28px 0">資料僅存於本機（localStorage）。可隨時匯出 CSV 備份。</footer>
-</div>
-<script src="app.js"></script>
+    <p class="hint">資料儲存在本機（localStorage）。清除瀏覽器資料會一併清空。建議常用「匯出 CSV」備份。</p>
+  </div>
+
+  <script src="./app.20251031-4.js" defer></script>
 </body>
 </html>
