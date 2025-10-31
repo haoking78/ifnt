@@ -1,12 +1,20 @@
 {
-  "name": "無限翻轉人生",
+  "name": "IFNT · 無限翻轉人生（312 互動名單）",
   "short_name": "IFNT",
   "start_url": "./index.html",
   "display": "standalone",
-  "background_color": "#0A0A0A",
-  "theme_color": "#1E88E5",
+  "background_color": "#0b2233",
+  "theme_color": "#0ea5e9",
   "icons": [
-    { "src": "app_icon_192.png", "sizes": "192x192", "type": "image/png" },
-    { "src": "app_icon_512.png", "sizes": "512x512", "type": "image/png" }
+    {
+      "src": "app_icon_192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "app_icon_512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
   ]
 }
