@@ -1,5 +1,5 @@
 
-// IFNT v6.2.4 (transparent logo edition)
+// IFNT v6.2.6 - shared name-group memory & auto-fill
 const $ = (s)=>document.querySelector(s);
 const $$ = (s)=>document.querySelectorAll(s);
 const store = {
@@ -11,7 +11,8 @@ const state = store.get('ifnt-state', {
   bvMap: {},
   ibvMap: {},
   people: [],
-  settings: { bvTarget:1500, ibvTarget:300 }
+  settings: { bvTarget:1500, ibvTarget:300 },
+  nameGroups: {} // NEW: { "姓名": "族群/關係" }
 });
 function save(){ store.set('ifnt-state', state); }
 
@@ -66,7 +67,7 @@ function updateTargetsBadge(){
   else{ const left=state.settings.bvTarget-bvTotal; bvBadge.textContent='距離 '+left; bvBadge.classList.remove('badge-green'); bvBadge.classList.add('badge-red'); }
 
   if(ibvOK){ ibvBadge.textContent='已達標'; ibvBadge.classList.remove('badge-red'); ibvBadge.classList.add('badge-green'); if(!_wasIBVOK){ celebrateBadge(ibvBadge); fireworks(1200);} }
-  else{ const left=state.settings.ibvTarget-ibvTotal; ibvBadge.textContent='距離 '+left; ibvBadge.classList.remove('badge-green'); ibvBadge.classList.add('badge-red'); }
+  else{ const left=state.settings.ibvTarget-ibvTotal; ibvBadge.textContent='距離 '+left; ibvBadge.textContent='距離 '+left; ibvBadge.classList.remove('badge-green'); ibvBadge.classList.add('badge-red'); }
 
   _wasBVOK=bvOK; _wasIBVOK=ibvOK;
 }
@@ -94,7 +95,7 @@ $('#btnAddBV').addEventListener('click', ()=>{
   state.bvMap[name].items.push({date,item,bv:val});
   state.bvMap[name].total = sum(state.bvMap[name].items, x=>x.bv);
   save(); $('#bvName').value=''; $('#bvItem').value=''; $('#bvValue').value=''; $('#bvDate').valueAsDate=new Date();
-  renderBV(); updateTargetsBadge();
+  renderBV(); updateTargetsBadge(); refreshNameLists();
 });
 function renderBV(){
   const arr = Object.values(state.bvMap).sort((a,b)=>b.total-a.total);
@@ -109,7 +110,7 @@ window.viewBV = (name)=>{
   alert(`${name} 的 BV 記錄（共 ${p.total}）\n\n` + p.items.map(x=>`• ${x.date}｜${x.item}｜${x.bv}`).join('\n'));
 };
 window.delBV = (name)=>{
-  if(confirm(`刪除「${name}」的所有 BV 記錄？`)){ delete state.bvMap[name]; save(); renderBV(); updateTargetsBadge(); }
+  if(confirm(`刪除「${name}」的所有 BV 記錄？`)){ delete state.bvMap[name]; save(); renderBV(); updateTargetsBadge(); refreshNameLists(); }
 };
 
 // IBV
@@ -120,7 +121,7 @@ $('#btnAddIBV').addEventListener('click', ()=>{
   state.ibvMap[name].items.push({date,item,ibv:val});
   state.ibvMap[name].total = sum(state.ibvMap[name].items, x=>x.ibv);
   save(); $('#ibvName').value=''; $('#ibvItem').value=''; $('#ibvValue').value=''; $('#ibvDate').valueAsDate=new Date();
-  renderIBV(); updateTargetsBadge();
+  renderIBV(); updateTargetsBadge(); refreshNameLists();
 });
 function renderIBV(){
   const arr = Object.values(state.ibvMap).sort((a,b)=>b.total-a.total);
@@ -135,23 +136,48 @@ window.viewIBV = (name)=>{
   alert(`${name} 的 IBV 記錄（共 ${p.total}）\n\n` + p.items.map(x=>`• ${x.date}｜${x.item}｜${x.ibv}`).join('\n'));
 };
 window.delIBV = (name)=>{
-  if(confirm(`刪除「${name}」的所有 IBV 記錄？`)){ delete state.ibvMap[name]; save(); renderIBV(); updateTargetsBadge(); }
+  if(confirm(`刪除「${name}」的所有 IBV 記錄？`)){ delete state.ibvMap[name]; save(); renderIBV(); updateTargetsBadge(); refreshNameLists(); }
 };
 
-// 312
+// 312 - auto-fill group by name & shared names
 $('#btnAddLog').addEventListener('click', ()=>{
   const city=$('#city').value, name=nz($('#pName').value), group=nz($('#pGroup').value), date=$('#pDate').value, note=nz($('#pNote').value);
   if(!name) return alert('請輸入姓名');
   let p = state.people.find(x=>x.name===name);
   if(!p){ p={city,name,group,logs:[]}; state.people.push(p); }
-  p.city = city || p.city; if(group) p.group = group;
+  p.city = city || p.city;
+  if(group){ p.group = group; state.nameGroups[name]=group; } // update name→group memory
   p.logs.push({date, note}); save();
   $('#pName').value=''; $('#pGroup').value=''; $('#pNote').value=''; $('#pDate').valueAsDate=new Date();
-  renderPeople();
+  renderPeople(); refreshNameLists();
 });
+
+// When typing/choosing a name, auto-fill group if we have memory
+function hookAutoFill(){
+  const np=$('#pName'); const gp=$('#pGroup');
+  if(!np || !gp) return;
+  const apply = ()=>{
+    const name = np.value.trim();
+    if(name && state.nameGroups[name]){
+      gp.value = state.nameGroups[name];
+    }
+  };
+  np.addEventListener('change', apply);
+  np.addEventListener('blur', apply);
+  np.addEventListener('input', ()=>{
+    // if user typed a full existing name, also apply
+    const nm = np.value.trim();
+    if(state.nameGroups[nm]) gp.value = state.nameGroups[nm];
+  });
+}
+hookAutoFill();
+
 function renderPeople(){
-  const names=[...new Set(state.people.map(p=>p.name))];
-  const groups=[...new Set(state.people.map(p=>p.group).filter(Boolean))];
+  const names=[...new Set(state.people.map(p=>p.name)
+    .concat(Object.keys(state.bvMap))
+    .concat(Object.keys(state.ibvMap)))];
+  const groups=[...new Set(state.people.map(p=>p.group).filter(Boolean)
+    .concat(Object.values(state.nameGroups||{})))];
   $('#nameList').innerHTML = names.map(n=>`<option value="${n}">`).join('');
   $('#groupList').innerHTML = groups.map(g=>`<option value="${g}">`).join('');
 
@@ -165,16 +191,26 @@ function renderPeople(){
           <button class="btn warn" data-del="${i}">刪除</button></td>
     </tr>`;
   }).join('') || '<tr><td colspan="7" class="note">尚無資料</td></tr>';
-  tb.querySelectorAll('[data-del]').forEach(b=>b.onclick=()=>{ state.people.splice(+b.dataset.del,1); save(); renderPeople(); });
+  tb.querySelectorAll('[data-del]').forEach(b=>b.onclick=()=>{ state.people.splice(+b.dataset.del,1); save(); renderPeople(); refreshNameLists(); });
   tb.querySelectorAll('[data-view]').forEach(b=>b.onclick=()=>{
     const p = state.people[+b.dataset.view];
     alert(`${p.name}（${p.city||''} / ${p.group||''}）\n\n` + p.logs.map(l=>`${l.date}  ${l.note}`).join('\n'));
   });
 }
 
+function refreshNameLists(){
+  // refresh all datalists for name inputs
+  const names=[...new Set(state.people.map(p=>p.name)
+    .concat(Object.keys(state.bvMap))
+    .concat(Object.keys(state.ibvMap)))].sort();
+  const html = names.map(n=>`<option value="${n}">`).join('');
+  const lists=['#nameList','#nameList2'];
+  lists.forEach(id=>{ const dl=document.querySelector(id); if(dl) dl.innerHTML = html; });
+}
+
 // CSV export
 $('#btnExport').addEventListener('click', ()=>{
-  const L=[]; L.push('"IFNT 匯出","v6.2.4","'+new Date().toISOString()+'"');
+  const L=[]; L.push('"IFNT 匯出","v6.2.6","'+new Date().toISOString()+'"');
   L.push('--- 招募'); L.push('"日期","姓名"'); state.recruits.forEach(x=>L.push(`"${x.date}","${x.name.replace(/"/g,'""')}"`));
   L.push('--- BV(每人彙總)'); L.push('"姓名","筆數","小計BV","明細"');
   Object.values(state.bvMap).forEach(p=>{ const d=p.items.map(x=>`${x.date} ${x.item} ${x.bv}`).join(' | '); L.push(`"${p.name.replace(/"/g,'""')}",${p.items.length},${p.total},"${d.replace(/"/g,'""')}"`); });
@@ -185,7 +221,7 @@ $('#btnExport').addEventListener('click', ()=>{
     L.push(`"${(p.city||'').replace(/"/g,'""')}","${p.name.replace(/"/g,'""')}","${(p.group||'').replace(/"/g,'""')}","${latest}",${p.logs.length},"${logs.replace(/"/g,'""')}"`);
   });
   const blob=new Blob([L.join('\n')],{type:'text/csv;charset=utf-8'});
-  const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download='IFNT_export_v6.2.4.csv'; a.click(); setTimeout(()=>URL.revokeObjectURL(a.href),500);
+  const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download='IFNT_export_v6.2.6.csv'; a.click(); setTimeout(()=>URL.revokeObjectURL(a.href),500);
 });
 
 // Clear buttons
@@ -197,6 +233,6 @@ $$('.btn.ghost').forEach(b=>b.addEventListener('click',()=>{
   if(k==='list'){ $('#pName').value=''; $('#pGroup').value=''; $('#pNote').value=''; $('#pDate').valueAsDate=new Date(); }
 }));
 
-function renderAll(){ renderRecruit(); renderBV(); renderIBV(); renderPeople(); updateTargetsBadge(); }
+function renderAll(){ renderRecruit(); renderBV(); renderIBV(); renderPeople(); refreshNameLists(); updateTargetsBadge(); }
 document.addEventListener('DOMContentLoaded', renderAll);
 window.addEventListener('pageshow', e=>{ if(e.persisted) renderAll(); });

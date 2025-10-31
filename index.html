@@ -4,7 +4,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>IFNT · 無限翻轉人生 v6.2.4</title>
+<title>IFNT · 無限翻轉人生 v6.2.6</title>
 <link rel="manifest" href="./manifest.json">
 <link rel="icon" href="./app_icon_192.png">
 <meta name="theme-color" content="#0b3440">
@@ -34,7 +34,6 @@ input[type=date]{padding:10px 12px}textarea{min-height:120px;resize:vertical}
 .badge{display:inline-block;padding:.2rem .6rem;border-radius:.6rem;font-size:.85rem;font-weight:700;line-height:1;user-select:none;border:1px solid transparent;transition:all .28s ease}
 .badge-green{background:#23c55e1a;color:#22c55e;border-color:#22c55e}
 .badge-red{background:#ef44441a;color:#ef4444;border-color:#ef4444}
-/* animated achieved */
 .badge-achieved{position:relative;animation:pop .55s cubic-bezier(.25,1.4,.3,1),glow 2.2s ease-in-out infinite}
 .badge-achieved::before{content:"";position:absolute;inset:-2px;border-radius:inherit;background:conic-gradient(#22c55e,#16a34a,#86efac,#22c55e);filter:blur(6px);opacity:.45;z-index:-1;animation:spin 1.6s linear infinite}
 .badge-achieved::after{content:"🎉";position:absolute;top:-10px;right:-10px;font-size:18px;animation:bounce 1.2s ease-in-out infinite}
@@ -47,16 +46,15 @@ input[type=date]{padding:10px 12px}textarea{min-height:120px;resize:vertical}
 @keyframes fall{100%{transform:translateY(110vh) rotate(720deg);opacity:.2}}
 .red{color:#ff6b6b}.green{color:#1dd1a1}
 .note{color:#a8c7cf;font-size:12px;margin-top:6px}
-
-/* settings modal */
 #settingsModal{display:none;position:fixed;inset:0;z-index:60;background:rgba(0,0,0,.45)}
 #settingsModal .box{max-width:520px;margin:10vh auto;background:#0f3641;border:1px solid #144954;border-radius:14px;padding:16px}
 #fwCanvas{position:fixed;inset:0;pointer-events:none;z-index:58;display:none}
+.small-hint{font-size:12px;color:#9cc9d3;margin-left:6px}
 </style>
 <script>
 if('serviceWorker' in navigator){
   window.addEventListener('load',()=>{
-    navigator.serviceWorker.register('./service-worker.js?v=v6.2.4-fireworks-trans').then(reg=>{
+    navigator.serviceWorker.register('./service-worker.js?v=v6.2.6-autofill').then(reg=>{
       if(reg.waiting) reg.waiting.postMessage({type:'SKIP_WAITING'});
       navigator.serviceWorker.addEventListener('controllerchange',()=>location.reload());
     });
@@ -67,7 +65,7 @@ if('serviceWorker' in navigator){
 <body>
   <div class="wrap">
     <div class="top">
-      <img src="./logo.png" alt="logo"><div class="h1">IFNT · 無限翻轉人生</div><div class="ver">v6.2.4</div>
+      <img src="./logo.png" alt="logo"><div class="h1">IFNT · 無限翻轉人生</div><div class="ver">v6.2.6</div>
       <button id="btnExport" class="btn" style="margin-left:auto">匯出 CSV</button>
       <button id="btnOpenSettings" class="btn ghost" style="margin-left:8px">設定</button>
     </div>
@@ -94,7 +92,7 @@ if('serviceWorker' in navigator){
       <div class="section-title">② 零售＋自購 1500 BV <span id="bvBadge" class="badge badge-red">距離 1500</span></div>
       <div class="row">
         <div class="col"><label>日期</label><input id="bvDate" type="date"></div>
-        <div class="col"><label>顧客姓名（可留空或輸入）</label><input id="bvName" placeholder="可留空或輸入"></div>
+        <div class="col"><label>顧客姓名（可留空或輸入）</label><input id="bvName" placeholder="可留空或輸入" list="nameList"><datalist id="nameList"></datalist></div>
       </div>
       <div class="row">
         <div class="col"><label>零售品項（自行輸入）</label><input id="bvItem" placeholder="例如：平泰秀、OPC、NAD"></div>
@@ -111,7 +109,7 @@ if('serviceWorker' in navigator){
       <div class="section-title">③ 家庭轉移 300 IBV <span id="ibvBadge" class="badge badge-red">距離 300</span></div>
       <div class="row">
         <div class="col"><label>日期</label><input id="ibvDate" type="date"></div>
-        <div class="col"><label>姓名（或自己）</label><input id="ibvName" placeholder="可留空或輸入"></div>
+        <div class="col"><label>姓名（或自己）</label><input id="ibvName" placeholder="可留空或輸入" list="nameList"><datalist id="nameList2"></datalist></div>
       </div>
       <div class="row">
         <div class="col"><label>消費品項（自行輸入）</label><input id="ibvItem" placeholder="例如：保健、家電、日用品"></div>
@@ -127,7 +125,7 @@ if('serviceWorker' in navigator){
     <section id="list" class="card" style="display:none">
       <div class="row">
         <div class="col"><label>居住縣市</label><select id="city"></select></div>
-        <div class="col"><label>姓名（可選清單或自行輸入）</label><input id="pName" placeholder="輸入或選擇姓名" list="nameList"><datalist id="nameList"></datalist></div>
+        <div class="col"><label>姓名（可選清單或自行輸入）<span class="small-hint">⋯ 有記憶清單</span></label><input id="pName" placeholder="輸入或選擇姓名" list="nameList"><datalist id="nameList"></datalist></div>
       </div>
       <div class="row">
         <div class="col"><label>族群 / 關係</label><input id="pGroup" placeholder="例如：國小同學、客戶、親戚" list="groupList"><datalist id="groupList"></datalist></div>
@@ -146,7 +144,6 @@ if('serviceWorker' in navigator){
     </section>
   </div>
 
-  <!-- Settings Modal -->
   <div id="settingsModal">
     <div class="box">
       <h3 style="margin:0 0 6px 0">目標設定</h3>
@@ -167,9 +164,7 @@ if('serviceWorker' in navigator){
     </div>
   </div>
 
-  <!-- Fireworks canvas -->
   <canvas id="fwCanvas"></canvas>
-
   <script src="./app.js" defer></script>
 </body>
 </html>

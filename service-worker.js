@@ -1,5 +1,5 @@
 
-const APP_VERSION = 'v6.2.4-fireworks-trans';
+const APP_VERSION = 'v6.2.6-autofill';
 const CACHE_NAME = 'ifnt-cache-' + APP_VERSION;
 const ASSETS = ['./','./index.html','./app.js','./manifest.json','./app_icon_192.png','./app_icon_512.png','./logo.png'];
 self.addEventListener('install',e=>{
