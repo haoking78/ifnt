@@ -1,260 +1,174 @@
-// IFNT v6.4 - core logic with 312 filters
-const store = {
-  get(k, d) { try { return JSON.parse(localStorage.getItem(k)) ?? d; } catch { return d; } },
-  set(k, v) { localStorage.setItem(k, JSON.stringify(v)); }
-};
+// IFNT v6.4.1-20251031-3 - single-file logic
+const STORE_KEY = 'ifnt_v6_data';
+const NAME_KEY = 'ifnt_names';
+const GROUP_KEY = 'ifnt_groups';
 
-const CITY_LIST = ["基隆市","台北市","新北市","桃園市","新竹市","新竹縣","苗栗縣","台中市","彰化縣","南投縣","雲林縣","嘉義市","嘉義縣","台南市","高雄市","屏東縣","宜蘭縣","花蓮縣","台東縣","澎湖縣","金門縣","連江縣"];
+const state = JSON.parse(localStorage.getItem(STORE_KEY) || '{}');
+state.recruits = state.recruits || [];
+state.bv = state.bv || [];
+state.ibv = state.ibv || [];
+state.interacts = state.interacts || []; // {id, city, name, group, logs:[{date,memo}]}
 
-const K = {
-  RC: 'IFNT_RECRUITS',
-  BV: 'IFNT_BV',
-  IBV: 'IFNT_IBV',
-  CRM: 'IFNT_CRM',
-  NAMES: 'IFNT_NAME_SET',
-  GROUPS: 'IFNT_GROUP_SET'
-};
+const nameSet = new Set(JSON.parse(localStorage.getItem(NAME_KEY) || '[]'));
+const groupSet = new Set(JSON.parse(localStorage.getItem(GROUP_KEY) || '[]'));
 
-// init sets
-const nameSet = new Set(store.get(K.NAMES, []));
-const groupSet = new Set(store.get(K.GROUPS, []));
-
-// helpers
-const $ = (s) => document.querySelector(s);
-const $$ = (s) => document.querySelectorAll(s);
-const fmt = (d) => d ? d : '';
-
-function todayStr() {
-  const d = new Date(); const m = String(d.getMonth()+1).padStart(2,'0'); const day = String(d.getDate()).padStart(2,'0');
-  return d.getFullYear() + '-' + m + '-' + day;
+function save() {
+  localStorage.setItem(STORE_KEY, JSON.stringify(state));
 }
 
-function renderNameList() {
-  const dl = $('#nameList');
-  dl.innerHTML = Array.from(nameSet).map(n => `<option value="${n}"></option>`).join('');
-}
-function renderGroupList() {
-  const dl = $('#groupList');
-  dl.innerHTML = Array.from(groupSet).map(n => `<option value="${n}"></option>`).join('');
-}
+function q(id){return document.getElementById(id)}
+function formatDateInput(d=new Date()){ return d.toISOString().slice(0,10); }
 
-function saveSets() {
-  store.set(K.NAMES, Array.from(nameSet));
-  store.set(K.GROUPS, Array.from(groupSet));
+function setToday() {
+  q('r_date').value = formatDateInput();
+  q('bv_date').value = formatDateInput();
+  q('ibv_date').value = formatDateInput();
+  q('i_date').value = formatDateInput();
 }
 
-// tabs
-$$('.tab').forEach(t => t.addEventListener('click', e => {
-  $$('.tab').forEach(x=>x.classList.remove('active')); t.classList.add('active');
-  const id = t.dataset.tab;
-  ['recruit','bv','ibv','crm'].forEach(k => $('#tab-'+k).style.display = (k===id?'block':'none'));
-}));
-
-// init inputs
-$('#rcDate').value = todayStr();
-$('#bvDate').value = todayStr();
-$('#ibvDate').value = todayStr();
-$('#crmDate').value = todayStr();
-
-// fill city selects
-function fillSelect(sel) {
-  sel.innerHTML = CITY_LIST.map(c=>`<option value="${c}">${c}</option>`).join('');
+function renderTabs() {
+  document.querySelectorAll('.chip').forEach(ch => ch.addEventListener('click', () => {
+    document.querySelectorAll('.chip').forEach(c=>c.classList.remove('active'));
+    ch.classList.add('active');
+    const id = ch.dataset.tab;
+    document.querySelectorAll('section.card').forEach(sec=>sec.style.display='none');
+    q(id).style.display='block';
+  }));
 }
-fillSelect($('#crmCity')); fillSelect($('#fCity'));
-renderNameList(); renderGroupList();
 
-// load data
-let rc = store.get(K.RC, []);
-let bv = store.get(K.BV, []);
-let ibv = store.get(K.IBV, []);
-let crm = store.get(K.CRM, []);
+function badge(el, ok, target) {
+  if(ok>=target) { el.className='pill ok'; el.textContent='已達標 ' + ok; }
+  else { el.className='pill danger'; el.textContent='小計 ' + ok + ' / 距離 ' + (target-ok); }
+}
 
-// ===== Recruit =====
-function renderRecruit() {
-  $('#rcCount').textContent = rc.length;
-  $('#rcHit').textContent = rc.length >= 1 ? '🎉 已達標' : '';
-  const tb = $('#rcTable tbody'); tb.innerHTML = '';
-  rc.forEach((r,i)=>{
+// recruits
+function renderRecruits() {
+  const tb = q('r_table').querySelector('tbody');
+  tb.innerHTML='';
+  state.recruits.forEach((r,idx)=>{
     const tr = document.createElement('tr');
-    tr.innerHTML = `<td>${i+1}</td><td>${r.date}</td><td>${r.name}</td>
-      <td><button data-i="${i}" class="del-rc">刪除</button></td>`;
+    tr.innerHTML = `<td>\${idx+1}</td><td>\${r.date}</td><td>\${r.name}</td>
+    <td class='right'><button class='btn line' data-del='\${idx}'>刪除</button></td>`;
     tb.appendChild(tr);
   });
-  $$('.del-rc').forEach(b=>b.onclick = () => { rc.splice(b.dataset.i,1); store.set(K.RC, rc); renderRecruit(); });
+  const pill = q('r_count_pill');
+  if(state.recruits.length>=1) pill.className='pill ok', pill.textContent='🎉 已達標';
+  else pill.className='pill warn', pill.textContent='累計 0 / 目標 1';
+  tb.querySelectorAll('button[data-del]').forEach(b=>b.onclick=()=>{
+    state.recruits.splice(Number(b.dataset.del),1); save(); renderRecruits();
+  });
 }
-$('#addRecruit').onclick = () => {
-  const name = $('#rcName').value.trim(); const date = $('#rcDate').value || todayStr();
-  if(!name) return alert('請輸入姓名');
-  rc.push({date,name}); store.set(K.RC, rc); nameSet.add(name); saveSets(); renderNameList(); $('#rcName').value=''; renderRecruit();
-};
-renderRecruit();
 
-// ===== BV =====
-function bvTotals() {
-  const tot = bv.reduce((s,x)=>s + (Number(x.value)||0), 0);
-  const remain = Math.max(0, 1500 - tot);
-  $('#bvTotal').textContent = tot;
-  $('#bvRemain').textContent = remain;
-  const hit = tot >= 1500;
-  $('#bvStatus').textContent = hit ? '已達標' : '未達標';
-  $('#bvStatus').className = 'v ' + (hit?'ok':'bad');
-  $('#bvRemain').className = 'v ' + (hit?'ok':'bad');
-  $('#bvBadge').style.display = hit ? 'inline-flex' : 'none';
+function addRecruit(){
+  const date = q('r_date').value; const name = q('r_name').value.trim();
+  if(!date||!name) return alert('請輸入日期與姓名');
+  state.recruits.push({date,name}); if(name) nameSet.add(name);
+  save(); localStorage.setItem(NAME_KEY, JSON.stringify([...nameSet]));
+  q('r_name').value=''; renderDatalists(); renderRecruits();
 }
-function renderBV() {
-  bvTotals();
-  const tb = $('#bvTable tbody'); tb.innerHTML = '';
-  bv.forEach((x,i)=>{
+
+// BV
+function renderBV(){
+  const tb = q('bv_table').querySelector('tbody'); tb.innerHTML='';
+  let sum=0;
+  state.bv.forEach((o,idx)=>{ sum+=Number(o.value)||0;
+    const tr=document.createElement('tr');
+    tr.innerHTML = `<td>\${idx+1}</td><td>\${o.date}</td><td>\${o.customer||''}</td><td>\${o.item||''}</td><td>\${o.value}</td>
+    <td class='right'><button class='btn line' data-del='\${idx}'>刪除</button></td>`; tb.appendChild(tr);
+  });
+  badge(q('bv_status'), sum, 1500);
+  tb.querySelectorAll('button[data-del]').forEach(b=>b.onclick=()=>{ state.bv.splice(Number(b.dataset.del),1); save(); renderBV(); });
+}
+function addBV(){
+  const date=q('bv_date').value, customer=q('bv_customer').value.trim(), item=q('bv_item').value.trim(), value=Number(q('bv_value').value);
+  if(!date || !value) return alert('請填日期與 BV 數值');
+  state.bv.push({date,customer,item,value}); if(customer) nameSet.add(customer);
+  save(); localStorage.setItem(NAME_KEY, JSON.stringify([...nameSet]));
+  q('bv_customer').value=''; q('bv_item').value=''; q('bv_value').value=''; renderDatalists(); renderBV();
+}
+
+// IBV
+function renderIBV(){
+  const tb = q('ibv_table').querySelector('tbody'); tb.innerHTML='';
+  let sum=0;
+  state.ibv.forEach((o,idx)=>{ sum+=Number(o.value)||0;
+    const tr=document.createElement('tr');
+    tr.innerHTML = `<td>\${idx+1}</td><td>\${o.date}</td><td>\${o.person||''}</td><td>\${o.item||''}</td><td>\${o.value}</td>
+    <td class='right'><button class='btn line' data-del='\${idx}'>刪除</button></td>`; tb.appendChild(tr);
+  });
+  badge(q('ibv_status'), sum, 300);
+  tb.querySelectorAll('button[data-del]').forEach(b=>b.onclick=()=>{ state.ibv.splice(Number(b.dataset.del),1); save(); renderIBV(); });
+}
+function addIBV(){
+  const date=q('ibv_date').value, person=q('ibv_person').value.trim(), item=q('ibv_item').value.trim(), value=Number(q('ibv_value').value);
+  if(!date || !value) return alert('請填日期與 IBV 數值');
+  state.ibv.push({date,person,item,value}); if(person) nameSet.add(person);
+  save(); localStorage.setItem(NAME_KEY, JSON.stringify([...nameSet]));
+  q('ibv_person').value=''; q('ibv_item').value=''; q('ibv_value').value=''; renderDatalists(); renderIBV();
+}
+
+// 312
+const TAIWAN_CITIES = ["基隆市","臺北市","新北市","桃園市","新竹市","新竹縣","苗栗縣","臺中市","彰化縣","南投縣","雲林縣","嘉義市","嘉義縣","臺南市","高雄市","屏東縣","宜蘭縣","花蓮縣","臺東縣","澎湖縣","金門縣","連江縣"];
+function initCities() {
+  const sel = q('i_city'); sel.innerHTML = TAIWAN_CITIES.map(c=>`<option value="\${c}">\${c}</option>`).join('');
+}
+function renderDatalists(){
+  q('names_datalist').innerHTML = [...nameSet].map(n=>`<option value="\${n}">`).join('');
+  q('groups_datalist').innerHTML = [...groupSet].map(n=>`<option value="\${n}">`).join('');
+}
+function renderInteracts(){
+  const tb = q('i_table').querySelector('tbody'); tb.innerHTML='';
+  state.interacts.forEach((p,idx)=>{
+    const latest = p.logs.length? p.logs[p.logs.length-1].date : '';
     const tr = document.createElement('tr');
-    tr.innerHTML = `<td>${i+1}</td><td>${x.date}</td><td>${fmt(x.customer)}</td><td>${fmt(x.item)}</td><td>${x.value}</td>
-      <td><button data-i="${i}" class="del-bv">刪除</button></td>`;
+    tr.innerHTML = `<td>\${idx+1}</td><td>\${p.city}</td><td>\${p.name}</td><td>\${p.group}</td><td>\${latest}</td><td>\${p.logs.length}</td>
+    <td class='right'>
+      <button class='btn line' data-view='\${idx}'>查看</button>
+      <button class='btn line' data-del='\${idx}'>刪除</button>
+    </td>`;
     tb.appendChild(tr);
   });
-  $$('.del-bv').forEach(b=>b.onclick = () => { bv.splice(b.dataset.i,1); store.set(K.BV, bv); renderBV(); });
-}
-$('#addBV').onclick = () => {
-  const date=$('#bvDate').value||todayStr(); const customer=$('#bvCustomer').value.trim(); const item=$('#bvItem').value.trim();
-  const value = Number($('#bvValue').value||0); if(!value) return alert('請輸入 BV 數值');
-  bv.push({date, customer, item, value}); store.set(K.BV, bv);
-  if(customer) nameSet.add(customer);
-  saveSets(); renderNameList();
-  $('#bvCustomer').value=''; $('#bvItem').value=''; $('#bvValue').value='';
-  renderBV();
-};
-renderBV();
-
-// ===== IBV =====
-function ibvTotals() {
-  const tot = ibv.reduce((s,x)=>s + (Number(x.value)||0), 0);
-  const remain = Math.max(0, 300 - tot);
-  $('#ibvTotal').textContent = tot;
-  $('#ibvRemain').textContent = remain;
-  const hit = tot >= 300;
-  $('#ibvStatus').textContent = hit ? '已達標' : '未達標';
-  $('#ibvStatus').className = 'v ' + (hit?'ok':'bad');
-  $('#ibvRemain').className = 'v ' + (hit?'ok':'bad');
-  $('#ibvBadge').style.display = hit ? 'inline-flex' : 'none';
-}
-function renderIBV() {
-  ibvTotals();
-  const tb = $('#ibvTable tbody'); tb.innerHTML='';
-  ibv.forEach((x,i)=>{
-    const tr = document.createElement('tr');
-    tr.innerHTML = `<td>${i+1}</td><td>${x.date}</td><td>${fmt(x.name)}</td><td>${fmt(x.item)}</td><td>${x.value}</td>
-      <td><button data-i="${i}" class="del-ibv">刪除</button></td>`;
-    tb.appendChild(tr);
+  tb.querySelectorAll('button[data-del]').forEach(b=>b.onclick=()=>{ state.interacts.splice(Number(b.dataset.del),1); save(); renderInteracts(); });
+  tb.querySelectorAll('button[data-view]').forEach(b=>b.onclick=()=>{
+    const i = state.interacts[Number(b.dataset.view)];
+    alert(i.logs.map(l=>`${l.date}  ${
+      l.memo.replace(/\n/g,' ')}`).join('\n') || '無紀錄');
   });
-  $$('.del-ibv').forEach(b=>b.onclick = () => { ibv.splice(b.dataset.i,1); store.set(K.IBV, ibv); renderIBV(); });
 }
-$('#addIBV').onclick = () => {
-  const date=$('#ibvDate').value||todayStr(); const name=$('#ibvName').value.trim(); const item=$('#ibvItem').value.trim();
-  const value = Number($('#ibvValue').value||0); if(!value) return alert('請輸入 IBV 數值');
-  ibv.push({date, name, item, value}); store.set(K.IBV, ibv);
-  if(name) nameSet.add(name); saveSets(); renderNameList();
-  $('#ibvName').value=''; $('#ibvItem').value=''; $('#ibvValue').value='';
-  renderIBV();
-};
-renderIBV();
-
-// ===== CRM =====
-function fillCitySelects() { fillSelect($('#crmCity')); fillSelect($('#fCity')); }
-fillCitySelects();
-
-function renderCRM(filter=null) {
-  // filter: {city?, name?, group?, kw?, from?, to?}
-  let list = [...crm];
-  if(filter) {
-    if(filter.city) list = list.filter(x=>x.city===filter.city);
-    if(filter.name) list = list.filter(x=>x.name.includes(filter.name));
-    if(filter.group) list = list.filter(x=>x.group.includes(filter.group));
-    if(filter.kw) list = list.filter(x=> x.logs.some(l => (l.note||'').includes(filter.kw)));
-    if(filter.from) list = list.filter(x=> x.latest >= filter.from);
-    if(filter.to) list = list.filter(x=> x.latest <= filter.to);
-  }
-  const tb = $('#crmTable tbody'); tb.innerHTML = '';
-  list.forEach((p,i)=>{
-    const tr = document.createElement('tr');
-    tr.innerHTML = `<td>${i+1}</td><td>${p.city}</td><td>${p.name}</td><td>${p.group}</td><td>${p.latest}</td><td>${p.logs.length}</td>
-      <td><button class="view-crm" data-id="${p.id}">查看</button> <button class="del-crm" data-id="${p.id}">刪除</button></td>`;
-    tb.appendChild(tr);
-  });
-  $$('.view-crm').forEach(b=>b.onclick = () => viewCRM(b.dataset.id));
-  $$('.del-crm').forEach(b=>b.onclick = () => delCRM(b.dataset.id));
+function addInteract(){
+  const city=q('i_city').value, name=q('i_name').value.trim(), group=q('i_group').value.trim(), date=q('i_date').value, memo=q('i_memo').value.trim();
+  if(!city||!name||!date) return alert('請填縣市、姓名、日期');
+  let obj = state.interacts.find(x=>x.name===name);
+  if(!obj) { obj={city,name,group,logs:[]}; state.interacts.push(obj); }
+  else { obj.city=city; if(group) obj.group=group; }
+  obj.logs.push({date, memo});
+  if(name) nameSet.add(name); if(group) groupSet.add(group);
+  save(); localStorage.setItem(NAME_KEY, JSON.stringify([...nameSet])); localStorage.setItem(GROUP_KEY, JSON.stringify([...groupSet]));
+  q('i_name').value=''; q('i_group').value=''; q('i_memo').value='';
+  renderDatalists(); renderInteracts();
 }
 
-function findCRM(name) { return crm.find(x=>x.name===name); }
-
-function addCRM() {
-  const city=$('#crmCity').value; const name=$('#crmName').value.trim(); const group=$('#crmGroup').value.trim();
-  const date=$('#crmDate').value||todayStr(); const note=$('#crmNote').value.trim();
-  if(!name) return alert('請輸入姓名');
-  let p = findCRM(name);
-  if(!p) {
-    p = { id: Date.now().toString(36), city, name, group, latest: date, logs: [] };
-    crm.push(p);
-  }
-  // 更新 city/group（以最新為準）
-  p.city = city; if(group) p.group = group;
-  p.logs.push({date, note});
-  p.latest = date;
-  store.set(K.CRM, crm);
-
-  // 記憶清單
-  nameSet.add(name); if(group) groupSet.add(group); saveSets(); renderNameList(); renderGroupList();
-
-  // 清空欄位以便下一筆
-  $('#crmName').value=''; $('#crmGroup').value=''; $('#crmNote').value='';
-
-  renderCRM();
+function exportCSV(){
+  // export four sheets merged with section name
+  let rows = [];
+  rows.push('Section,Date,Name,Item,Value,City,Group,Memo');
+  state.recruits.forEach(r=>rows.push(`Recruit,\${r.date},\${r.name},,,,,`));
+  state.bv.forEach(o=>rows.push(`BV,\${o.date},\${o.customer},\${o.item},\${o.value},,,`));
+  state.ibv.forEach(o=>rows.push(`IBV,\${o.date},\${o.person},\${o.item},\${o.value},,,`));
+  state.interacts.forEach(p=>p.logs.forEach(l=>rows.push(`312,\${l.date},\${p.name},,,\${p.city},\${p.group},"\${l.memo.replaceAll('"','""')}"`)));
+  const blob = new Blob([rows.join('\n')], {type:'text/csv;charset=utf-8;'});
+  const a = document.createElement('a'); a.href=URL.createObjectURL(blob); a.download='IFNT_export_v6.4.1-20251031-3.csv'; a.click();
 }
 
-function viewCRM(id) {
-  const p = crm.find(x=>x.id===id); if(!p) return;
-  const lines = p.logs.map(l=>`• ${l.date}  ${l.note||''}`).join('\n');
-  alert(`[ ${p.city} ] ${p.name}（${p.group||'-'}）\n最近互動：${p.latest}\n——\n${lines||'尚無內容'}`);
+function init(){
+  setToday(); renderTabs(); initCities(); renderDatalists();
+  renderRecruits(); renderBV(); renderIBV(); renderInteracts();
+  q('btnAddRecruit').onclick=addRecruit;
+  q('btnAddBV').onclick=addBV;
+  q('btnAddIBV').onclick=addIBV;
+  q('btnAddInteract').onclick=addInteract;
+  q('btnClearInputs').onclick=()=>{ q('i_name').value=''; q('i_group').value=''; q('i_memo').value=''; };
+  q('exportCsvBtn').onclick=exportCSV;
 }
 
-function delCRM(id) {
-  if(!confirm('確定刪除此人以及其所有互動紀錄？')) return;
-  crm = crm.filter(x=>x.id!==id); store.set(K.CRM, crm); renderCRM();
-}
-
-$('#addCRM').onclick = addCRM;
-$('#clearCRMRow').onclick = () => { $('#crmName').value=''; $('#crmGroup').value=''; $('#crmNote').value=''; };
-
-$('#applyFilter').onclick = () => {
-  const f = {
-    city: $('#fCity').value || null,
-    name: $('#fName').value.trim() || null,
-    group: $('#fGroup').value.trim() || null,
-    kw: $('#fKeyword').value.trim() || null,
-    from: $('#fFrom').value || null,
-    to: $('#fTo').value || null,
-  };
-  renderCRM(f);
-};
-$('#resetFilter').onclick = () => { $('#fCity').value=''; $('#fName').value=''; $('#fGroup').value=''; $('#fKeyword').value=''; $('#fFrom').value=''; $('#fTo').value=''; renderCRM(); };
-
-renderCRM();
-
-// ===== Export CSV =====
-function toCSV(rows) {
-  const esc = v => '"' + String(v).replaceAll('"','""') + '"';
-  return rows.map(r=>r.map(esc).join(',')).join('\n');
-}
-
-$('#exportCsvBtn').onclick = () => {
-  const rows = [];
-  rows.push(['類別','日期','姓名','品項/族群','BV/IBV','備註']);
-  rc.forEach(x=> rows.push(['Recruit', x.date, x.name, '', '', '']));
-  bv.forEach(x=> rows.push(['BV', x.date, x.customer||'', x.item||'', x.value||'', '']));
-  ibv.forEach(x=> rows.push(['IBV', x.date, x.name||'', x.item||'', x.value||'', '']));
-  crm.forEach(p=> p.logs.forEach(l=> rows.push(['CRM', l.date, p.name, p.group||'', '', l.note||''])));
-  const blob = new Blob([toCSV(rows)], {type:'text/csv;charset=utf-8'});
-  const a = document.createElement('a'); a.href = URL.createObjectURL(blob);
-  a.download = 'IFNT_export_'+ new Date().toISOString().slice(0,10) + '.csv';
-  a.click();
-};
-
-// Service Worker
-if('serviceWorker' in navigator) { navigator.serviceWorker.register('./service-worker.js'); }
+document.addEventListener('DOMContentLoaded', init);
