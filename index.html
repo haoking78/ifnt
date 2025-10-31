@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>IFNT · 無限翻轉人生</title>
+  <link rel="manifest" href="./manifest.json">
+  <meta name="theme-color" content="#0b2b36">
+  <link rel="icon" type="image/png" sizes="192x192" href="./app_icon_192.png">
+  <link rel="apple-touch-icon" href="./app_icon_192.png">
+  <link rel="stylesheet" href="./styles.css">
+  <script>
+    // Register SW
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('./service-worker.js');
+      });
+    }
+  </script>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <img src="./logo.png" alt="IFNT 標誌" />
+      <div class="h1">IFNT · 無限翻轉人生 <span class="badge">logo updated</span></div>
+    </div>
+    <div class="card">
+      <p>已將 App 的 Logo 與 PWA 圖示更新為透明底版本。你可以直接替換你 repo 中的檔案或整包上傳。</p>
+      <p class="note">本頁為示範首頁。請把你的既有 <code>index.html</code> 內容與功能貼回這個檔案即可沿用。</p>
+      <button class="btn" onclick="alert('Logo 已換新，其他功能請導入你原本的程式碼。')">測試按鈕</button>
+    </div>
+    <div class="footer">© IFNT</div>
+  </div>
+  <script src="./app.js"></script>
+</body>
+</html>
