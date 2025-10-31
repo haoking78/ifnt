@@ -1,36 +1,201 @@
 <!doctype html>
-<html lang="zh-Hant">
+<html lang="zh-Hant-TW">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>IFNT · 無限翻轉人生</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>IFNT · 無限翻轉人生 v6.2.2</title>
   <link rel="manifest" href="./manifest.json">
-  <meta name="theme-color" content="#0b2b36">
-  <link rel="icon" type="image/png" sizes="192x192" href="./app_icon_192.png">
-  <link rel="apple-touch-icon" href="./app_icon_192.png">
-  <link rel="stylesheet" href="./styles.css">
-  <script>
-    // Register SW
-    if ('serviceWorker' in navigator) {
-      window.addEventListener('load', () => {
-        navigator.serviceWorker.register('./service-worker.js');
-      });
-    }
-  </script>
+  <link rel="icon" href="./app_icon_192.png">
+  <meta name="theme-color" content="#0b3440">
+  <style>
+    :root{--bg:#08242c;--panel:#0f3641;--text:#e9f4f6;--muted:#a8c7cf;--accent:#1dd1a1;--warn:#ff6b6b;}
+    *{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Noto Sans TC,Arial}
+    .wrap{max-width:980px;margin:28px auto;padding:0 14px}
+    .top{display:flex;align-items:center;gap:12px;margin-bottom:14px}
+    .top img{width:36px;height:36px}
+    .h1{font-size:22px;font-weight:800;letter-spacing:.1em}
+    .ver{margin-left:8px;padding:2px 8px;border-radius:10px;background:#0c4957;color:#9ce4ff;font-size:12px}
+    .tabs{display:flex;gap:12px;flex-wrap:wrap}
+    .tab{background:#0e2f38;border:1px solid #134754;border-radius:14px;padding:8px 14px;cursor:pointer;color:#bde9f4}
+    .tab.active{background:#156279;border-color:#1aa1c0;color:#fff}
+    .card{background:var(--panel);border:1px solid #144954;border-radius:16px;margin-top:18px;padding:14px}
+    .row{display:flex;gap:12px;flex-wrap:wrap}
+    .col{flex:1 1 260px}
+    label{display:block;margin:10px 2px 6px;color:#bfe1e8;font-size:13px}
+    input,select,textarea{width:100%;background:#0b2931;color:#e9f4f6;border:1px solid #1a525f;border-radius:10px;padding:12px;font-size:16px}
+    input[type=date]{padding:10px 12px}
+    textarea{min-height:120px;resize:vertical}
+    .btn{background:#13836c;border:none;color:#fff;padding:10px 16px;border-radius:12px;font-size:16px;cursor:pointer}
+    .btn.ghost{background:#0b2931;border:1px solid #1a525f}
+    .btn.warn{background:#b62e3b}
+    .grid{width:100%;border-collapse:collapse;margin-top:10px}
+    .grid th,.grid td{border-bottom:1px dashed #1b5663;padding:10px;text-align:left}
+    .badge{padding:3px 8px;border-radius:999px;font-size:12px;margin-left:6px}
+    .ok{background:rgba(29,209,161,.2);color:#36f1c3;border:1px solid #24c8a2}
+    .need{background:rgba(255,107,107,.15);color:#ff9a9a;border:1px solid #ff6b6b}
+    .right{float:right}
+    .hint{color:#93b9c1;font-size:13px}
+    .kpi{display:flex;gap:12px;margin-top:6px;flex-wrap:wrap}
+    .pill{flex:1 1 180px;background:#0b2931;border:1px solid #1a525f;border-radius:12px;padding:12px}
+    .pill h3{margin:0 0 4px 0;font-size:12px;color:#9fd0da;font-weight:600}
+    .pill .val{font-size:22px}
+    .red{color:#ff6b6b}.green{color:#1dd1a1}
+  </style>
 </head>
 <body>
-  <div class="container">
-    <div class="header">
-      <img src="./logo.png" alt="IFNT 標誌" />
-      <div class="h1">IFNT · 無限翻轉人生 <span class="badge">logo updated</span></div>
+  <div class="wrap">
+    <div class="top">
+      <img src="./logo.png" alt="logo">
+      <div class="h1">IFNT · 無限翻轉人生</div>
+      <div class="ver">v6.2.2</div>
+      <button id="btnExport" class="btn right">匯出 CSV</button>
     </div>
-    <div class="card">
-      <p>已將 App 的 Logo 與 PWA 圖示更新為透明底版本。你可以直接替換你 repo 中的檔案或整包上傳。</p>
-      <p class="note">本頁為示範首頁。請把你的既有 <code>index.html</code> 內容與功能貼回這個檔案即可沿用。</p>
-      <button class="btn" onclick="alert('Logo 已換新，其他功能請導入你原本的程式碼。')">測試按鈕</button>
+
+    <div class="tabs">
+      <div class="tab active" data-tab="recruit">① 招募 1 人</div>
+      <div class="tab" data-tab="bv">② 零售＋自購 1500 BV</div>
+      <div class="tab" data-tab="ibv">③ 家庭轉移 300 IBV</div>
+      <div class="tab" data-tab="list">④ 312 互動名單</div>
     </div>
-    <div class="footer">© IFNT</div>
+
+    <!-- 招募 -->
+    <section id="recruit" class="card">
+      <div class="row">
+        <div class="col">
+          <label>日期</label>
+          <input id="rDate" type="date">
+        </div>
+        <div class="col">
+          <label>招募姓名</label>
+          <input id="rName" placeholder="輸入姓名">
+        </div>
+      </div>
+      <div style="margin-top:10px;display:flex;gap:10px">
+        <button id="btnAddRecruit" class="btn">新增招募</button>
+        <button data-clear="recruit" class="btn ghost">清空欄位</button>
+      </div>
+      <div class="kpi">
+        <div class="pill"><h3>累計人數</h3><div id="rSum" class="val">0</div></div>
+        <div class="pill"><h3>目標</h3><div class="val">1 <span id="rHit" class="badge need">未達標</span></div></div>
+      </div>
+      <table class="grid" id="rTable">
+        <thead><tr><th>#</th><th>日期</th><th>姓名</th><th>操作</th></tr></thead>
+        <tbody></tbody>
+      </table>
+    </section>
+
+    <!-- BV -->
+    <section id="bv" class="card" style="display:none">
+      <div class="row">
+        <div class="col">
+          <label>日期</label>
+          <input id="bvDate" type="date">
+        </div>
+        <div class="col">
+          <label>顧客姓名（可留空或輸入）</label>
+          <input id="bvWho" placeholder="可留空或輸入">
+        </div>
+      </div>
+      <div class="row">
+        <div class="col">
+          <label>零售品項（自行輸入）</label>
+          <input id="bvItem" placeholder="例如：平泰秀、OPC、NAD">
+        </div>
+        <div class="col">
+          <label>零售 BV</label>
+          <input id="bvVal" type="number" inputmode="decimal" placeholder="數值">
+        </div>
+      </div>
+      <div style="margin-top:10px;display:flex;gap:10px">
+        <button id="btnAddBV" class="btn">新增 BV</button>
+        <button data-clear="bv" class="btn ghost">清空欄位</button>
+      </div>
+      <div class="kpi">
+        <div class="pill"><h3>小計</h3><div id="bvSum" class="val red">0</div></div>
+        <div class="pill"><h3>距離 1500</h3><div id="bvRemain" class="val red">1500</div></div>
+      </div>
+      <table class="grid" id="bvTable">
+        <thead><tr><th>#</th><th>日期</th><th>姓名</th><th>品項</th><th>BV</th><th>操作</th></tr></thead>
+        <tbody></tbody>
+      </table>
+    </section>
+
+    <!-- IBV -->
+    <section id="ibv" class="card" style="display:none">
+      <div class="row">
+        <div class="col">
+          <label>日期</label>
+          <input id="ibvDate" type="date">
+        </div>
+        <div class="col">
+          <label>姓名（或自己）</label>
+          <input id="ibvWho" placeholder="可留空或輸入">
+        </div>
+      </div>
+      <div class="row">
+        <div class="col">
+          <label>消費品項（自行輸入）</label>
+          <input id="ibvItem" placeholder="例如：保健、家電、日用品">
+        </div>
+        <div class="col">
+          <label>IBV</label>
+          <input id="ibvVal" type="number" inputmode="decimal" placeholder="數值">
+        </div>
+      </div>
+      <div style="margin-top:10px;display:flex;gap:10px">
+        <button id="btnAddIBV" class="btn">新增 IBV</button>
+        <button data-clear="ibv" class="btn ghost">清空欄位</button>
+      </div>
+      <div class="kpi">
+        <div class="pill"><h3>小計</h3><div id="ibvSum" class="val red">0</div></div>
+        <div class="pill"><h3>距離 300</h3><div id="ibvRemain" class="val red">300</div></div>
+      </div>
+      <table class="grid" id="ibvTable">
+        <thead><tr><th>#</th><th>日期</th><th>姓名</th><th>品項</th><th>IBV</th><th>操作</th></tr></thead>
+        <tbody></tbody>
+      </table>
+    </section>
+
+    <!-- 312 -->
+    <section id="list" class="card" style="display:none">
+      <div class="row">
+        <div class="col">
+          <label>居住縣市</label>
+          <select id="city"></select>
+        </div>
+        <div class="col">
+          <label>姓名（可選清單或自行輸入）</label>
+          <input id="pName" placeholder="輸入或選擇姓名" list="nameList">
+          <datalist id="nameList"></datalist>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col">
+          <label>族群 / 關係</label>
+          <input id="pGroup" placeholder="例如：國小同學、客戶、親戚" list="groupList">
+          <datalist id="groupList"></datalist>
+        </div>
+        <div class="col">
+          <label>互動日期</label>
+          <input id="pDate" type="date">
+        </div>
+      </div>
+      <label>互動情況 / 備註（可輸入很多內容）</label>
+      <textarea id="pNote" placeholder="互動內容、需求、跟進事項…"></textarea>
+      <div style="margin-top:10px;display:flex;gap:10px">
+        <button id="btnAddLog" class="btn">新增 / 累加互動</button>
+        <button data-clear="list" class="btn ghost">清空欄位</button>
+      </div>
+
+      <table class="grid" id="peopleTable" style="margin-top:14px">
+        <thead>
+          <tr><th>#</th><th>縣市</th><th>姓名</th><th>族群</th><th>最近互動日</th><th>次數</th><th>操作</th></tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </section>
   </div>
+
   <script src="./app.js"></script>
 </body>
 </html>

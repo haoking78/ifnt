@@ -1,10 +1,23 @@
+
+// IFNT service worker (simple cache)
+const CACHE_NAME = 'ifnt-cache-v6-2-2';
+const ASSETS = [
+  './',
+  './index.html',
+  './app.js',
+  './manifest.json',
+  './app_icon_192.png',
+  './app_icon_512.png',
+  './logo.png'
+];
 self.addEventListener('install', e => {
-  self.skipWaiting();
+  e.waitUntil(caches.open(CACHE_NAME).then(c=>c.addAll(ASSETS)));
 });
 self.addEventListener('activate', e => {
-  e.waitUntil(self.clients.claim());
+  e.waitUntil(caches.keys().then(keys=>Promise.all(keys.map(k=>k!==CACHE_NAME?caches.delete(k):null))));
 });
 self.addEventListener('fetch', e => {
-  // network-first
-  e.respondWith(fetch(e.request).catch(() => caches.match(e.request)));
+  e.respondWith(
+    caches.match(e.request).then(r => r || fetch(e.request))
+  );
 });
