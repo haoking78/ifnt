@@ -2,157 +2,163 @@
 <!doctype html>
 <html lang="zh-Hant">
 <head>
-<meta charset="utf-8"/>
-<meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>IFNT 無限翻轉人生 v6.2.14</title>
-<link rel="manifest" href="./manifest.json"/>
-<link rel="stylesheet" href="./styles.css?v=20251031"/>
-<meta name="theme-color" content="#0a2a2f"/>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<title>IFNT · 無限翻轉人生</title>
+<link rel="icon" href="logo.png">
+<link rel="apple-touch-icon" href="logo.png">
+<link rel="manifest" href="manifest.json">
+<link rel="stylesheet" href="styles.css?v=6.2.15">
+<script defer src="app.js?v=6.2.15"></script>
 </head>
 <body>
 <div class="container">
   <div class="header">
-    <div class="brand">
-      <img src="./assets/logo.png" alt="logo"/>
-      <h1>IFNT 無限翻轉人生</h1>
-      <span class="badge">v6.2.14</span>
+    <div class="logo-wrap">
+      <img class="logo" src="logo.png" alt="IFNT">
+      <div class="title">IFNT 無限翻轉人生</div>
     </div>
+    <div class="version">v6.2.15</div>
+  </div>
+
+  <!-- 目標設定 -->
+  <div class="topbar">
     <div class="row">
-      <button class="btn secondary" id="btnExport">匯出 CSV</button>
+      <div class="chip">🎯 目標設定：</div>
+      <div class="chip">招募目標</div>
+      <input id="tRecruit" class="chip" type="number" min="0" value="1" style="width:90px">
+      <div class="chip">BV 目標</div>
+      <input id="tBV" class="chip" type="number" min="0" value="1500" style="width:110px">
+      <div class="chip">IBV 目標</div>
+      <input id="tIBV" class="chip" type="number" min="0" value="300" style="width:110px">
+      <button id="btnSaveTarget" class="btn">儲存目標</button>
+    </div>
+    <div class="row kpi">
+      <div>目前目標：</div>
+      <div class="chip">招募 <span id="kRecruit">1</span> 人</div>
+      <div class="chip">BV <span id="kBV">1500</span></div>
+      <div class="chip">IBV <span id="kIBV">300</span></div>
     </div>
   </div>
 
-  <!-- 頂部設定區：可自訂 Recruit / BV / IBV 目標值 -->
-  <div class="top-settings" id="topSettings">
-    <span class="label">🎯 目標設定：</span>
-    <span>招募目標</span>
-    <input type="number" id="goalRecruit" min="0" placeholder="1"/>
-    <span>BV 目標</span>
-    <input type="number" id="goalBV" min="0" placeholder="1500"/>
-    <span>IBV 目標</span>
-    <input type="number" id="goalIBV" min="0" placeholder="300"/>
-    <button class="btn" id="btnSaveGoals">儲存目標</button>
-    <span class="small" id="goalHint"></span>
+  <!-- Tabs -->
+  <div class="tabs">
+    <div data-tab="recruit" class="tab">① 招募</div>
+    <div data-tab="bv" class="tab active">② BV</div>
+    <div data-tab="ibv" class="tab">③ IBV</div>
+    <div data-tab="p312" class="tab">④ 312 名單</div>
   </div>
 
-  <div class="nav">
-    <button data-tab="recruit" class="active">① 招募</button>
-    <button data-tab="bv">② BV</button>
-    <button data-tab="ibv">③ IBV</button>
-    <button data-tab="interact">④ 312 名單</button>
-  </div>
+  <!-- BV Section -->
+  <section id="sec-bv" class="section">
+    <h3>💼 零售 + 自購 <span id="title-bv-target">1500</span> BV</h3>
+    <div class="grid">
+      <div class="field full"><label>日期</label><div class="ctl"><input id="bvDate" type="date"></div></div>
+      <div class="field full"><label>顧客姓名</label><div class="ctl"><input id="bvName" type="text" placeholder="可留空或輸入"></div></div>
+      <div class="field full"><label>零售品項</label><div class="ctl"><input id="bvItem" type="text" placeholder="例如：平泰秀、OPC、NAD"></div></div>
+      <div class="field full"><label>BV 數量</label><div class="ctl"><input id="bvAmt" type="number" min="0" placeholder="數值"></div></div>
+    </div>
+    <button id="addBV" class="btn">新增 BV</button>
 
-  <!-- Recruit -->
-  <section id="recruit" class="card">
-    <h2>👥 親自招募 <span id="rGoal">1</span> 人</h2>
-    <div class="row">
-      <div class="col"><input type="date" id="rDate"/></div>
-      <div class="col"><input type="text" id="rName" placeholder="招募姓名"/></div>
-      <div class="col"><button class="btn" id="btnAddRecruit">新增</button></div>
+    <div class="kpi">
+      <div>目前累計：</div>
+      <div id="bvSum" class="num oktxt">0</div>
+      <div>/</div>
+      <div id="bvTarget" class="num">1500</div>
+      <span id="bvBadge" class="badge warn">未達標</span>
     </div>
-    <div class="kpi">累計達 <span id="rCount">0</span> / 目標 <span id="rGoalInline">1</span>
-      <span id="rBadge" class="pill" style="display:none;margin-left:8px">🎉 已達標！</span>
+
+    <table class="table" id="tblBV">
+      <thead><tr><th>#</th><th>姓名</th><th>小計</th><th>筆數</th><th>查看</th><th>刪除</th></tr></thead>
+      <tbody></tbody>
+    </table>
+  </section>
+
+  <!-- IBV Section -->
+  <section id="sec-ibv" class="section" hidden>
+    <h3>🏠 家庭轉移消費 <span id="title-ibv-target">300</span> IBV</h3>
+    <div class="grid">
+      <div class="field full"><label>日期</label><div class="ctl"><input id="ibvDate" type="date"></div></div>
+      <div class="field full"><label>姓名（或自己）</label><div class="ctl"><input id="ibvName" type="text" placeholder="可留空或輸入"></div></div>
+      <div class="field full"><label>消費品項</label><div class="ctl"><input id="ibvItem" type="text" placeholder="例如：保健、家電、日用品"></div></div>
+      <div class="field full"><label>IBV 數量</label><div class="ctl"><input id="ibvAmt" type="number" min="0" placeholder="數值"></div></div>
     </div>
-    <table class="table" id="rTable">
+    <button id="addIBV" class="btn">新增 IBV</button>
+
+    <div class="kpi">
+      <div>目前累計：</div>
+      <div id="ibvSum" class="num oktxt">0</div>
+      <div>/</div>
+      <div id="ibvTarget" class="num">300</div>
+      <span id="ibvBadge" class="badge warn">未達標</span>
+    </div>
+
+    <table class="table" id="tblIBV">
+      <thead><tr><th>#</th><th>姓名</th><th>小計</th><th>筆數</th><th>查看</th><th>刪除</th></tr></thead>
+      <tbody></tbody>
+    </table>
+  </section>
+
+  <!-- 312 Section -->
+  <section id="sec-312" class="section" hidden>
+    <h3>📒 312 互動名單</h3>
+    <div class="grid">
+      <div class="field full"><label>居住縣市</label><div class="ctl">
+        <select id="pCity">
+          <option>基隆市</option><option>台北市</option><option>新北市</option><option>桃園市</option>
+          <option>新竹市</option><option>台中市</option><option>台南市</option><option>高雄市</option>
+        </select>
+      </div></div>
+      <div class="field full"><label>姓名（可選清單或自行輸入）</label><div class="ctl">
+        <input id="pName" list="nameList" type="text" placeholder="輸入或選擇姓名"><datalist id="nameList"></datalist>
+      </div></div>
+      <div class="field full"><label>族群 / 關係</label><div class="ctl">
+        <input id="pGroup" list="groupList" type="text" placeholder="例如：同學、客戶、親戚"><datalist id="groupList"></datalist>
+      </div></div>
+      <div class="field full"><label>互動日期</label><div class="ctl"><input id="pDate" type="date"></div></div>
+      <div class="field full"><label>互動情況 / 備註（可輸入很多內容）</label><div class="ctl"><textarea id="pNote" placeholder="互動內容、需求、跟進事項..."></textarea></div></div>
+    </div>
+    <button id="addP" class="btn">新增 / 累加互動</button>
+    <button id="clearInputs" class="btn" style="background:#0a7">清空欄位</button>
+
+    <table class="table" id="tblP">
+      <thead><tr><th>#</th><th>縣市</th><th>姓名</th><th>族群</th><th>最近互動日</th><th>次數</th><th>查看</th><th>刪除</th></tr></thead>
+      <tbody></tbody>
+    </table>
+  </section>
+
+  <!-- Recruit Section -->
+  <section id="sec-recruit" class="section" hidden>
+    <h3>🧑‍🤝‍🧑 親自招募</h3>
+    <div class="grid">
+      <div class="field full"><label>日期</label><div class="ctl"><input id="rDate" type="date"></div></div>
+      <div class="field full"><label>招募姓名</label><div class="ctl"><input id="rName" type="text" placeholder="輸入姓名"></div></div>
+    </div>
+    <button id="addR" class="btn">新增招募</button>
+
+    <div class="kpi">
+      <div>目前累計：</div>
+      <div id="rSum" class="num oktxt">0</div>
+      <div>/</div>
+      <div id="rTarget" class="num">1</div>
+      <span id="rBadge" class="badge warn">未達標</span>
+    </div>
+
+    <table class="table" id="tblR">
       <thead><tr><th>#</th><th>日期</th><th>姓名</th><th>操作</th></tr></thead>
       <tbody></tbody>
     </table>
   </section>
 
-  <!-- BV -->
-  <section id="bv" class="card" style="display:none">
-    <h2>💼 零售 + 自購 <span id="bvGoalTitle">1500</span> BV</h2>
-    <div class="row">
-      <div class="col"><input type="date" id="bvDate"/></div>
-      <div class="col"><input type="text" id="bvCustomer" placeholder="可留空或輸入"/></div>
-    </div>
-    <div class="row">
-      <div class="col"><input type="text" id="bvItem" placeholder="例如：平泰秀、OPC、NAD"/></div>
-      <div class="col"><input type="number" id="bvQty" placeholder="BV 數量"/></div>
-      <div class="col"><button class="btn" id="btnAddBV">新增 BV</button></div>
-    </div>
-    <div class="kpi">目前累計：<span id="bvSum" class="warn">0</span> / <span id="bvGoalText">1500</span> BV
-      <span id="bvBadge" class="pill" style="display:none;margin-left:8px">🎉 已達標！</span>
-    </div>
-    <table class="table" id="bvTable">
-      <thead><tr><th>#</th><th>日期</th><th>姓名</th><th>品項</th><th>BV</th><th>操作</th></tr></thead>
-      <tbody></tbody>
-    </table>
-  </section>
-
-  <!-- IBV -->
-  <section id="ibv" class="card" style="display:none">
-    <h2>🏠 家庭轉移消費 <span id="ibvGoalTitle">300</span> IBV</h2>
-    <div class="row">
-      <div class="col"><input type="date" id="ibvDate"/></div>
-      <div class="col"><input type="text" id="ibvName" placeholder="姓名（或自己）"/></div>
-    </div>
-    <div class="row">
-      <div class="col"><input type="text" id="ibvItem" placeholder="例如：保健、家電、日用品"/></div>
-      <div class="col"><input type="number" id="ibvQty" placeholder="IBV 數量"/></div>
-      <div class="col"><button class="btn" id="btnAddIBV">新增 IBV</button></div>
-    </div>
-    <div class="kpi">目前累計：<span id="ibvSum" class="warn">0</span> / <span id="ibvGoalText">300</span> IBV
-      <span id="ibvBadge" class="pill" style="display:none;margin-left:8px">🎉 已達標！</span>
-    </div>
-    <table class="table" id="ibvTable">
-      <thead><tr><th>#</th><th>日期</th><th>姓名</th><th>品項</th><th>IBV</th><th>操作</th></tr></thead>
-      <tbody></tbody>
-    </table>
-  </section>
-
-  <!-- 312 -->
-  <section id="interact" class="card" style="display:none">
-    <h2>📒 312 互動名單</h2>
-    <div class="row">
-      <div class="col">
-        <select id="city">
-          <option value="">選擇居住縣市</option>
-          <option>基隆市</option><option>臺北市</option><option>新北市</option>
-          <option>桃園市</option><option>新竹市</option><option>新竹縣</option>
-          <option>苗栗縣</option><option>臺中市</option><option>彰化縣</option>
-          <option>南投縣</option><option>雲林縣</option><option>嘉義市</option>
-          <option>嘉義縣</option><option>臺南市</option><option>高雄市</option>
-          <option>屏東縣</option><option>臺東縣</option><option>花蓮縣</option><option>宜蘭縣</option>
-        </select>
-      </div>
-      <div class="col"><input id="pName" placeholder="姓名（可選清單或自行輸入）"/></div>
-    </div>
-    <div class="row">
-      <div class="col"><input id="pGroup" placeholder="例如：國小同學、客戶、親戚"/></div>
-      <div class="col"><input type="date" id="pDate"/></div>
-    </div>
-    <div class="row">
-      <div class="col"><textarea id="pNote" placeholder="互動內容、需求、跟進事項…"></textarea></div>
-    </div>
-    <div class="row">
-      <div class="col"><button class="btn" id="btnAddInteract">新增 / 累加互動</button></div>
-      <div class="col"><button class="btn secondary" id="btnClearForm">清空欄位</button></div>
-    </div>
-    <table class="table" id="interactTable">
-      <thead><tr><th>#</th><th>縣市</th><th>姓名</th><th>族群</th><th>最近互動日</th><th>次數</th><th>操作</th></tr></thead>
-      <tbody></tbody>
-    </table>
-  </section>
-
-  <footer>© IFNT</footer>
+  <div class="footer"><div class="pill">haoking78.github.io</div></div>
 </div>
 
-<div class="modal-backdrop" id="modalWrap">
-  <div class="modal">
-    <h3 id="modalTitle">查看紀錄</h3>
-    <div class="lines" id="modalLines"></div>
-    <div style="text-align:right"><button class="btn secondary close" id="btnCloseModal">關閉</button></div>
-  </div>
-</div>
-<canvas class="fireworks" id="fw"></canvas>
-<div class="toast" id="toast">已匯出 CSV</div>
+<!-- modal -->
+<div id="modal" class="modal"><div class="card">
+  <div class="title" id="mTitle">查看</div>
+  <div class="body" id="mBody"></div>
+  <div class="actions"><button id="mClose" class="btn">關閉</button></div>
+</div></div>
 
-<script src="./app.js?v=20251031"></script>
-<script>
-if ('serviceWorker' in navigator){
-  window.addEventListener('load', function(){ navigator.serviceWorker.register('./service-worker.js'); });
-}
-</script>
 </body>
 </html>
