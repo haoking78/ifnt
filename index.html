@@ -1,0 +1,206 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>IFNT · 無限翻轉人生 v6.4.0-20251031-2</title>
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#0b2533">
+  <style>
+    :root {{
+      --bg:#0b2533; --card:#10394d; --muted:#9ab7c4; --text:#ecf7fb; --accent:#2bd4c7;
+      --ok:#14cc60; --bad:#ff5b6b; --chip:#0f455b;
+    }}
+    * {{box-sizing:border-box; font-family: system-ui, 'PingFang TC', 'Noto Sans TC', Helvetica, Arial, sans-serif;}}
+    body {{ margin:0; background:radial-gradient(1000px 600px at 50% -200px,#194b63 0%,var(--bg) 60%); color:var(--text);}}
+    header {{padding:18px 16px 8px; display:flex; align-items:center; gap:12px;}}
+    header h1 {{margin:0; font-size:22px; font-weight:800;}}
+    header .ver {{opacity:.7; font-weight:600; font-size:13px; margin-left:6px}}
+    main {{padding:8px 12px 40px; max-width:1100px; margin:0 auto;}}
+    .tabs {{display:flex; flex-wrap:wrap; gap:10px; margin:8px 0 16px;}}
+    .tab {{padding:10px 16px; border-radius:999px; background:#0e3244; color:#b5d1dd; cursor:pointer; border:1px solid #17485f;}}
+    .tab.active {{background:#1a5169; color:#fff; border-color:#2bd4c7;}}
+    .card {{background:linear-gradient(180deg,#12394d,#0d2e3e); border:1px solid #1c4a60; border-radius:18px; padding:16px; margin:12px 0; box-shadow:0 8px 24px rgba(0,0,0,.25);}}
+    .row {{display:grid; grid-template-columns:1fr 1fr; gap:12px;}}
+    @media (max-width:820px) {{ .row {{grid-template-columns:1fr;}} }}
+    label {{display:block; font-size:13px; color:var(--muted); margin:8px 6px;}}
+    input, select, textarea {{width:100%; padding:14px 13px; border-radius:12px; border:1px solid #1b4b60; background:#0f3446; color:#fff; outline:none;}}
+    textarea {{min-height:110px; resize:vertical;}}
+    button {{padding:12px 16px; border-radius:12px; border:1px solid #1c4a60; background:#176078; color:#fff; cursor:pointer; font-weight:700;}}
+    button.primary {{background:linear-gradient(180deg,#17b6a9,#0fa6cc);}}
+    .kpi {{display:grid; grid-template-columns: repeat(4, minmax(0,1fr)); gap:10px;}}
+    .kpi .box {{background:#0e3143; border:1px solid #1b4b60; border-radius:14px; padding:12px; text-align:center;}}
+    .kpi .v {{font-size:22px; font-weight:800;}}
+    .ok {{color:var(--ok)}} .bad{{color:var(--bad)}}
+    .badge {{display:inline-flex; align-items:center; gap:6px; padding:6px 10px; border-radius:999px; background:#0f455b; border:1px solid #20607a; font-size:12px; font-weight:700;}}
+    table {{width:100%; border-collapse:collapse; overflow:hidden; border-radius:14px; border:1px solid #1c4a60; margin-top:8px;}}
+    th, td {{padding:12px 10px; border-bottom:1px solid #173f53; text-align:left; font-size:14px;}}
+    th {{background:#11384b; color:#bfe4ee; font-weight:700;}}
+    tr:last-child td {{border-bottom:none;}}
+    .chips {{display:flex; gap:6px; flex-wrap:wrap; margin-top:8px;}}
+    .chip {{padding:8px 10px; background:var(--chip); border:1px solid #2b6c84; border-radius:999px; font-size:12px; color:#cde6ef;}}
+    .hint {{font-size:12px; color:#97b8c5;}}
+  </style>
+</head>
+<body>
+  <header>
+    <img src="app_icon_192.png" alt="icon" width="28" height="28" style="border-radius:7px; border:1px solid #19536b; background:#0c2d3c;">
+    <h1>IFNT · 無限翻轉人生</h1>
+    <span class="ver">v6.4.0-20251031-2</span>
+    <span class="badge" id="exportCsvBtn" style="margin-left:auto; cursor:pointer;">匯出 CSV</span>
+  </header>
+  <main>
+    <div class="tabs">
+      <div class="tab active" data-tab="recruit">① 招募 1 人</div>
+      <div class="tab" data-tab="bv">② 零售＋自購 1500 BV</div>
+      <div class="tab" data-tab="ibv">③ 家庭轉移 300 IBV</div>
+      <div class="tab" data-tab="crm">④ 312 互動名單</div>
+    </div>
+
+    <!-- Recruit -->
+    <section class="card" id="tab-recruit">
+      <div class="row">
+        <div>
+          <label>日期</label>
+          <input type="date" id="rcDate">
+        </div>
+        <div>
+          <label>招募姓名</label>
+          <input id="rcName" placeholder="輸入姓名">
+        </div>
+      </div>
+      <div style="margin-top:12px; display:flex; gap:10px;">
+        <button class="primary" id="addRecruit">新增招募</button>
+        <span class="badge" id="rcBadge">累計：<b id="rcCount">0</b> / 目標 1 <span id="rcHit"></span></span>
+      </div>
+      <table id="rcTable"><thead><tr><th>#</th><th>日期</th><th>姓名</th><th>操作</th></tr></thead><tbody></tbody></table>
+    </section>
+
+    <!-- BV -->
+    <section class="card" id="tab-bv" style="display:none">
+      <div class="row">
+        <div>
+          <label>日期</label>
+          <input type="date" id="bvDate">
+        </div>
+        <div>
+          <label>顧客姓名（可留空或輸入）</label>
+          <input id="bvCustomer" list="nameList" placeholder="可留空或輸入">
+        </div>
+      </div>
+      <div class="row">
+        <div>
+          <label>零售品項（自行輸入）</label>
+          <input id="bvItem" placeholder="例如：平泰秀、OPC、NAD">
+        </div>
+        <div>
+          <label>零售 BV</label>
+          <input id="bvValue" type="number" min="0" step="1" placeholder="數值">
+        </div>
+      </div>
+      <div class="kpi" style="margin-top:10px">
+        <div class="box"><div class="hint">小計</div><div class="v" id="bvTotal">0</div></div>
+        <div class="box"><div class="hint">距離 1500</div><div class="v" id="bvRemain">1500</div></div>
+        <div class="box"><div class="hint">狀態</div><div class="v" id="bvStatus">未達標</div></div>
+        <div class="box"><div class="hint">徽章</div><div class="chips"><span class="badge" id="bvBadge" style="display:none">🎉 已達標</span></div></div>
+      </div>
+      <div style="margin-top:12px;">
+        <button class="primary" id="addBV">新增 BV</button>
+      </div>
+      <table id="bvTable"><thead><tr><th>#</th><th>日期</th><th>姓名</th><th>品項</th><th>BV</th><th>操作</th></tr></thead><tbody></tbody></table>
+    </section>
+
+    <!-- IBV -->
+    <section class="card" id="tab-ibv" style="display:none">
+      <div class="row">
+        <div>
+          <label>日期</label>
+          <input type="date" id="ibvDate">
+        </div>
+        <div>
+          <label>姓名（或自己）</label>
+          <input id="ibvName" list="nameList" placeholder="可留空或輸入">
+        </div>
+      </div>
+      <div class="row">
+        <div>
+          <label>消費品項（自行輸入）</label>
+          <input id="ibvItem" placeholder="例如：保健、家電、日用品">
+        </div>
+        <div>
+          <label>IBV</label>
+          <input id="ibvValue" type="number" min="0" step="1" placeholder="數值">
+        </div>
+      </div>
+      <div class="kpi" style="margin-top:10px">
+        <div class="box"><div class="hint">小計</div><div class="v" id="ibvTotal">0</div></div>
+        <div class="box"><div class="hint">距離 300</div><div class="v" id="ibvRemain">300</div></div>
+        <div class="box"><div class="hint">狀態</div><div class="v" id="ibvStatus">未達標</div></div>
+        <div class="box"><div class="hint">徽章</div><div class="chips"><span class="badge" id="ibvBadge" style="display:none">🎉 已達標</span></div></div>
+      </div>
+      <div style="margin-top:12px;">
+        <button class="primary" id="addIBV">新增 IBV</button>
+      </div>
+      <table id="ibvTable"><thead><tr><th>#</th><th>日期</th><th>姓名</th><th>品項</th><th>IBV</th><th>操作</th></tr></thead><tbody></tbody></table>
+    </section>
+
+    <!-- CRM -->
+    <section class="card" id="tab-crm" style="display:none">
+      <div class="row">
+        <div>
+          <label>居住縣市</label>
+          <select id="crmCity"></select>
+        </div>
+        <div>
+          <label>姓名（可選清單或自行輸入）</label>
+          <input id="crmName" list="nameList" placeholder="輸入或選擇姓名">
+        </div>
+      </div>
+      <div class="row">
+        <div>
+          <label>族群 / 關係</label>
+          <input id="crmGroup" list="groupList" placeholder="例如：同事、同學、客戶、親戚">
+        </div>
+        <div>
+          <label>互動日期</label>
+          <input type="date" id="crmDate">
+        </div>
+      </div>
+      <label>互動情況 / 備註（可輸入很多內容）</label>
+      <textarea id="crmNote" placeholder="互動內容、需求、跟進事項…"></textarea>
+      <div style="margin-top:12px; display:flex; gap:10px;">
+        <button class="primary" id="addCRM">新增 / 累加互動</button>
+        <button id="clearCRMRow" title="清空欄位">清空欄位</button>
+      </div>
+
+      <div class="card" style="margin-top:16px;">
+        <h3 style="margin:0 0 8px;">🔎 互動名單搜尋 / 篩選</h3>
+        <div class="row">
+          <div><label>縣市</label><select id="fCity"></select></div>
+          <div><label>姓名（關鍵字或下拉）</label><input id="fName" list="nameList" placeholder="輸入關鍵字或選擇"></div>
+        </div>
+        <div class="row">
+          <div><label>族群（關鍵字或下拉）</label><input id="fGroup" list="groupList" placeholder="輸入關鍵字或選擇"></div>
+          <div><label>備註關鍵字</label><input id="fKeyword" placeholder="在備註中搜尋字詞"></div>
+        </div>
+        <div class="row">
+          <div><label>起始日</label><input type="date" id="fFrom"></div>
+          <div><label>結束日</label><input type="date" id="fTo"></div>
+        </div>
+        <div style="margin-top:10px; display:flex; gap:8px;">
+          <button id="applyFilter">套用篩選</button>
+          <button id="resetFilter">清空篩選</button>
+        </div>
+      </div>
+
+      <table id="crmTable">
+        <thead><tr><th>#</th><th>縣市</th><th>姓名</th><th>族群</th><th>最近互動日</th><th>次數</th><th>操作</th></tr></thead>
+        <tbody></tbody>
+      </table>
+      <datalist id="nameList"></datalist>
+      <datalist id="groupList"></datalist>
+    </section>
+  </main>
+  <script src="app.js"></script>
+</body>
+</html>
