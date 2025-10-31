@@ -1,281 +1,230 @@
-// IFNT app v6.2.11
-const $ = s => document.querySelector(s);
-const $$ = s => [...document.querySelectorAll(s)];
-const todayStr = () => new Date().toISOString().slice(0,10);
 
-const store = {
-  key:'IFNT_DATA_V6211',
-  data:{recruits:[], bv:[], ibv:[], book:[], cities:[]},
-  load(){ try{ this.data = JSON.parse(localStorage.getItem(this.key)) || this.data }catch(e){} },
-  save(){ localStorage.setItem(this.key, JSON.stringify(this.data)) }
-};
+(()=>{
+  const $=(s,d=document)=>d.querySelector(s), $$=(s,d=document)=>d.querySelectorAll(s);
+  const LS={get(k,def){try{return JSON.parse(localStorage.getItem(k)??JSON.stringify(def))}catch(e){return def}}, set(k,v){localStorage.setItem(k,JSON.stringify(v))}};
 
-function initTabs(){
-  $$('.tab').forEach(btn=>btn.addEventListener('click',e=>{
-    $$('.tab').forEach(b=>b.classList.remove('active'));
-    e.currentTarget.classList.add('active');
-    const t = e.currentTarget.dataset.tab;
-    $$('.panel').forEach(p=>p.classList.remove('show'));
-    $('#'+t).classList.add('show');
-  }));
-}
-
-function renderRecruit(){
-  const box = $('#recList'); box.innerHTML = '';
-  store.data.recruits.forEach((r,i)=>{
-    const div = document.createElement('div');
-    div.className='item';
-    div.innerHTML = `<small>${i+1}</small><div>${r.date}</div><div>${r.name}</div>
-      <div></div><button class="btn del" data-i="${i}" data-type="rec">刪除</button>`;
-    box.appendChild(div);
-  });
-  $('#recCount').textContent = store.data.recruits.length;
-  const badge = $('#recBadge');
-  if (store.data.recruits.length >= 1){ badge.classList.remove('hidden'); successFX('招募 1 已達標'); }
-  else { badge.classList.add('hidden'); }
-}
-
-function sum(list){ return list.reduce((a,b)=>a+Number(b.val||0),0); }
-
-function renderBV(){
-  $('#bvSum').textContent = sum(store.data.bv);
-  const badge = $('#bvBadge');
-  if (sum(store.data.bv) >= 1500){ badge.classList.remove('hidden'); successFX(`BV 1500 已達標（${todayStr()}）`); }
-  else badge.classList.add('hidden');
-  const box = $('#bvList'); box.innerHTML='';
-  store.data.bv.forEach((r,i)=>{
-    const div=document.createElement('div');
-    div.className='item';
-    div.innerHTML = `<small>${i+1}</small><div>${r.date}</div><div>${r.name||''} ${r.item?`<small>${r.item}</small>`:''}</div>
-    <div><b>${r.val}</b></div><button class="btn del" data-i="${i}" data-type="bv">刪除</button>`;
-    box.appendChild(div);
-  });
-}
-
-function renderIBV(){
-  $('#ibvSum').textContent = sum(store.data.ibv);
-  const badge = $('#ibvBadge');
-  if (sum(store.data.ibv) >= 300){ badge.classList.remove('hidden'); successFX(`IBV 300 已達標（${todayStr()}）`); }
-  else badge.classList.add('hidden');
-  const box = $('#ibvList'); box.innerHTML='';
-  store.data.ibv.forEach((r,i)=>{
-    const div=document.createElement('div');
-    div.className='item';
-    div.innerHTML = `<small>${i+1}</small><div>${r.date}</div><div>${r.name||''} ${r.item?`<small>${r.item}</small>`:''}</div>
-    <div><b>${r.val}</b></div><button class="btn del" data-i="${i}" data-type="ibv">刪除</button>`;
-    box.appendChild(div);
-  });
-}
-
-const TAIWAN_CITIES = ["基隆市","臺北市","新北市","桃園市","新竹市","新竹縣","苗栗縣","臺中市","彰化縣","南投縣","雲林縣","嘉義市","嘉義縣","臺南市","高雄市","屏東縣","宜蘭縣","花蓮縣","臺東縣","澎湖縣","金門縣","連江縣"];
-function initCities(){
-  const sel = $('#bkCity');
-  sel.innerHTML = TAIWAN_CITIES.map(c=>`<option>${c}</option>`).join('');
-}
-
-function refreshBook(){
-  // populate name/group datalist
-  const names = [...new Set(store.data.book.map(b=>b.name).filter(Boolean))];
-  const groups = [...new Set(store.data.book.map(b=>b.group).filter(Boolean))];
-  $('#bkNames').innerHTML = names.map(n=>`<option value="${n}">`).join('');
-  $('#bkGroups').innerHTML = groups.map(n=>`<option value="${n}">`).join('');
-
-  const box = $('#bkList'); box.innerHTML='';
-  store.data.book.forEach((p,idx)=>{
-    const last = p.logs.at(-1)?.date || '';
-    const div = document.createElement('div');
-    div.className='item';
-    div.innerHTML = `<small>${idx+1}</small><div>${p.city}</div><div>${p.name}</div><div>${p.group}</div>
-    <div>${last}</div>
-    <button class="btn" data-view="${idx}">查看</button>`;
-    box.appendChild(div);
-
-    // detail collapsible
-    const detail = document.createElement('div');
-    detail.className='list';
-    detail.style.display='none';
-    p.logs.forEach(l=>{
-      const it = document.createElement('div');
-      it.className='item';
-      it.style.gridTemplateColumns='100px 1fr';
-      it.innerHTML = `<div>${l.date}</div><div>${l.note}</div>`;
-      detail.appendChild(it);
-    });
-    box.appendChild(detail);
-
-    div.querySelector('button').addEventListener('click',()=>{
-      detail.style.display = detail.style.display==='none' ? 'grid' : 'none';
+  $$(".nav button").forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      $$(".nav button").forEach(b=>b.classList.remove("active"));
+      btn.classList.add("active");
+      const tab=btn.dataset.tab;
+      ["recruit","bv","ibv","interact"].forEach(id=> $("#"+id).style.display=(id===tab)?"":"none");
     });
   });
-}
 
-function bindEvents(){
-  $('#recDate').value = todayStr();
-  $('#bvDate').value = todayStr();
-  $('#ibvDate').value = todayStr();
-  $('#bkDate').value = todayStr();
+  const state = LS.get("ifnt-state", {version:"6.2.14",recruit:{goal:1,rows:[]},bv:{goal:1500,rows:[]},ibv:{goal:300,rows:[]},people:{}});
+  function save(){LS.set("ifnt-state",state)}
 
-  $('#btnRecAdd').onclick = () => {
-    const name = $('#recName').value.trim();
-    if(!name) return alert('請輸入招募姓名');
-    store.data.recruits.push({date: $('#recDate').value || todayStr(), name});
-    $('#recName').value='';
-    store.save(); renderRecruit();
-  };
+  // Top goals inputs
+  $("#goalRecruit").value = state.recruit.goal || 1;
+  $("#goalBV").value = state.bv.goal || 1500;
+  $("#goalIBV").value = state.ibv.goal || 300;
+  function refreshGoalUI(){
+    $("#goalHint").textContent = `目前目標：招募 ${state.recruit.goal} 人 ／ BV ${state.bv.goal} ／ IBV ${state.ibv.goal}`;
+    $("#rGoal").textContent = state.recruit.goal;
+    $("#rGoalInline").textContent = state.recruit.goal;
+    $("#bvGoalTitle").textContent = state.bv.goal;
+    $("#bvGoalText").textContent = state.bv.goal;
+    $("#ibvGoalTitle").textContent = state.ibv.goal;
+    $("#ibvGoalText").textContent = state.ibv.goal;
+  }
+  $("#btnSaveGoals").addEventListener("click", ()=>{
+    const rg = Math.max(0, parseInt($("#goalRecruit").value||"1",10)||1);
+    const bv = Math.max(0, parseInt($("#goalBV").value||"1500",10)||1500);
+    const ibv= Math.max(0, parseInt($("#goalIBV").value||"300",10)||300);
+    state.recruit.goal=rg; state.bv.goal=bv; state.ibv.goal=ibv;
+    save(); refreshGoalUI(); renderRecruit(); renderBV(); renderIBV(); checkBadges();
+  });
+  refreshGoalUI();
 
-  $('#btnBvAdd').onclick = () => {
-    const v = Number($('#bvVal').value||0);
-    if(!v) return alert('請輸入 BV 數值');
-    store.data.bv.push({date: $('#bvDate').value||todayStr(), name: $('#bvName').value.trim(), item: $('#bvItem').value.trim(), val: v});
-    $('#bvVal').value=''; $('#bvItem').value=''; $('#bvName').value='';
-    store.save(); renderBV();
-  };
+  const today=()=>new Date().toISOString().slice(0,10);
+  ["#rDate","#bvDate","#ibvDate","#pDate"].forEach(s=>$(s).value=today());
 
-  $('#btnIbvAdd').onclick = () => {
-    const v = Number($('#ibvVal').value||0);
-    if(!v) return alert('請輸入 IBV 數值');
-    store.data.ibv.push({date: $('#ibvDate').value||todayStr(), name: $('#ibvName').value.trim(), item: $('#ibvItem').value.trim(), val: v});
-    $('#ibvVal').value=''; $('#ibvItem').value=''; $('#ibvName').value='';
-    store.save(); renderIBV();
-  };
+  function toast(m){const t=$("#toast"); t.textContent=m; t.style.display="block"; setTimeout(()=>t.style.display="none",1600)}
+  function showPersonModal(title, lines){$("#modalTitle").textContent=title; $("#modalLines").textContent=lines||"（無）"; $("#modalWrap").style.display="flex"}
+  $("#btnCloseModal").addEventListener("click",()=> $("#modalWrap").style.display="none");
+  $("#modalWrap").addEventListener("click",(e)=>{ if(e.target.id==="modalWrap") $("#modalWrap").style.display="none"; });
 
-  $('#btnBkAdd').onclick = () => {
-    const city = $('#bkCity').value;
-    const name = $('#bkName').value.trim();
-    const group = $('#bkGroup').value.trim();
-    const date = $('#bkDate').value || todayStr();
-    const note = $('#bkNote').value.trim();
-    if(!name) return alert('請輸入姓名');
-    let rec = store.data.book.find(p => p.name===name);
-    if(!rec){ rec = {city,name,group,logs:[]}; store.data.book.push(rec); }
-    if(group) rec.group = group;
-    rec.city = city;
-    rec.logs.push({date,note});
-    $('#bkNote').value=''; // keep name/group for next entry
-    store.save(); refreshBook();
-  };
+  function celebrate(){
+    const ctx=new (window.AudioContext||window.webkitAudioContext)();
+    function ding(freq, when=0){
+      const o=ctx.createOscillator(), g=ctx.createGain(); o.connect(g); g.connect(ctx.destination);
+      o.type="sine"; o.frequency.value=freq;
+      g.gain.setValueAtTime(0.0001, ctx.currentTime+when);
+      g.gain.exponentialRampToValueAtTime(0.3, ctx.currentTime+when+0.01);
+      g.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime+when+0.35);
+      o.start(ctx.currentTime+when); o.stop(ctx.currentTime+when+0.4);
+    }
+    ding(1200,0); ding(1600,0.35);
 
-  $('#btnBkClear').onclick = () => { $('#bkName').value=''; $('#bkGroup').value=''; $('#bkNote').value=''; };
+    const cvs=$("#fw"), c=cvs.getContext("2d");
+    cvs.width=innerWidth; cvs.height=innerHeight; cvs.style.display="block";
+    const ps=Array.from({length:140},()=>({x:cvs.width/2,y:cvs.height/2,vx:(Math.random()*2-1)*6,vy:(Math.random()*2-1)*6,life:60+Math.random()*20,color:`hsl(${Math.random()*360},90%,60%)`}));
+    (function step(){
+      c.clearRect(0,0,cvs.width,cvs.height);
+      ps.forEach(p=>{p.x+=p.vx; p.y+=p.vy; p.vy+=0.08; p.life--; c.fillStyle=p.color; c.fillRect(p.x,p.y,3,3)});
+      if (ps.some(p=>p.life>0)) requestAnimationFrame(step); else cvs.style.display="none";
+    })();
+    setTimeout(()=> cvs.style.display="none", 1800);
+  }
+  function checkBadges(){
+    const bvOk = state.bv.rows.reduce((a,b)=>a+(+b.qty||0),0) >= state.bv.goal;
+    const ibvOk= state.ibv.rows.reduce((a,b)=>a+(+b.qty||0),0) >= state.ibv.goal;
+    const rOk  = state.recruit.rows.length >= state.recruit.goal;
+    if (bvOk || ibvOk || rOk) celebrate();
+  }
 
-  document.body.addEventListener('click',e=>{
-    const t = e.target;
-    if(t.classList.contains('del')){
-      const i = Number(t.dataset.i); const type = t.dataset.type;
-      if(type==='rec'){ store.data.recruits.splice(i,1); renderRecruit(); }
-      if(type==='bv'){ store.data.bv.splice(i,1); renderBV(); }
-      if(type==='ibv'){ store.data.ibv.splice(i,1); renderIBV(); }
-      store.save();
+  // Recruit
+  function renderRecruit(){
+    const body=$("#rTable tbody"); body.innerHTML="";
+    state.recruit.rows.forEach((r,i)=>{
+      const tr=document.createElement("tr");
+      tr.innerHTML=`<td>${i+1}</td><td>${r.date}</td><td>${r.name}</td>
+      <td><button class="btn secondary" data-i="${i}" data-act="del">刪除</button></td>`;
+      body.appendChild(tr);
+    });
+    $("#rCount").textContent=state.recruit.rows.length;
+    $("#rGoal").textContent=state.recruit.goal;
+    $("#rGoalInline").textContent=state.recruit.goal;
+    $("#rBadge").style.display=(state.recruit.rows.length>=state.recruit.goal)?"inline-flex":"none";
+  }
+  $("#btnAddRecruit").addEventListener("click",()=>{
+    const date=$("#rDate").value||today(), name=($("#rName").value||"").trim();
+    if(!name) return toast("請輸入姓名");
+    state.recruit.rows.unshift({date,name});
+    $("#rName").value="";
+    save(); renderRecruit(); checkBadges();
+  });
+  $("#rTable").addEventListener("click",(e)=>{
+    if (e.target.dataset.act==="del"){ state.recruit.rows.splice(+e.target.dataset.i,1); save(); renderRecruit(); checkBadges(); }
+  });
+
+  // BV
+  function renderBV(){
+    const body=$("#bvTable tbody"); body.innerHTML="";
+    let sum=0;
+    state.bv.rows.forEach((r,i)=>{
+      sum += (+r.qty||0);
+      const tr=document.createElement("tr");
+      tr.innerHTML=`<td>${i+1}</td><td>${r.date}</td><td><button class="btn secondary small" data-view="bv" data-name="${r.name}">${r.name||"（未填）"}</button></td>
+      <td>${r.item||""}</td><td>${r.qty}</td>
+      <td><button class="btn secondary" data-i="${i}" data-act="del-bv">刪除</button></td>`;
+      body.appendChild(tr);
+    });
+    const ok=sum>=state.bv.goal;
+    $("#bvGoalTitle").textContent=state.bv.goal;
+    $("#bvGoalText").textContent=state.bv.goal;
+    $("#bvSum").textContent=sum;
+    $("#bvSum").className= ok? "ok":"warn";
+    $("#bvBadge").style.display = ok ? "inline-flex":"none";
+  }
+  $("#btnAddBV").addEventListener("click",()=>{
+    const date=$("#bvDate").value||today(), name=($("#bvCustomer").value||"").trim(), item=($("#bvItem").value||"").trim(), qty=+(($("#bvQty").value)||"0");
+    if(!qty) return toast("請輸入 BV 數量");
+    state.bv.rows.unshift({date,name,item,qty});
+    $("#bvItem").value=""; $("#bvQty").value="";
+    save(); renderBV(); checkBadges();
+  });
+  $("#bvTable").addEventListener("click",(e)=>{
+    const t=e.target;
+    if (t.dataset.act==="del-bv"){ state.bv.rows.splice(+t.dataset.i,1); save(); renderBV(); checkBadges(); }
+    if (t.dataset.view==="bv"){
+      const name=t.dataset.name;
+      const list=state.bv.rows.filter(r=>(r.name||"")===name);
+      showPersonModal(`【${name||"（未填）"}】`, list.map(r=>`${r.date}｜${r.item} ${r.qty} BV`).join("\n") || "（沒有資料）");
     }
   });
 
-  $('#btnExport').onclick = exportCSV;
-}
-
-function exportCSV(){
-  const rows = [];
-  rows.push(['類別','日期','姓名','品項/備註','數值'].join(','));
-  store.data.recruits.forEach(r=>rows.push(['招募',r.date,r.name,'', ''].join(',')));
-  store.data.bv.forEach(r=>rows.push(['BV',r.date,r.name,r.item,r.val].join(',')));
-  store.data.ibv.forEach(r=>rows.push(['IBV',r.date,r.name,r.item,r.val].join(',')));
-  store.data.book.forEach(p=>p.logs.forEach(l=>rows.push(['312',l.date,p.name, l.note.replaceAll(',',';'),''].join(','))));
-  const blob = new Blob(['﻿'+rows.join('\n')],{type:'text/csv;charset=utf-8;'});
-  const a = document.createElement('a');
-  a.href = URL.createObjectURL(blob);
-  a.download = 'IFNT_export_'+new Date().toISOString().slice(0,10)+'.csv';
-  a.click();
-}
-
-// ---- 成功動畫 + 音效（2秒，含兩段叮、三段爆破） ----
-let fxTimer;
-function successFX(text='已達標！'){
-  // 中央徽章
-  const badge = $('#centerBadge');
-  badge.textContent = '🎉 '+text+' 🎉';
-  badge.classList.remove('hidden');
-
-  // 音效
-  playSuccessSound();
-
-  // 煙火
-  fireworkStart();
-
-  clearTimeout(fxTimer);
-  fxTimer = setTimeout(()=>{
-    badge.classList.add('hidden');
-    fireworkStop();
-  }, 2000);
-}
-
-// WebAudio 合成：兩段「叮」+ 三段「啪/嘭/咚」
-function playSuccessSound(){
-  const ctx = new (window.AudioContext||window.webkitAudioContext)();
-  const now = ctx.currentTime;
-  function bell(t, f){
-    const o = ctx.createOscillator(); const g = ctx.createGain();
-    o.type='sine'; o.frequency.setValueAtTime(f, now+t);
-    g.gain.setValueAtTime(0.0001, now+t);
-    g.gain.exponentialRampToValueAtTime(0.6, now+t+0.02);
-    g.gain.exponentialRampToValueAtTime(0.0001, now+t+0.30);
-    o.connect(g).connect(ctx.destination); o.start(now+t); o.stop(now+t+0.35);
-  }
-  // 兩段叮（上行）
-  bell(0.00, 880); bell(0.15, 1175);
-  // 三段爆破模擬
-  function boom(t){
-    const n = ctx.createBufferSource();
-    const len = 22050; const buf = ctx.createBuffer(1,len,44100);
-    const d = buf.getChannelData(0);
-    for(let i=0;i<len;i++){ d[i] = (Math.random()*2-1)*Math.exp(-i/2000); }
-    n.buffer = buf; const g = ctx.createGain();
-    g.gain.value = 0.7; n.connect(g).connect(ctx.destination);
-    n.start(now+t);
-  }
-  boom(0.40); boom(0.75); boom(1.10);
-}
-
-// ---- 煙火 Canvas ----
-let fxCtx, fxRAF;
-function fireworkStart(){
-  const canvas = $('#fxCanvas');
-  const dpr = window.devicePixelRatio||1;
-  canvas.width = innerWidth*dpr; canvas.height = innerHeight*dpr;
-  fxCtx = canvas.getContext('2d'); fxCtx.scale(dpr,dpr);
-  const particles = [];
-  function spawn(){
-    const colors = ['#ffec6e','#ff8b8b','#2afece','#7ad1ff','#ffa94d'];
-    const cx = innerWidth/2, cy = innerHeight/2;
-    for(let i=0;i<70;i++){
-      const a = Math.random()*Math.PI*2;
-      const v = 2+Math.random()*4;
-      particles.push({x:cx,y:cy, vx:Math.cos(a)*v, vy:Math.sin(a)*v, life:60+Math.random()*30, c:colors[(Math.random()*colors.length)|0]});
-    }
-  }
-  spawn();
-  const loop=()=>{
-    fxCtx.fillStyle = 'rgba(14,49,56,.18)';
-    fxCtx.fillRect(0,0,innerWidth,innerHeight);
-    particles.forEach(p=>{
-      p.x+=p.vx; p.y+=p.vy; p.vy+=0.03; p.life--;
-      fxCtx.fillStyle=p.c; fxCtx.fillRect(p.x,p.y,2,2);
+  // IBV
+  function renderIBV(){
+    const body=$("#ibvTable tbody"); body.innerHTML="";
+    let sum=0;
+    state.ibv.rows.forEach((r,i)=>{
+      sum += (+r.qty||0);
+      const tr=document.createElement("tr");
+      tr.innerHTML=`<td>${i+1}</td><td>${r.date}</td><td><button class="btn secondary small" data-view="ibv" data-name="${r.name}">${r.name||"（未填）"}</button></td>
+      <td>${r.item||""}</td><td>${r.qty}</td>
+      <td><button class="btn secondary" data-i="${i}" data-act="del-ibv">刪除</button></td>`;
+      body.appendChild(tr);
     });
-    for(let i=particles.length-1;i>=0;i--) if(particles[i].life<=0) particles.splice(i,1);
-    fxRAF = requestAnimationFrame(loop);
-  };
-  loop();
-}
-function fireworkStop(){
-  cancelAnimationFrame(fxRAF);
-  const canvas = $('#fxCanvas'); const ctx = canvas.getContext('2d'); ctx && ctx.clearRect(0,0,canvas.width,canvas.height);
-}
+    const ok=sum>=state.ibv.goal;
+    $("#ibvGoalTitle").textContent=state.ibv.goal;
+    $("#ibvGoalText").textContent=state.ibv.goal;
+    $("#ibvSum").textContent=sum;
+    $("#ibvSum").className= ok? "ok":"warn";
+    $("#ibvBadge").style.display = ok ? "inline-flex":"none";
+  }
+  $("#btnAddIBV").addEventListener("click",()=>{
+    const date=$("#ibvDate").value||today(), name=($("#ibvName").value||"").trim(), item=($("#ibvItem").value||"").trim(), qty=+(($("#ibvQty").value)||"0");
+    if(!qty) return toast("請輸入 IBV 數量");
+    state.ibv.rows.unshift({date,name,item,qty});
+    $("#ibvItem").value=""; $("#ibvQty").value="";
+    save(); renderIBV(); checkBadges();
+  });
+  $("#ibvTable").addEventListener("click",(e)=>{
+    const t=e.target;
+    if (t.dataset.act==="del-ibv"){ state.ibv.rows.splice(+t.dataset.i,1); save(); renderIBV(); checkBadges(); }
+    if (t.dataset.view==="ibv"){
+      const name=t.dataset.name;
+      const list=state.ibv.rows.filter(r=>(r.name||"")===name);
+      showPersonModal(`【${name||"（未填）"}】`, list.map(r=>`${r.date}｜${r.item} ${r.qty} IBV`).join("\n") || "（沒有資料）");
+    }
+  });
 
-// PWA
-if('serviceWorker' in navigator){
-  window.addEventListener('load',()=>navigator.serviceWorker.register('service-worker.js'));
-}
+  // 312
+  function render312(){
+    const body=$("#interactTable tbody"); body.innerHTML="";
+    const arr=Object.entries(state.people).map(([name,p])=>({name, ...p, latest:p.logs[0]?.date||"", times:p.logs.length})).sort((a,b)=>(b.latest||"").localeCompare(a.latest||""));
+    arr.forEach((p,i)=>{
+      const tr=document.createElement("tr");
+      tr.innerHTML=`<td>${i+1}</td><td>${p.city||""}</td><td><button class="btn secondary small" data-view="p" data-name="${p.name}">${p.name}</button></td>
+      <td>${p.group||""}</td><td>${p.latest||""}</td><td>${p.times}</td>
+      <td><button class="btn secondary" data-name="${p.name}" data-act="del-person">刪除</button></td>`;
+      body.appendChild(tr);
+    });
+  }
+  $("#btnAddInteract").addEventListener("click",()=>{
+    const city=$("#city").value, name=($("#pName").value||"").trim(); if(!name) return toast("請輸入姓名");
+    const group=($("#pGroup").value||"").trim(), date=$("#pDate").value||today(), note=($("#pNote").value||"").trim();
+    state.people[name]=state.people[name]||{city,group,logs:[]};
+    if(city) state.people[name].city=city;
+    if(group) state.people[name].group=group;
+    state.people[name].logs.unshift({date,note});
+    save(); render312();
+    $("#pName").value=""; $("#pGroup").value=""; $("#pNote").value="";
+  });
+  $("#btnClearForm").addEventListener("click",()=>{$("#city").value=""; $("#pName").value=""; $("#pGroup").value=""; $("#pDate").value=today(); $("#pNote").value=""});
+  $("#interactTable").addEventListener("click",(e)=>{
+    const t=e.target;
+    if (t.dataset.act==="del-person"){ delete state.people[t.dataset.name]; save(); render312(); }
+    if (t.dataset.view==="p"){
+      const name=t.dataset.name; const p=state.people[name];
+      const title=`【${name}】(${p.city||""}｜${p.group||""})`.replace(/\s\|\s\)/,' )');
+      const lines=(p.logs||[]).map(x=>`${x.date}｜${x.note||""}`).join("\n")||"（沒有資料）";
+      showPersonModal(title, lines);
+    }
+  });
 
-// init
-store.load();
-initTabs();
-initCities();
-bindEvents();
-renderRecruit(); renderBV(); renderIBV(); refreshBook();
+  // Export
+  $("#btnExport").addEventListener("click",()=>{
+    const rows=[];
+    rows.push(["Recruit","日期","姓名"]);
+    state.recruit.rows.forEach(r=>rows.push(["Recruit",r.date,r.name]));
+    rows.push([]);
+    rows.push(["BV","日期","姓名","品項","BV"]);
+    state.bv.rows.forEach(r=>rows.push(["BV",r.date,r.name,r.item,r.qty]));
+    rows.push([]);
+    rows.push(["IBV","日期","姓名","品項","IBV"]);
+    state.ibv.rows.forEach(r=>rows.push(["IBV",r.date,r.name,r.item,r.qty]));
+    rows.push([]);
+    rows.push(["312","姓名","縣市","族群","日期","內容"]);
+    Object.entries(state.people).forEach(([name,p])=>{ p.logs.forEach(l=>rows.push(["312",name,p.city||"",p.group||"",l.date,l.note||""])) });
+    const csv = rows.map(r => r.map(x => `"${(x??"").toString().replace(/"/g,'""')}"`).join(",")).join("\n");
+    const blob=new Blob([csv],{type:"text/csv;charset=utf-8"});
+    const a=document.createElement("a"); a.href=URL.createObjectURL(blob); a.download=`IFNT_export_${new Date().toISOString().slice(0,10)}.csv`; a.click();
+    toast("已匯出 CSV");
+  });
+
+  function init(){ renderRecruit(); renderBV(); renderIBV(); render312(); }
+  init();
+})();
