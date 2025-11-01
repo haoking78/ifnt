@@ -1,3 +1,0 @@
-self.addEventListener('install',e=>self.skipWaiting()); self.addEventListener('activate',e=>self.clients.claim());
-const CACHE='ifnt-v6219'; const ASSETS=['./','./index.html','./styles.css?v=6219','./app.js?v=6219','./assets/app_icon_192.png','./assets/app_icon_512.png','./assets/logo.png','./assets/fireworks.wav'];
-self.addEventListener('fetch',e=>{ if(e.request.method!=='GET') return; e.respondWith((async()=>{ const cache=await caches.open(CACHE); const cached=await cache.match(e.request); if(cached) return cached; try{ const res=await fetch(e.request); cache.put(e.request,res.clone()); return res;}catch(err){ return cached||Response.error(); } })()); });
