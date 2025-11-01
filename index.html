@@ -1,0 +1,233 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"/>
+  <title>IFNT · 無限翻轉人生</title>
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#0f3a39">
+  <link rel="stylesheet" href="styles.css">
+  <link rel="icon" href="assets/favicon.ico">
+  <link rel="apple-touch-icon" href="assets/apple_touch_180.png">
+</head>
+<body>
+  <header class="topbar">
+    <img src="logo.png" alt="IFNT" class="app-logo" />
+    <h1>IFNT 無限翻轉人生 <small id="appVer">v6.2.19</small></h1>
+    <button id="btnCSV" class="btn ghost">匯出 CSV</button>
+  </header>
+
+  <!-- 目標設定 + 進度 -->
+  <section class="card">
+    <div class="card-title">
+      <span>🎯 目標設定：</span>
+      <button id="toggleGoal" class="btn ghost">展開</button>
+    </div>
+
+    <div id="goalPanel" class="goal-panel" hidden>
+      <div class="grid g3">
+        <div class="form-row">
+          <label>招募目標</label>
+          <input id="goalRecruit" type="number" min="0" value="1" class="input"/>
+        </div>
+        <div class="form-row">
+          <label>BV 目標</label>
+          <input id="goalBV" type="number" min="0" value="1500" class="input"/>
+        </div>
+        <div class="form-row">
+          <label>IBV 目標</label>
+          <input id="goalIBV" type="number" min="0" value="300" class="input"/>
+        </div>
+      </div>
+      <button id="btnSaveGoal" class="btn">儲存目標</button>
+    </div>
+
+    <p class="hint" id="goalDesc">目前目標：招募 1 / BV 1500 / IBV 300</p>
+
+    <div class="kpi">
+      <div class="kpi-row">
+        <span>招募</span>
+        <div class="bar"><div id="barRecruit" class="bar-fill" style="width:0%"></div></div>
+        <span id="badgeRecruit" class="goal-badge"></span>
+      </div>
+      <div class="kpi-row">
+        <span>BV</span>
+        <div class="bar"><div id="barBV" class="bar-fill" style="width:0%"></div></div>
+        <span id="badgeBV" class="goal-badge"></span>
+      </div>
+      <div class="kpi-row">
+        <span>IBV</span>
+        <div class="bar"><div id="barIBV" class="bar-fill" style="width:0%"></div></div>
+        <span id="badgeIBV" class="goal-badge"></span>
+      </div>
+    </div>
+
+    <div class="kpi-sum">
+      <div>招募：<b id="sumRecruitVal" class="kpi--warn">0 / 1</b> <span id="sumBadgeRecruit"></span></div>
+      <div>BV：<b id="sumBVVal" class="kpi--warn">0 / 1500</b> <span id="sumBadgeBV"></span></div>
+      <div>IBV：<b id="sumIBVVal" class="kpi--warn">0 / 300</b> <span id="sumBadgeIBV"></span></div>
+    </div>
+  </section>
+
+  <nav class="tabs">
+    <button class="tab active" data-tab="tabRecruit">① 招募</button>
+    <button class="tab" data-tab="tabBV">② BV</button>
+    <button class="tab" data-tab="tabIBV">③ IBV</button>
+    <button class="tab" data-tab="tab312">④ 312 名單</button>
+  </nav>
+
+  <!-- 招募 -->
+  <section id="tabRecruit" class="card tab-pane active">
+    <h2>👥 招募進度</h2>
+    <div class="grid g2">
+      <div class="form-row">
+        <label>日期</label>
+        <input id="rDate" type="date" class="input"/>
+      </div>
+      <div class="form-row">
+        <label>姓名</label>
+        <input id="rName" type="text" class="input" placeholder="輸入或留空"/>
+      </div>
+    </div>
+    <button id="btnAddRecruit" class="btn">新增 招募</button>
+    <p class="sum-line">目前累計：<b id="sumRecruit" class="kpi--warn">0 / 1</b> <span id="sumBadgeRecruit2"></span></p>
+
+    <div class="table">
+      <div class="thead">
+        <span>#</span><span>日期</span><span>姓名</span><span class="right">操作</span>
+      </div>
+      <div id="rTbody" class="tbody"></div>
+    </div>
+  </section>
+
+  <!-- BV -->
+  <section id="tabBV" class="card tab-pane">
+    <h2>💼 零售 + 自購 1500 BV</h2>
+    <div class="grid g2">
+      <div class="form-row">
+        <label>日期</label>
+        <input id="bvDate" type="date" class="input"/>
+      </div>
+      <div class="form-row">
+        <label>顧客姓名</label>
+        <input id="bvName" type="text" class="input" placeholder="可留空或輸入"/>
+      </div>
+    </div>
+    <div class="grid g2">
+      <div class="form-row">
+        <label>零售品項（自行輸入）</label>
+        <input id="bvItem" type="text" class="input" placeholder="例如：平泰秀、OPC、NAD"/>
+      </div>
+      <div class="form-row">
+        <label>BV 數量</label>
+        <input id="bvValue" type="number" class="input" placeholder="數值"/>
+      </div>
+    </div>
+    <button id="btnAddBV" class="btn">新增 BV</button>
+    <p class="sum-line">目前累計：<b id="sumBV" class="kpi--warn">0 / 1500</b> <span id="sumBadgeBV2"></span></p>
+
+    <div class="table">
+      <div class="thead">
+        <span>#</span><span>姓名</span><span>小計</span><span>筆數</span><span>查看</span><span class="right">刪除</span>
+      </div>
+      <div id="bvTbody" class="tbody"></div>
+    </div>
+  </section>
+
+  <!-- IBV -->
+  <section id="tabIBV" class="card tab-pane">
+    <h2>🏠 家庭轉移消費 300 IBV</h2>
+    <div class="grid g2">
+      <div class="form-row">
+        <label>日期</label>
+        <input id="ibvDate" type="date" class="input"/>
+      </div>
+      <div class="form-row">
+        <label>姓名（或自己）</label>
+        <input id="ibvName" type="text" class="input" placeholder="可留空或輸入"/>
+      </div>
+    </div>
+    <div class="grid g2">
+      <div class="form-row">
+        <label>消費品項</label>
+        <input id="ibvItem" type="text" class="input" placeholder="例如：保健、家電、日用品"/>
+      </div>
+      <div class="form-row">
+        <label>IBV 數量</label>
+        <input id="ibvValue" type="number" class="input" placeholder="數值"/>
+      </div>
+    </div>
+    <button id="btnAddIBV" class="btn">新增 IBV</button>
+    <p class="sum-line">目前累計：<b id="sumIBV" class="kpi--warn">0 / 300</b> <span id="sumBadgeIBV2"></span></p>
+
+    <div class="table">
+      <div class="thead">
+        <span>#</span><span>姓名</span><span>小計</span><span>筆數</span><span>查看</span><span class="right">刪除</span>
+      </div>
+      <div id="ibvTbody" class="tbody"></div>
+    </div>
+  </section>
+
+  <!-- 312 名單 -->
+  <section id="tab312" class="card tab-pane">
+    <h2>📒 312 互動名單</h2>
+    <div class="grid g3">
+      <div class="form-row">
+        <label>居住縣市</label>
+        <select id="city" class="input">
+          <option>基隆市</option><option>臺北市</option><option>新北市</option><option>桃園市</option><option>新竹市</option><option>新竹縣</option><option>臺中市</option><option>臺南市</option><option>高雄市</option><option>屏東縣</option><option>宜蘭縣</option><option>花蓮縣</option><option>臺東縣</option>
+        </select>
+      </div>
+      <div class="form-row">
+        <label>姓名（可選清單或輸入）</label>
+        <input id="pName" class="input" list="pNameList" placeholder="輸入或選擇姓名"/>
+        <datalist id="pNameList"></datalist>
+      </div>
+      <div class="form-row">
+        <label>互動日期</label>
+        <input id="pDate" type="date" class="input"/>
+      </div>
+    </div>
+    <div class="grid g2">
+      <div class="form-row">
+        <label>族群 / 關係</label>
+        <input id="pGroup" class="input" list="pGroupList" placeholder="例如：同學、客戶、親戚"/>
+        <datalist id="pGroupList"></datalist>
+      </div>
+      <div class="form-row">
+        <label>互動情況 / 備註</label>
+        <textarea id="pNote" rows="3" class="input" placeholder="可輸入很多內容"></textarea>
+      </div>
+    </div>
+    <div class="row">
+      <button id="btnAddPerson" class="btn">新增 / 累加互動</button>
+      <button id="btnClearPerson" class="btn ghost">清空欄位</button>
+    </div>
+
+    <div class="table">
+      <div class="thead">
+        <span>#</span><span>縣市</span><span>姓名</span><span>族群</span><span>最近互動日</span><span>次數</span><span class="right">查看</span>
+      </div>
+      <div id="peopleTbody" class="tbody"></div>
+    </div>
+  </section>
+
+  <!-- Modal -->
+  <div id="modal" class="modal" hidden>
+    <div class="modal-body">
+      <div class="modal-title">
+        <span id="modalTitle">明細</span>
+        <button id="modalClose" class="btn ghost">關閉</button>
+      </div>
+      <div id="detailList" class="detail-list"></div>
+    </div>
+  </div>
+
+  <!-- 慶祝音效（請放入你的 celebrate.mp3；此處僅參照，不附檔） -->
+  <audio id="audioCelebrate" preload="auto">
+    <source src="audio/celebrate.mp3" type="audio/mpeg">
+  </audio>
+
+  <script src="app.js"></script>
+</body>
+</html>
