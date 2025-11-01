@@ -1,0 +1,21 @@
+{
+  "name": "IFNT · 無限翻轉人生",
+  "short_name": "IFNT",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#0f2f2f",
+  "theme_color": "#0f2f2f",
+  "icons": [
+    {
+      "src": "assets/app_icon_192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "assets/app_icon_512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
