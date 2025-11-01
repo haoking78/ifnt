@@ -1,7 +1,0 @@
-
-/* IFNT v6.2.17 – Minimal UI patch */
-input, select, textarea, button { font-size: 16px; } /* avoid iOS zoom */
-input[type="date"] { width: 100%; }                 /* same width as others */
-.ifnt-progress { position: relative; }
-.ifnt-progress .bar-label { position:absolute; right:.75rem; top:50%; transform:translateY(-50%); font-weight:600; opacity:.9; }
-.ifnt-progress.ok .bar-label { color:#21cc84; }
