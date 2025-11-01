@@ -1,59 +1,217 @@
 
-const el=id=>document.getElementById(id);const qsa=s=>Array.from(document.querySelectorAll(s));
-const defaultState={goals:{recruit:1,bv:1500,ibv:300},recruit:[],bv:[],ibv:[],list:{}};
-let S=(()=>{try{const j=localStorage.getItem('IFNT_STATE');if(j)return JSON.parse(j)}catch(e){}return structuredClone(defaultState)})();const save=()=>localStorage.setItem('IFNT_STATE',JSON.stringify(S));
-function todayISO(){const d=new Date();d.setMinutes(d.getMinutes()-d.getTimezoneOffset());return d.toISOString().slice(0,10)}
-function sum(a){return a.reduce((x,y)=>x+Number(y||0),0)}
-function groupByName(list){const m=new Map();list.forEach(x=>{const k=(x.name||'（未填名）').trim();const o=m.get(k)||{name:k,total:0,count:0,items:[]};o.total+=Number(x.amount||0);o.count+=1;o.items.push(x);m.set(k,o)});return[...m.values()]}
-function playFire(){try{const ac=new (window.AudioContext||window.webkitAudioContext)();const N=ac.sampleRate*.5, nb=ac.createBuffer(1,N,ac.sampleRate),data=nb.getChannelData(0);for(let i=0;i<N;i++)data[i]=(Math.random()*2-1)*Math.pow(1-i/N,2);const n=ac.createBufferSource();n.buffer=nb;const g=ac.createGain();g.gain.value=.2;n.connect(g).connect(ac.destination);n.start();const o=ac.createOscillator();o.type='triangle';o.frequency.value=160;const og=ac.createGain();og.gain.value=.001;o.connect(og).connect(ac.destination);o.start(ac.currentTime+.45);og.gain.exponentialRampToValueAtTime(.7,ac.currentTime+.55);og.gain.exponentialRampToValueAtTime(.0001,ac.currentTime+.9);o.stop(ac.currentTime+1)}catch(e){}}
-function confetti(){const c=document.createElement('div');c.className='confetti';for(let i=0;i<18;i++){const s=document.createElement('span');s.style.setProperty('--tx',(Math.random()*200-100).toFixed(0));s.style.setProperty('--ty',(Math.random()*-120-60).toFixed(0));s.style.left='50%';c.appendChild(s)}document.body.appendChild(c);setTimeout(()=>c.remove(),1500)}
-(()=>{const st=document.createElement('style');st.textContent=`.confetti{position:fixed;inset:0;pointer-events:none}.confetti span{position:absolute;width:6px;height:10px;background:hsl(${Math.random()*360},80%,60%);transform:translate(-50%,-50%);animation:fly .9s ease-out forwards}@keyframes fly{to{transform:translate(calc(-50% + var(--tx)*1px),calc(-50% + var(--ty)*1px)) rotate(540deg);opacity:0}}`;document.head.appendChild(st)})();
-function init(){
-  const logo=document.getElementById('brandLogo');logo.addEventListener('error',()=>{logo.src='assets/logo.png'});
-  ['recruitDate','bvDate','ibvDate','logDate'].forEach(id=>el(id).value=todayISO());
-  qsa('.tab').forEach(b=>b.addEventListener('click',()=>{qsa('.tab').forEach(x=>x.classList.remove('active'));b.classList.add('active');qsa('.tab-content').forEach(s=>s.classList.add('hidden'));document.getElementById('tab-'+b.dataset.tab).classList.remove('hidden')}));
-  const t=el('toggleGoals');t.addEventListener('click',()=>{const p=el('goalsPanel');const show=p.hasAttribute('hidden');if(show){p.removeAttribute('hidden');t.textContent='收合'}else{p.setAttribute('hidden','');t.textContent='展開'}});
-  el('goalRecruit').value=S.goals.recruit;el('goalBV').value=S.goals.bv;el('goalIBV').value=S.goals.ibv;miniGoalText();
-  el('saveGoals').addEventListener('click',()=>{S.goals.recruit=Math.max(0,Number(el('goalRecruit').value||0));S.goals.bv=Math.max(0,Number(el('goalBV').value||0));S.goals.ibv=Math.max(0,Number(el('goalIBV').value||0));save();render()});
-  el('addRecruit').addEventListener('click',addRecruit);el('addBV').addEventListener('click',addBV);el('addIBV').addEventListener('click',addIBV);
-  el('addLog').addEventListener('click',addLog);el('clearInputs').addEventListener('click',()=>{el('personName').value='';el('group').value='';el('notes').value=''});
-  el('closeDetail').addEventListener('click',()=>document.getElementById('detailDlg').close());
-  el('exportBtn').addEventListener('click',exportCSV);
-  render();
+const $ = (s)=>document.querySelector(s);
+const $$ = (s)=>document.querySelectorAll(s);
+const store = (k,v)=>localStorage.setItem(k,JSON.stringify(v));
+const load  = (k,d)=>{ try{ return JSON.parse(localStorage.getItem(k)) ?? d }catch{ return d }};
+
+const goals = load('goals',{recruit:1,bv:1500,ibv:300});
+const data  = load('data',{
+  recruit:[], // {date,name}
+  bv:[],      // {date,name,item,qty}
+  ibv:[],     // {date,name,item,qty}
+  people:{}   // name -> {city, group, logs:[{date,note}]}
+});
+
+function setToday(id){ const el=$(id); if(!el.value){ el.value = new Date().toISOString().slice(0,10); } }
+['#rDate','#bvDate','#ibvDate','#pDate'].forEach(setToday);
+
+$('#goalRecruit').value = goals.recruit; $('#goalBV').value=goals.bv; $('#goalIBV').value=goals.ibv;
+function updateGoalCurrent(){ $('#goalCurrent').textContent = `目前目標：招募 ${goals.recruit} / BV ${goals.bv} / IBV ${goals.ibv}` }
+updateGoalCurrent();
+
+$('#toggleGoals').addEventListener('click', ()=>{
+  const pnl = $('#goalPanel'); const open = pnl.hasAttribute('hidden');
+  if(open){ pnl.removeAttribute('hidden'); $('#toggleGoals').textContent='收合'; }
+  else{ pnl.setAttribute('hidden',''); $('#toggleGoals').textContent='展開'; }
+});
+$('#saveGoals').addEventListener('click', ()=>{
+  goals.recruit = +$('#goalRecruit').value||0;
+  goals.bv = +$('#goalBV').value||0;
+  goals.ibv = +$('#goalIBV').value||0;
+  store('goals',goals); updateBars(); updateGoalCurrent();
+  $('#goalPanel').setAttribute('hidden',''); $('#toggleGoals').textContent='展開';
+});
+
+$$('.tab').forEach(btn=>btn.addEventListener('click',()=>{
+  $$('.tab').forEach(b=>b.classList.remove('active')); btn.classList.add('active');
+  $$('.tab-pane').forEach(p=>p.classList.remove('show'));
+  $('#pane-'+btn.dataset.tab).classList.add('show');
+}));
+
+function addNameToList(id,value){ if(!value) return; const dl=$(id); if([...dl.options].some(o=>o.value===value)) return; const o=document.createElement('option'); o.value=value; dl.appendChild(o); }
+
+$('#addRecruit').addEventListener('click', ()=>{
+  data.recruit.push({date:$('#rDate').value, name:$('#rName').value.trim()});
+  store('data',data); $('#rName').value=''; renderRecruit(); updateBars(true);
+});
+function renderRecruit(){
+  const tb=$('#tblRecruit tbody'); tb.innerHTML='';
+  data.recruit.forEach((r,i)=>{
+    const tr=document.createElement('tr');
+    tr.innerHTML=`<td>${i+1}</td><td>${r.date}</td><td>${r.name||''}</td>
+    <td><button class="btn secondary" data-i="${i}" data-kind="recruit-del">刪除</button></td>`;
+    tb.appendChild(tr);
+  });
+  $('#sumRecruit').textContent = `${data.recruit.length}/${goals.recruit}`;
 }
-function miniGoalText(){el('currentGoal').textContent=`目前目標：招募 ${S.goals.recruit} / BV ${S.goals.bv} / IBV ${S.goals.ibv}`;el('goalRecruitTxt').textContent=S.goals.recruit;el('goalBVTxt').textContent=S.goals.bv;el('goalIBVTxt').textContent=S.goals.ibv}
-function render(){
-  const r=S.recruit.length, b=sum(S.bv.map(x=>x.amount)), i=sum(S.ibv.map(x=>x.amount));
-  const rp=S.goals.recruit?Math.min(100,Math.round(100*r/S.goals.recruit)):0;
-  const bp=S.goals.bv?Math.min(100,Math.round(100*b/S.goals.bv)):0;
-  const ip=S.goals.ibv?Math.min(100,Math.round(100*i/S.goals.ibv)):0;
-  el('recruitPct').textContent=rp+'%';el('bvPct').textContent=bp+'%';el('ibvPct').textContent=ip+'%';
-  el('recruitBar').style.width=rp+'%';el('bvBar').style.width=bp+'%';el('ibvBar').style.width=ip+'%';
-  el('recruitTxt').textContent=`${r}/${S.goals.recruit}`;el('bvTxt').textContent=`${b}/${S.goals.bv}`;el('ibvTxt').textContent=`${i}/${S.goals.ibv}`;
-  el('recruitBadge').hidden=!(r>=S.goals.recruit&&S.goals.recruit>0);el('bvBadge').hidden=!(b>=S.goals.bv&&S.goals.bv>0);el('ibvBadge').hidden=!(i>=S.goals.ibv&&S.goals.ibv>0);
-  const bvM=el('bvSum'), ibvM=el('ibvSum');bvM.textContent=b;ibvM.textContent=i;
-  bvM.classList.toggle('green',b>=S.goals.bv&&S.goals.bv>0);bvM.classList.toggle('red',!(b>=S.goals.bv&&S.goals.bv>0));
-  ibvM.classList.toggle('green',i>=S.goals.ibv&&S.goals.ibv>0);ibvM.classList.toggle('red',!(i>=S.goals.ibv&&S.goals.ibv>0));
-  el('bvAchBadge').hidden=!(b>=S.goals.bv&&S.goals.bv>0);el('ibvAchBadge').hidden=!(i>=S.goals.ibv&&S.goals.ibv>0);
-  const rtb=el('recruitTbody');rtb.innerHTML='';S.recruit.forEach((x,idx)=>{const tr=document.createElement('tr');tr.innerHTML=`<td>${idx+1}</td><td>${x.date||''}</td><td>${x.name||''}</td><td><button class="btn small secondary" data-del="${idx}">刪除</button></td>`;rtb.appendChild(tr)});
-  rtb.querySelectorAll('[data-del]').forEach(b=>b.addEventListener('click',e=>{const i=Number(e.currentTarget.dataset.del);S.recruit.splice(i,1);save();render()}));
-  el('recruitCount').textContent=r;
-  const btb=el('bvAggTbody');btb.innerHTML='';groupByName(S.bv).forEach((g,idx)=>{const tr=document.createElement('tr');tr.innerHTML=`<td>${idx+1}</td><td>${g.name}</td><td>${g.total}</td><td>${g.count}</td><td><button class="btn small" data-view="bv:${g.name}">查看</button></td><td><button class="btn small secondary" data-delgroup="bv:${g.name}">刪除</button></td>`;btb.appendChild(tr)});
-  btb.querySelectorAll('[data-view]').forEach(b=>b.addEventListener('click',openDetail));
-  btb.querySelectorAll('[data-delgroup]').forEach(b=>b.addEventListener('click',deleteGroup));
-  const itb=el('ibvAggTbody');itb.innerHTML='';groupByName(S.ibv).forEach((g,idx)=>{const tr=document.createElement('tr');tr.innerHTML=`<td>${idx+1}</td><td>${g.name}</td><td>${g.total}</td><td>${g.count}</td><td><button class="btn small" data-view="ibv:${g.name}">查看</button></td><td><button class="btn small secondary" data-delgroup="ibv:${g.name}">刪除</button></td>`;itb.appendChild(tr)});
-  itb.querySelectorAll('[data-view]').forEach(b=>b.addEventListener('click',openDetail));
-  itb.querySelectorAll('[data-delgroup]').forEach(b=>b.addEventListener('click',deleteGroup));
-  refreshDatalists();const ltb=el('listTbody');ltb.innerHTML='';let k=0;Object.entries(S.list).forEach(([name,obj])=>{const last=obj.logs.length?obj.logs[obj.logs.length-1].date:'';const tr=document.createElement('tr');tr.innerHTML=`<td>${++k}</td><td>${obj.city||''}</td><td>${name}</td><td>${obj.group||''}</td><td>${last}</td><td>${obj.logs.length}</td><td><button class="btn small" data-view="list:${name}">查看</button></td>`;ltb.appendChild(tr)});
-  ltb.querySelectorAll('[data-view]').forEach(b=>b.addEventListener('click',openDetail));
+$('#tblRecruit').addEventListener('click',(e)=>{
+  const b=e.target.closest('button[data-kind="recruit-del"]'); if(!b) return;
+  const i=+b.dataset.i; data.recruit.splice(i,1); store('data',data); renderRecruit(); updateBars();
+});
+
+function groupByName(list){
+  const map=new Map();
+  list.forEach(x=>{
+    const key=x.name||'(未填)';
+    if(!map.has(key)) map.set(key,{name:key,sum:0,count:0,items:[]});
+    const g=map.get(key); g.sum+=(+x.qty||0); g.count+=1; g.items.push(x);
+  });
+  return [...map.values()];
 }
-function addRecruit(){const date=el('recruitDate').value||todayISO(), name=el('recruitName').value.trim();S.recruit.push({date,name});save();render();if(S.recruit.length>=S.goals.recruit&&S.goals.recruit>0){confetti();playFire()}}
-function addBV(){const date=el('bvDate').value||todayISO(), name=el('bvCustomer').value.trim(), item=el('bvItem').value.trim(), amount=Number(el('bvAmount').value||0);if(!amount)return;S.bv.push({date,name,item,amount});save();render();const total=sum(S.bv.map(x=>x.amount));if(total>=S.goals.bv&&S.goals.bv>0){confetti();playFire()}el('bvItem').value='';el('bvAmount').value=''}
-function addIBV(){const date=el('ibvDate').value||todayISO(), name=el('ibvName').value.trim(), item=el('ibvItem').value.trim(), amount=Number(el('ibvAmount').value||0);if(!amount)return;S.ibv.push({date,name,item,amount});save();render();const total=sum(S.ibv.map(x=>x.amount));if(total>=S.goals.ibv&&S.goals.ibv>0){confetti();playFire()}el('ibvItem').value='';el('ibvAmount').value=''}
-function openDetail(e){const [kind,key]=e.currentTarget.dataset.view.split(':');let txt='';if(kind==='bv'){S.bv.filter(x=>(x.name||'（未填名）').trim()===key).forEach(x=>txt+=`${x.date}｜${x.item||''} ${x.amount}\n`);txt=`【${key}】\n`+txt}else if(kind==='ibv'){S.ibv.filter(x=>(x.name||'（未填名）').trim()===key).forEach(x=>txt+=`${x.date}｜${x.item||''} ${x.amount}\n`);txt=`【${key}】\n`+txt}else if(kind==='list'){const o=S.list[key];txt=`【${key}】（${o.city||''}｜${o.group||''}）\n`;o.logs.forEach(x=>txt+=`${x.date}｜${x.notes||''}\n`)}
-  document.getElementById('detailContent').textContent=txt||'明細';document.getElementById('detailDlg').showModal()}
-function deleteGroup(e){const [kind,key]=e.currentTarget.dataset.delgroup.split(':');if(!confirm(`刪除「${key}」的彙總資料與所有明細？`))return;if(kind==='bv'){S.bv=S.bv.filter(x=>(x.name||'（未填名）').trim()!==key)}else if(kind==='ibv'){S.ibv=S.ibv.filter(x=>(x.name||'（未填名）').trim()!==key)}save();render()}
-function refreshDatalists(){const dn=el('nameList'),dg=el('groupList');dn.innerHTML='';dg.innerHTML='';const names=Object.keys(S.list).sort();names.forEach(n=>{const o=document.createElement('option');o.value=n;dn.appendChild(o)});const setG=new Set(Object.values(S.list).map(x=>x.group).filter(Boolean));[...setG].sort().forEach(g=>{const o=document.createElement('option');o.value=g;dg.appendChild(o)})}
-function addLog(){const city=el('city').value.trim(),name=el('personName').value.trim(),group=el('group').value.trim(),date=el('logDate').value||todayISO(),notes=el('notes').value.trim();if(!name)return;const obj=S.list[name]||{city:'',group:'',logs:[]};obj.city=city||obj.city;obj.group=group||obj.group;obj.logs.push({date,notes});S.list[name]=obj;save();render();el('personName').value='';el('group').value=''}
-function exportCSV(){const rows=[];rows.push(['類別','日期','姓名','品項','數量','備註/城市/族群']);S.recruit.forEach(x=>rows.push(['招募',x.date||'',x.name||'','','','']));S.bv.forEach(x=>rows.push(['BV',x.date||'',x.name||'',x.item||'',x.amount||'','']));Object.entries(S.list).forEach(([name,obj])=>{obj.logs.forEach(l=>rows.push(['312名單',l.date||'',name,'','',`${obj.city||''}/${obj.group||''} ${l.notes||''}`]))});S.ibv.forEach(x=>rows.push(['IBV',x.date||'',x.name||'',x.item||'',x.amount||'','']));const csv=rows.map(r=>r.map(v=>`"${String(v).replace(/"/g,'""')}"`).join(',')).join('\n');const blob=new Blob([csv],{type:'text/csv;charset=utf-8'});const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download='IFNT_export.csv';a.click();setTimeout(()=>URL.revokeObjectURL(url),3000)}
-window.addEventListener('DOMContentLoaded',init);
+function renderGrouped(sel, list, kind){
+  const tb=document.querySelector(sel); tb.innerHTML='';
+  groupByName(list).forEach((g,i)=>{
+    const tr=document.createElement('tr');
+    tr.innerHTML=`<td>${i+1}</td><td>${g.name}</td><td>${g.sum}</td><td>${g.count}</td>
+    <td><button class="btn secondary" data-kind="${kind}-view" data-name="${g.name}">查看</button></td>
+    <td><button class="btn secondary" data-kind="${kind}-del" data-name="${g.name}">刪除</button></td>`;
+    tb.appendChild(tr);
+  });
+}
+function viewLines(kind,name){
+  const arr=(kind==='bv'?data.bv:data.ibv).filter(x=>(x.name||'(未填)')===name);
+  const body=arr.map(x=>`${x.date} | ${x.item} ${x.qty}`).join('\n');
+  $('#dialogContent').innerHTML=`<div style="white-space:pre-line;font-size:18px">【${name}】\n${body||'—'}</div>`;
+  $('#viewDialog').showModal();
+}
+function delGroup(kind,name){
+  if(kind==='bv') data.bv = data.bv.filter(x=>(x.name||'(未填)')!==name);
+  else data.ibv = data.ibv.filter(x=>(x.name||'(未填)')!==name);
+  store('data',data);
+  renderGrouped(kind==='bv'?'#tblBV tbody':'#tblIBV tbody', kind==='bv'?data.bv:data.ibv, kind);
+  updateBars();
+}
+document.body.addEventListener('click',(e)=>{
+  const b=e.target.closest('button'); if(!b) return;
+  const k=b.dataset.kind;
+  if(k==='bv-view') viewLines('bv', b.dataset.name);
+  if(k==='ibv-view') viewLines('ibv', b.dataset.name);
+  if(k==='bv-del') delGroup('bv', b.dataset.name);
+  if(k==='ibv-del') delGroup('ibv', b.dataset.name);
+  if(b.id==='closeDialog') $('#viewDialog').close();
+});
+
+$('#addBV').addEventListener('click', ()=>{
+  const entry={date:$('#bvDate').value,name:$('#bvName').value.trim(),item:$('#bvItem').value.trim(),qty:+$('#bvQty').value||0};
+  if(entry.qty>0){ data.bv.push(entry); store('data',data); }
+  addNameToList('#bvNameList', entry.name);
+  $('#bvItem').value=''; $('#bvQty').value='';
+  renderGrouped('#tblBV tbody', data.bv, 'bv'); updateBars(true);
+});
+$('#addIBV').addEventListener('click', ()=>{
+  const entry={date:$('#ibvDate').value,name:$('#ibvName').value.trim(),item:$('#ibvItem').value.trim(),qty:+$('#ibvQty').value||0};
+  if(entry.qty>0){ data.ibv.push(entry); store('data',data); }
+  addNameToList('#ibvNameList', entry.name);
+  $('#ibvItem').value=''; $('#ibvQty').value='';
+  renderGrouped('#tblIBV tbody', data.ibv, 'ibv'); updateBars(true);
+});
+
+$('#addPerson').addEventListener('click', ()=>{
+  const name=$('#pName').value.trim(); if(!name) return;
+  const city=$('#city').value; const group=$('#pGroup').value.trim();
+  const note=$('#pNote').value.trim(); const date=$('#pDate').value;
+  if(!data.people[name]) data.people[name]={city,group,logs:[]};
+  data.people[name].city=city; data.people[name].group=group;
+  data.people[name].logs.push({date,note});
+  store('data',data);
+  addNameToList('#pNameList', name); if(group) addNameToList('#pGroupList', group);
+  $('#pName').value=''; $('#pGroup').value=''; $('#pNote').value='';
+  renderPeople();
+});
+$('#clearPersonForm').addEventListener('click', ()=>{ $('#pName').value=''; $('#pGroup').value=''; $('#pNote').value=''; });
+
+function renderPeople(){
+  const tb=$('#tblPeople tbody'); tb.innerHTML='';
+  const entries=Object.entries(data.people).map(([name,info])=>{
+    const last = (info.logs||[]).slice().sort((a,b)=>b.date.localeCompare(a.date))[0]?.date||'';
+    return {name, city:info.city, group:info.group, last, count:(info.logs||[]).length};
+  }).sort((a,b)=>a.name.localeCompare(b.name));
+  entries.forEach((p,i)=>{
+    const tr=document.createElement('tr');
+    tr.innerHTML = `<td>${i+1}</td><td>${p.city}</td><td>${p.name}</td><td>${p.group||''}</td><td>${p.last||''}</td><td>${p.count}</td>
+    <td><button class="btn secondary" data-kind="p-view" data-name="${p.name}">查看</button></td>`;
+    tb.appendChild(tr);
+  });
+}
+document.body.addEventListener('click',(e)=>{
+  const b=e.target.closest('button[data-kind="p-view"]'); if(!b) return;
+  const name=b.dataset.name; const info=data.people[name]; if(!info) return;
+  const header=`【${name}】(${info.city}｜${info.group||''})`;
+  const lines=(info.logs||[]).slice().sort((a,b)=>a.date.localeCompare(b.date)).map(x=>`${x.date}｜${x.note||''}`).join('\n');
+  $('#dialogContent').innerHTML=`<div style="white-space:pre-line;font-size:18px">${header}\n${lines}</div>`;
+  $('#viewDialog').showModal();
+});
+
+function sumQty(arr){ return arr.reduce((s,x)=>s+(+x.qty||0),0); }
+const fired={recruit:false,bv:false,ibv:false};
+function updateBars(play=false){
+  const rec=data.recruit.length, bv=sumQty(data.bv), ibv=sumQty(data.ibv);
+  const pct=(v,g)=>g>0?Math.min(100,Math.round(v/g*100)):0;
+  const pr=pct(rec,goals.recruit), pb=pct(bv,goals.bv), pi=pct(ibv,goals.ibv);
+  $('#barRecruit').style.width=pr+'%'; $('#pctRecruit').textContent=pr+'%'; $('#txtRecruit').textContent=`${rec}/${goals.recruit}`;
+  $('#barBV').style.width=pb+'%'; $('#pctBV').textContent=pb+'%'; $('#txtBV').textContent=`${bv}/${goals.bv}`;
+  $('#barIBV').style.width=pi+'%'; $('#pctIBV').textContent=pi+'%'; $('#txtIBV').textContent=`${ibv}/${goals.ibv}`;
+  $('#sumRecruit').textContent=`${rec}/${goals.recruit}`; $('#sumBV').textContent=`${bv}/${goals.bv}`; $('#sumIBV').textContent=`${ibv}/${goals.ibv}`;
+  celebrate('recruit', rec>=goals.recruit && goals.recruit>0, play);
+  celebrate('bv', bv>=goals.bv && goals.bv>0, play);
+  celebrate('ibv', ibv>=goals.ibv && goals.ibv>0, play);
+}
+function celebrate(key,hit,play){
+  if(hit && !fired[key] && play){ fired[key]=true; fireworks(); sfxFirework(); }
+  if(!hit) fired[key]=false;
+}
+
+// fireworks
+function fireworks(){
+  const cv=$('#fx'); const ctx=cv.getContext('2d');
+  cv.style.display='block'; cv.width=innerWidth; cv.height=innerHeight;
+  const cx=cv.width/2, cy=cv.height*0.35;
+  const dots=Array.from({length:90},()=>({x:cx, y:cy, vx:(Math.random()*2-1)*4, vy:(Math.random()*2-1)*4, life:70+Math.random()*40 }));
+  let t=0; const id=setInterval(()=>{
+    ctx.fillStyle='rgba(15,47,47,.25)'; ctx.fillRect(0,0,cv.width,cv.height);
+    dots.forEach(p=>{ p.x+=p.vx; p.y+=p.vy; p.vy+=0.05; p.life--; ctx.fillStyle=`hsl(${(p.life*4)%360} 90% 60%)`; ctx.fillRect(p.x,p.y,3,3); });
+    if(++t>90){ clearInterval(id); cv.style.display='none'; }
+  },16);
+}
+// audio
+function sfxFirework(){
+  const AC = window.AudioContext||window.webkitAudioContext; const ctx=new AC();
+  const o=ctx.createOscillator(), g=ctx.createGain();
+  o.type='sawtooth'; o.frequency.setValueAtTime(250,ctx.currentTime); o.frequency.exponentialRampToValueAtTime(1200,ctx.currentTime+0.9);
+  g.gain.setValueAtTime(0.0001,ctx.currentTime); g.gain.exponentialRampToValueAtTime(0.35,ctx.currentTime+0.2); g.gain.exponentialRampToValueAtTime(0.0001,ctx.currentTime+0.9);
+  o.connect(g).connect(ctx.destination); o.start(); o.stop(ctx.currentTime+0.95);
+  const dur=0.8, sr=ctx.sampleRate, len=Math.floor(sr*dur);
+  const buf=ctx.createBuffer(1,len,sr); const ch=buf.getChannelData(0);
+  for(let i=0;i<len;i++){ ch[i]=(Math.random()*2-1)*Math.exp(-3*i/len); }
+  const noise=ctx.createBufferSource(); noise.buffer=buf;
+  const g2=ctx.createGain(); g2.gain.value=0.9; noise.connect(g2).connect(ctx.destination);
+  noise.start(ctx.currentTime+0.9); noise.stop(ctx.currentTime+1.7);
+}
+
+function initListsFromData(){
+  [...new Set(data.bv.map(x=>x.name).filter(Boolean))].forEach(n=>addNameToList('#bvNameList',n));
+  [...new Set(data.ibv.map(x=>x.name).filter(Boolean))].forEach(n=>addNameToList('#ibvNameList',n));
+  Object.keys(data.people).forEach(n=>addNameToList('#pNameList',n));
+  [...new Set(Object.values(data.people).map(p=>p.group).filter(Boolean))].forEach(g=>addNameToList('#pGroupList',g));
+}
+renderRecruit(); renderGrouped('#tblBV tbody', data.bv, 'bv'); renderGrouped('#tblIBV tbody', data.ibv, 'ibv'); renderPeople(); initListsFromData(); updateBars();
+
+$('#exportCsv').addEventListener('click', ()=>{
+  const rows=[['type','date','name','item','qty','city','group','note']];
+  data.recruit.forEach(r=>rows.push(['recruit',r.date,r.name,'','']));
+  data.bv.forEach(x=>rows.push(['bv',x.date,x.name,x.item,x.qty]));
+  data.ibv.forEach(x=>rows.push(['ibv',x.date,x.name,x.item,x.qty]));
+  Object.entries(data.people).forEach(([name,p])=>(p.logs||[]).forEach(l=>rows.push(['312',l.date,name,'','',p.city,p.group,l.note])));
+  const csv=rows.map(r=>r.map(v=>`"${String(v??'').replace(/"/g,'""')}"`).join(',')).join('\n');
+  const a=document.createElement('a'); a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv;charset=utf-8'})); a.download='ifnt.csv'; a.click();
+});
